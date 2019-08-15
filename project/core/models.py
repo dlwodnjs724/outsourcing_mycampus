@@ -75,6 +75,12 @@ class Image(models.Model):
     def __str__(self):
         return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.user.username})'
 
+def parant(self):
+    if self.replies.all():
+        return None
+    else:
+        return self.parent.pk
+
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
@@ -82,10 +88,11 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_anonymous = models.BooleanField(default=False)
-
+    #대댓글
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'Comment (PK: {self.pk}, Author: {self.author.username})'
+        return f'Comment (PK: {self.pk}, Author: {self.author.username} Parent: {parant(self)})'
