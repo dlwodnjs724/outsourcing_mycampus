@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from datetime import datetime, timezone
 
 #accounts에서 import가 잘되지 않아 임시로
 class User(AbstractUser):
@@ -10,6 +11,7 @@ class User(AbstractUser):
     # will_graduate_in = models.DateField()
     terms_acceptance = models.BooleanField(default=False)
     univ = models.CharField(max_length=20, choices=UNIV_CHOICES)
+
 class Univ(models.Model):
     name = models.CharField(max_length=50)
 
@@ -28,8 +30,6 @@ class Category(models.Model):
 
     def __str__(self):
         return f'Category (PK: {self.pk}, Name: {self.name}, Univ: {self.univ.name})'
-
-    
 
 # def get_short_title(e):
 #     if len(" ".join(e.split()[0:2])) > 10:
@@ -51,6 +51,14 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+    def time_interval(self):
+        now = datetime.now(timezone.utc)
+        time_interval = now - self.created_at
+        return time_interval
+
+    def total_likes(self):
+        return self.likes.count()
 
     def __str__(self):
         return f'Post (PK: {self.pk}, Title: {" ".join(self.title.split()[0:2])}... Author: {self.user.username})'
