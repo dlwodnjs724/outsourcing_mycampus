@@ -1,0 +1,10 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+    <h2>Suggested Category</h2>
+    <ul>
+        {% for list in s_ctgy %}
+            <li>{{ list.name}}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+    

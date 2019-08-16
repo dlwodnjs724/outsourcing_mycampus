@@ -48,7 +48,8 @@ ALLOWED_HOSTS = ['*']
 
 LOCAL_APPS = [
     'core',
-    'accounts'
+    'accounts',
+    'board',
 ]
 
 INSTALLED_APPS = [

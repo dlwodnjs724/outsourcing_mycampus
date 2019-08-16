@@ -1,13 +1,17 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-# Create your models here.
+
+from core.models import Univ
 
 
 class User(AbstractUser):
-    UNIV_CHOICES = ((1, 1), (2, 2), (3, 3))
-    GENDER_CHOICES = (('m', "Male"), ('f', "Female"))
+    GENDER_CHOICES = (
+        ('f', "Female"),
+        ('m', "Male"),
+        ('o', 'Other')
+    )
 
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
-    will_graduate_in = models.DateField()
+    class_of = models.IntegerField(null=True)
     terms_acceptance = models.BooleanField(default=False)
-    univ = models.CharField(max_length=20, choices=UNIV_CHOICES)
+    univ = models.ForeignKey(Univ, on_delete=models.SET_NULL, null=True)
