@@ -52,6 +52,8 @@ LOCAL_APPS = [
     'board',
 ]
 
+THIRD_PARTY_APPS = []
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -59,7 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-] + LOCAL_APPS
+] + LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -138,8 +140,10 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'config', 'static')
+    os.path.join(BASE_DIR, 'config', 'static'),
+    os.path.join(BASE_DIR, 'accounts', 'static')
 ]
+
 STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static')
 
 MEDIA_URL = '/media/'
