@@ -1,12 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from datetime import datetime, timezone
 from accounts.models import User
 from core.models import Univ
 
 
 class Category(models.Model):
-    univ = models.ForeignKey(Univ, on_delete=models.CASCADE, related_name='category',blank=False)
+    univ = models.ForeignKey(Univ, on_delete=models.CASCADE, related_name='category', blank=False)
     name = models.CharField(max_length=30, blank=False)
     dscrp = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -20,24 +19,25 @@ class Category(models.Model):
 
 
 class Suggested(models.Model):
-    univ = models.ForeignKey(Univ, on_delete=models.CASCADE, related_name='suggested_category',blank=False)
+    univ = models.ForeignKey(Univ, on_delete=models.CASCADE, related_name='suggested_category', blank=False)
     name = models.CharField(max_length=30, blank=False)
     dscrp = models.TextField(blank=False)
     suggested_at = models.DateTimeField(auto_now_add=True)
     suggested_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
-def __str__(self):
-    return f'Suggested_Category: {self.name}'
+    def __str__(self):
+        return f'Suggested_Category: {self.name}'
 
 
 class Post(models.Model):
-    ctgy = models.ForeignKey(Category, on_delete=models.CASCADE, related_name ='posts',blank=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name ='posts',blank=False)
-    title = models.CharField(max_length=100,blank=False)
+    ctgy = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts', blank=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', blank=False)
+    title = models.CharField(max_length=100, blank=False)
     content = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True) 
+    updated_at = models.DateTimeField(auto_now=True)
 
+    likes = models.ManyToManyField(User, default=0, related_name='liked', blank=True)
     views = models.PositiveIntegerField(default=0)
     is_anonymous = models.BooleanField(default=True)
 
@@ -60,20 +60,16 @@ class Post(models.Model):
 
 def get_image_filename(instance, filename):
     id = instance.post.id
-    return "post_images/%s" % (id)  
+    return f'post_images/{id}'
+
 
 class Image(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None,blank=False)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, blank=False)
     image = models.ImageField(upload_to=get_image_filename)
 
     def __str__(self):
         return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.user.username})'
 
-# def parant(self):
-#     if self.replies.count() == 0:
-#         return None
-#     else:
-#         return self.parent.pk
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=False)
@@ -84,7 +80,7 @@ class Comment(models.Model):
     is_anonymous = models.BooleanField(default=True)
     comment_likes = models.ManyToManyField(User, related_name='comment_liked', blank=True)
 
-    #대댓글
+    # 대댓글
     parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
 
     class Meta:
