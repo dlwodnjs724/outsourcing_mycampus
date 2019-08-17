@@ -1,0 +1,27 @@
+#mail__wrapper {
+    width: 500px;
+}
+
+.mail__logo .logo-img {
+    height: 3rem;
+}
+
+.logo-img img {
+    height: 3rem;
+    margin: 0 0.8rem;
+}
+
+.mail__validate-button a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.mail__verify-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:12rem;
+    height: 3rem;
+    background-color: #56B8BC;
+}

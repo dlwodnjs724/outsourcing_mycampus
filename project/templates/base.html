@@ -8,14 +8,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{% static "base/css/base.css" %}" type="text/css">
     <title>{% firstof html_title "MY CAMPUS" %}</title>
+    <script src="https://kit.fontawesome.com/6b942254ad.js"></script>
     {% block css %}
     {% endblock %}
 </head>
 <body>
     <div class="base__header">
         <div class="base__header__used-space container">
-            <div class="base__logo"><span>MY CAMPUS</span></div>
-            {% block header %} {% endblock %}
+            <div class="base__logo"><span>MY CAMPUS | {{ univ_big_short }}</span></div>
+            {% block header %}
+            {% endblock %}
         </div>
     </div>
     {% block contents %}
