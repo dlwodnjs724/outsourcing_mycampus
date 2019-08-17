@@ -26,8 +26,8 @@ class Suggested(models.Model):
     suggested_at = models.DateTimeField(auto_now_add=True)
     suggested_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
-def __str__(self):
-    return f'Suggested_Category: {self.name}'
+    def __str__(self):
+        return f'Suggested_Category: {self.name}'
 
 
 class Post(models.Model):
