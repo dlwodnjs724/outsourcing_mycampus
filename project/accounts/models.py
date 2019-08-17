@@ -12,7 +12,7 @@ class User(AbstractUser):
     )
 
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
-    class_of = models.IntegerField(null=True)
+    class_of = models.IntegerField()
     terms_acceptance = models.BooleanField(default=False)
     univ = models.ForeignKey(Univ, on_delete=models.SET_NULL, null=True)
 
