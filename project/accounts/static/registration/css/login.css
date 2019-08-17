@@ -1,29 +1,18 @@
-:root {
-  --wrapper-color: #E3E3E3;
-  --border-radius: 0.5rem;
-}
-
-#wrapper {
-  width: 100vw;
-  height: 100%;
-  background-color: var(--wrapper-color);
-}
-
 .container__whitebox {
   border-radius: var(--border-radius);
   background-color: #fff;
   width:100%;
-  height: 90%;
 }
 
 .accounts__wrapper {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 .accounts__logo-box {
   display: flex;
+  height: fit-content;
   flex-direction: column;
   justify-content: center;
   align-items: center;

@@ -2,9 +2,6 @@
   padding-right: 15px;
   padding-left: 15px;
   margin: auto auto;
-  display: flex;
-  align-items: center;
-  height: 100vh;
 }
 
 @media (min-width: 768px) {
