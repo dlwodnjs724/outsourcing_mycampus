@@ -4,5 +4,5 @@ from django.conf.urls.static import static
 
 from core import views
 urlpatterns = [
-    path('<str:univ>/', views.main, name="main"),
+    path('', views.main, name="main"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

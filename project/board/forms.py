@@ -6,7 +6,7 @@ from core.models import Univ
 class UnivForm(forms.ModelForm):
     class Meta:
         model = Univ
-        fields = ("name", "domain")
+        fields = ("full_name", "domain")
 
 
 class CategoryForm(forms.ModelForm):
