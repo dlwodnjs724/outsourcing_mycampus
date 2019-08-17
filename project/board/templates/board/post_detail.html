@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{post.title}}
+{% endblock title %}
+
+
+{% block body %}
+<div>
+title : {{post.title}}<br>
+author : {{post.author}}<br>
+content : {{post.content}}<br>
+<br>
+
+<form action="./new" method="POST">
+    {% csrf_token %}
+    write comment: <input type="text" name ='comment'>
+    <input type="submit">
+</form>
+
+<br>
+
+{% for comment in post.comment_set.all %}
+{{ comment }}<br>
+{% endfor %}
+</div>
+
+
+{% endblock body %}
+

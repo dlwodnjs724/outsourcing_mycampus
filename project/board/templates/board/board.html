@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+board
+{% endblock title %}
+
+
+{% block body %}
+
+<div>
+{% for ctgy in categories%}
+<a href='/board/{{ctgy.univ.name}}/{{ctgy.name}}'><h1> {{ ctgy }} </h1></a>
+{% endfor %}
+</div>
+
+
+{% for post in queryset %}
+<a href='./{{post.id}}'>
+<div>
+author : {{post.author}}<br>
+title : {{post.title}}<br>
+<br>
+</div>
+</a>
+{% endfor %}
+
+<a href='./new'><button>새 글 쓰기</button></a>
+{% endblock body %}
+

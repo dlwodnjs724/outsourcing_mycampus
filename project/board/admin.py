@@ -8,7 +8,7 @@ from .models import Category, Post, Image, Comment, Suggested
 class PostAdmin(admin.ModelAdmin):
     list_per_page = 20
     list_display = (
-        'id', 'title', 'ctgy', 'user', 'created_at',
+        'id', 'title', 'ctgy', 'author', 'created_at',
         'likes_count', 'views', 'is_anonymous'
     )
     search_fields = ('title',)
