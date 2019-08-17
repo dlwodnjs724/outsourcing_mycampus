@@ -155,3 +155,14 @@ LOGOUT_REDIRECT_URL = '/auth/login/'
 
 LOGIN_URL = "/auth/login/"
 LOGIN_REDIRECT_URL = "/"
+
+
+# activation email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'wlq4568@gmail.com'
+EMAIL_HOST_PASSWORD = 'eatnug5583**'
+SERVER_EMAIL = 'wlq4568@gmail.com'
+DEFAULT_FROM_MAIL = 'wlq4568'
