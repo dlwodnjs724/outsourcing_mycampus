@@ -1,0 +1,69 @@
+.container__whitebox {
+  border-radius: var(--border-radius);
+  background-color: #fff;
+  width:100%;
+}
+
+.accounts__wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.accounts__logo-box {
+  display: flex;
+  height: fit-content;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.accounts__logo-box img {
+  margin: 2rem;
+  width: 10rem;
+}
+
+.accounts__logo-box h1 {
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.accounts__login-box {
+  --login-info-bg-color: #F1F1F1;
+  flex-grow:1;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+  height: 80%;
+}
+
+.accounts__user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-info__button {
+  height: 2rem;
+  width: 20rem;
+  border-radius: var(--border-radius);
+  border-width: 0;
+  margin: 0.25rem 0;
+}
+
+.login-info {
+  text-indent: 1rem;
+  background-color: var(--login-info-bg-color);
+}
+
+.login-button {
+  background-color: #C2C3C5;
+  color: #fff;
+}
+
+.newbie-button {
+  background-color: #5F8DA2;
+  color: white;
+}

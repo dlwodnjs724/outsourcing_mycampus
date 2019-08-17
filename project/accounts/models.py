@@ -15,3 +15,6 @@ class User(AbstractUser):
     class_of = models.IntegerField(null=True)
     terms_acceptance = models.BooleanField(default=False)
     univ = models.ForeignKey(Univ, on_delete=models.SET_NULL, null=True)
+
+    is_validate = models.BooleanField(default=False)
+    is_suspended = models.BooleanField(default=False)

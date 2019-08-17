@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block css %}
+    <link rel="stylesheet" href="{% static "registration/css/main.css" %}">
+{% endblock %}
+{% block contents %}
+    <div class="container">
+        <div class="container__whitebox">
+            <div class="accounts__wrapper">
+                <div class="accounts__logo-box">
+                    <img src="{% static "images/logo.png" %}" alt="my_campus">
+                    <h1 class="accounts__mycampus">MY CAMPUS</h1>
+                </div>
+                <div class="accounts__login-box">
+                    <form method="post" class= "accounts__user-info">
+                        {% csrf_token %}
+                        <input class="user-info__button login-info" type="text" name="username" placeholder="ID"/>
+                        <input class="user-info__button login-info" type="password" name="password" placeholder="PW"/>
+                        <button class="user-info__button login-button" type="submit">Login</button>
+                        <button class="user-info__button forgot-button">Forgot your ID / Password? </button>
+                    </form>
+                    <div class="accounts__newbiebox">
+                        <button class="user-info__button newbie-button">New to MY CAMPUS?</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

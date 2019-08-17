@@ -1,5 +1,4 @@
 from django.urls import path
+from . import views
 
-urlpatterns = [
-    path('/login', )
-]
+app_name = "accounts"
