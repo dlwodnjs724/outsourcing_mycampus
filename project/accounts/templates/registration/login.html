@@ -23,25 +23,30 @@
                         <button class="user-info__button forgot-button">Forgot your ID / Password? </button>
                     </form>
                     <div class="accounts__newbiebox">
-                        <button class="user-info__button newbie-button" onclick="signupModalOpen">New to MY CAMPUS?</button>
+                        <button class="user-info__button newbie-button" onclick="signupModalOpen()">New to MY CAMPUS?</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="signup-modal">
+    <div class="signup-modal" onclick="focusOut()">
         <div class="modal-contents">
             <div class="modal__exit-button">
-                <span class="fas fa-times"></span>
+                <span class="times">&times</span>
             </div>
             <div class="signup-form">
                 <div class="signup-form__input">
-                    <label for="univ" content="Your University" class="signup__form-label">You Universiy</label>
-                    <input name="univ" type="text" readonly value="{{ univ_full_name }}" class="signup__verification-form" />
+                    <label for="univ" content="Your University" class="signup__form-label">Your Universiy</label>
+                    <input name="univ" type="text" readonly value="{{ url }}" class="signup__verification-form" />
                 </div>
                 <div class="signup-form__input">
                     <label for="email" class="signup__form-label">Enter your university email</label>
-                    <input name='email' type="text" class="signup__verification-form"/>
+                    <input name='email' type="text" class="signup__verification-form" placeholder="ex) example@{{ univ_domain }}"/>
+                </div>
+                <div class="signup-form__input signup-form__submit">
+                    <button class="signup-form__next-button" onclick="sendMail">
+                        Next
+                    </button>
                 </div>
             </div>
         </div>
@@ -49,5 +54,5 @@
 {% endblock %}
 
 {% block javascript %}
-
+    <script src="{% static "accounts/js/main.js" %}"></script>
 {% endblock %}
