@@ -232,7 +232,7 @@ venv.bak/
 !.elasticbeanstalk/*.global.yml
 
 # Secret Key
-secrets.json
+project/secrets.json
 createsu.py
 
 # DATABASE

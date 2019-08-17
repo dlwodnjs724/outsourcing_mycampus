@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.http import Http404
+from django.shortcuts import render, redirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from .tokens import account_activation_token
@@ -9,6 +10,15 @@ from .models import User
 # Create your views here.
 from django.views.generic.base import View
 
+
+
+def redirect404(request):
+    raise Http404('There is no matching url')
+
+def check_mail(request):
+    return render(request, "accounts/mail.html")
+
+  
 # reqeust, User 모델 인스턴스, 보낼 이메일 주소
 def sendMail(request, user, to_email):
     current_site = get_current_site(request)
