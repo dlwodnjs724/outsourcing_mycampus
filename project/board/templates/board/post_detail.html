@@ -14,7 +14,7 @@ content : {{post.content}}<br>
 
 <form action="./new" method="POST">
     {% csrf_token %}
-    write comment: <input type="text" name ='comment'>
+    write comment: <input type="text" name ='comment' required='true'>
     <input type="submit">
 </form>
 

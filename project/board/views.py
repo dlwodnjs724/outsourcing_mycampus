@@ -26,7 +26,7 @@ def read_Board(request, univ, category):
     #     return redirect(reverse('main'))
     
     ctx = {
-        'queryset' : Post.objects.filter(ctgy=_ctgy),
+        'posts' : Post.objects.filter(ctgy=_ctgy),
         'categories' : Category.objects.filter(univ=_univ),
     }
     
@@ -44,6 +44,7 @@ def create_Post(request, univ, category):
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
+            # anon일때 커스텀 유저로 어떻게?
             try:
                 post.author = request.user
             except:
@@ -82,7 +83,7 @@ def create_Comment(request, univ, category, pk):
     #     return redirect(reverse('main'))
 
     content = request.POST.get('comment')
-
+    print(content)
     if content != '':
         Comment.objects.create(post=_post,author=request.user,content=content)
 
