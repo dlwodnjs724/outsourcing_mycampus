@@ -1,5 +1,7 @@
+/* modal display:flex*/
+
 .signup-modal {
-    display:flex;
+    display:none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -19,6 +21,14 @@
     padding: 0 2rem;
 }
 
+
+.modal__exit-button {
+    width: 100%;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 1.1rem 0;
+}
+
 .signup-form {
 
 }
@@ -29,12 +39,41 @@
 }
 
 .signup-form__input input {
-    margin: 0.1rem 0 0.7rem 0;
+    margin: 0.1rem 0 0.4rem 0;
     font-size: 2rem;
     height: 2.5rem;
+    text-indent: 1rem;
+}
+
+.signup-form__input input::placeholder {
+    color: #A7ABAD;
+    font-size: 2rem;
+    font-weight: 100;
+}
+
+.signup-form__input:first-child {
+    margin-bottom: 2rem;
+}
+
+.signup-form__input button {
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    margin: 0.1rem 0 2.5rem 0;
+    font-size: 2rem;
+    height: 2.5rem;
+    font-weight: 300;
 }
 
 .modal__exit-button span {
     color:var(--main-color);
     font-size: 1.5rem;
+    transition: all linear .1s;
 }
+
+
+.modal__exit-button span:hover {
+    font-size: 2.0rem;
+    cursor: pointer;
+}
+

@@ -47,6 +47,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 LOCAL_APPS = [
+    'api',
     'core',
     'accounts',
     'board',

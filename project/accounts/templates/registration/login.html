@@ -23,7 +23,7 @@
                         <button class="user-info__button forgot-button">Forgot your ID / Password? </button>
                     </form>
                     <div class="accounts__newbiebox">
-                        <button class="user-info__button newbie-button" onclick="signupModalOpen">New to MY CAMPUS?</button>
+                        <button class="user-info__button newbie-button" onclick="signupModalOpen()">New to MY CAMPUS?</button>
                     </div>
                 </div>
             </div>
@@ -32,16 +32,21 @@
     <div class="signup-modal">
         <div class="modal-contents">
             <div class="modal__exit-button">
-                <span class="fas fa-times"></span>
+                <span class="times" onclick="focusOut()" >&times</span>
             </div>
             <div class="signup-form">
                 <div class="signup-form__input">
-                    <label for="univ" content="Your University" class="signup__form-label">You Universiy</label>
+                    <label for="univ" content="Your University" class="signup__form-label">Your Universiy</label>
                     <input name="univ" type="text" readonly value="{{ univ_full_name }}" class="signup__verification-form" />
                 </div>
                 <div class="signup-form__input">
                     <label for="email" class="signup__form-label">Enter your university email</label>
-                    <input name='email' type="text" class="signup__verification-form"/>
+                    <input name='email' type="text" class="signup__verification-form" placeholder="ex) example@{{ univ_domain }}"/>
+                </div>
+                <div class="signup-form__input signup-form__submit">
+                    <button class="signup-form__next-button" onclick="sendMail('hanyang')">
+                        Next
+                    </button>
                 </div>
             </div>
         </div>
@@ -49,5 +54,41 @@
 {% endblock %}
 
 {% block javascript %}
+    <script>
+        modal = document.querySelector(".signup-modal");
 
+        signupModalOpen = (e) => {
+            modal.style.display = "flex";
+        };
+
+        const sendMail = (univ) => {
+            btn = document.querySelector(".signup-form__next-button");
+            btn.innerHTML = "Loading..."
+            const req = new XMLHttpRequest();
+            email = document.querySelector('input[name="email"]').value;
+            req.open("POST", "{% url "api:send_mail" %}");
+            req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            console.log(univ, email);
+            req.send(`univ=${univ}&email=${email}`)
+
+            req.onreadystatechange = function (e) {
+              if (req.readyState !== XMLHttpRequest.DONE) return;
+
+              if(req.status === 200) {
+                btn.innerHTML = "Next";
+                alert("Check your email!")
+              } else {
+                btn.innerHTML = "Next";
+                alert(req.responseText);
+              }
+            };
+        }
+
+
+        const focusOut = () => {
+            modal.style.display = "none";
+        }
+    </script>
+    <script src="{% static "accounts/js/main.js" %}"></script>
 {% endblock %}
