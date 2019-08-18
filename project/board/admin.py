@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.urls import path
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from .models import Category, Post, Image, Comment, Suggested
+from core.models import Univ
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -40,7 +41,8 @@ class SuggestedAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super(SuggestedAdmin, self).get_urls()
         suggested_urls = [
-            path('suggested', self.admin_site.admin_view(self.suggestion_confirm_view))
+            path('suggested', self.admin_site.admin_view(self.suggestion_confirm_view)),
+            path('suggested/<int:pk>/', self.admin_site.admin_view(self.suggestion_detail_view))
         ]
         return suggested_urls + urls
 
@@ -50,6 +52,17 @@ class SuggestedAdmin(admin.ModelAdmin):
             s_ctgy=Suggested.objects.all(),
         )
         return render(request, "admin/suggestions.html", ctx)
+
+    def suggestion_detail_view(self, request, pk):
+        suggested = get_object_or_404(Suggested, pk=pk)
+        univ = suggested.univ
+        dscrp = suggested.dscrp
+        ctx = {
+            'suggested': suggested,
+            'univ': univ,
+            'dscrp': dscrp,
+        }
+        return render(request, "admin/suggestions_detail.html", ctx)
 
 
 class CommentAdmin(admin.ModelAdmin):

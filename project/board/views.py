@@ -48,3 +48,4 @@ def post_detail(request, url_name, category_name, post_pk):
     return render(request, 'board/post_detail.html', {
         'post': post,
     })
+
