@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('core.urls')),
     path('board/<str:univ>/', include('board.urls')),
     path('auth/', include('accounts.urls'))
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

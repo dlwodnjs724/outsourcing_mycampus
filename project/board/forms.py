@@ -1,15 +1,15 @@
 from django import forms
-from .models import Univ, Category, Post, Comment
+from .models import Univ, Category, Post, Comment, Suggested
 from core.models import Univ
+
 
 class UnivForm(forms.ModelForm):
     class Meta:
         model = Univ
-        fields = ("name", "email")
+        fields = ("full_name", "domain")
 
 
 class CategoryForm(forms.ModelForm):
-
     univ = forms.ModelChoiceField(Univ.objects.all())
 
     class Meta:
@@ -24,9 +24,13 @@ class PostForm(forms.ModelForm):
 
 
 class CommentForm(forms.ModelForm):
-
     post = forms.ModelChoiceField(Post.objects.all())
 
     class Meta:
         model = Comment
-        fields = ("content", )
+        fields = ("content",)
+
+class SuggestForm(froms.ModelForm):
+    class Meta:
+        model = Suggested
+        fields = ('title', 'content')

@@ -1,0 +1,13 @@
+{{ univ.full_name }} <br>
+{{ univ.short_name }} <br>
+{% for category in categories %}
+  {{ category.name }}
+{% endfor %}
+
+<ul>
+  {% for post in posts %}
+  <li>
+    {{ post.title }}
+  </li>
+  {% endfor %}
+</ul>

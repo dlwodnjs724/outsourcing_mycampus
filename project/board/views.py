@@ -1,90 +1,51 @@
-from django.shortcuts import render, redirect, reverse, get_object_or_404, get_list_or_404
-from django.core.exceptions import ObjectDoesNotExist
-from .forms import *
-# Create your views here.
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 
-# 대학명만 입력하면 첫번쨰 게시판으로 이동
-def univ(request, univ):
-    # try:
-    _univ = get_object_or_404(Univ, name=univ)
-    _ctgy = get_list_or_404(Category, univ = _univ)[0]
-    # except Exception as ex:
-    #     print(ex)
-    #     return redirect(reverse('main'))
-
-    return redirect(f'/{univ}/{_ctgy.name}')
+from board.models import Category, Post
+from core.models import Univ
 
 
+def main_board(request, url_name):
+    if request.user.is_authenticated and url_name != request.user.univ.url_name:
+        return redirect('board:main_board', request.user.univ.url_name)
 
-# 대학명, 게시판 확인하고 이동
-def read_Board(request, univ, category):
-    # try:
-    _univ = get_object_or_404(Univ, name=univ)
-    _ctgy = get_object_or_404(Category, univ = _univ, name = category)
-    # except Exception as ex:
-    #     print(ex)
-    #     return redirect(reverse('main'))
-    
-    ctx = {
-        'posts' : Post.objects.filter(ctgy=_ctgy),
-        'categories' : Category.objects.filter(univ=_univ),
-    }
-    
-    return render(request,'board/board.html', ctx)
+    univ = get_object_or_404(Univ, url_name=url_name)
+    categories = get_list_or_404(Category, univ=univ)
+    posts = Post.objects.filter(ctgy__univ=univ)
+    return render(request, 'board/main_board.html', {
+        'univ': univ,
+        'categories': categories,
+        'posts': posts,
+    })
 
-def create_Post(request, univ, category):
-    # try:
-    _univ = get_object_or_404(Univ, name=univ)
-    _ctgy = get_object_or_404(Category, univ = _univ, name = category)
-    # except Exception as ex:
-    #     print(ex)
-    #     return redirect(reverse('main'))
 
-    if request.method == "POST":
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            # anon일때 커스텀 유저로 어떻게?
-            try:
-                post.author = request.user
-            except:
-                post.is_anonymous = True
-            post.ctgy = _ctgy
-            post.save()
-            return redirect('board',post.ctgy.univ.name, post.ctgy.name)
-    else:
-        form = PostForm()
+@login_required
+def category_board(request, url_name, category_name):
+    if request.user.univ.url_name != url_name:
+        return redirect('board:main_board', [request.user.univ.url_name])
 
-    return render(request, 'board/new_post.html', {'form': form})
+    univ = get_object_or_404(Univ, url_name=url_name)
+    categories = get_list_or_404(Category, univ=univ)
+    selected_category = get_object_or_404(Category, univ=univ, name=category_name)
+    posts = Post.objects.filter(ctgy=selected_category)
+    return render(request, 'board/category_board.html', {
+        'univ': univ,
+        'categories': categories,
+        'selected_category': selected_category,
+        'posts': posts,
+    })
 
-def read_Post(request, univ, category, pk):
-    # try:
-    _univ = get_object_or_404(Univ, name=univ)
-    _ctgy = get_object_or_404(Category, univ = _univ, name = category)
-    _post = get_object_or_404(Post, ctgy=_ctgy, id=pk)
-    # except Exception as ex:
-    #     print(ex)
-    #     return redirect(reverse('main'))
 
-    ctx = {
-        'post' : _post
-    }
-        
-    return render(request, 'board/post_detail.html', ctx)
-    
-def create_Comment(request, univ, category, pk):
+@login_required
+def post_detail(request, url_name, category_name, post_pk):
+    if request.user.univ.url_name != url_name:
+        return redirect('board:main_board', [request.user.univ.url_name])
 
-    # try:
-    _univ = get_object_or_404(Univ, name=univ)
-    _ctgy = get_object_or_404(Category, univ = _univ, name = category)
-    _post = get_object_or_404(Post, ctgy=_ctgy, id=pk)
-    # except Exception as ex:
-    #     print(ex)
-    #     return redirect(reverse('main'))
+    univ = get_object_or_404(Univ, url_name=url_name)
+    selected_category = get_object_or_404(Category, univ=univ, name=category_name)
+    post = get_object_or_404(Post, ctgy=selected_category, pk=post_pk)
 
-    content = request.POST.get('comment')
-    print(content)
-    if content != '':
-        Comment.objects.create(post=_post,author=request.user,content=content)
+    return render(request, 'board/post_detail.html', {
+        'post': post,
+    })
 
-    return redirect('read_Post',univ,category,pk)

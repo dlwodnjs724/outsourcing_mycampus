@@ -1,30 +1,20 @@
-{% extends "layout.html" %}
+{{ post.title }}
 
-{% block title %}
-{{post.title}}
-{% endblock title %}
-
-
-{% block body %}
 <div>
-title : {{post.title}}<br>
-author : {{post.author}}<br>
-content : {{post.content}}<br>
-<br>
+  title : {{ post.title }}<br>
+  author : {{ post.author }}<br>
+  content : {{ post.content }}<br>
+  <br>
 
-<form action="./new" method="POST">
+  <form action="" method="POST">
     {% csrf_token %}
-    write comment: <input type="text" name ='comment' required='true'>
+    write comment: <input type="text" name='comment' required>
     <input type="submit">
-</form>
+  </form>
 
-<br>
+  <br>
 
-{% for comment in post.comment_set.all %}
-{{ comment }}<br>
-{% endfor %}
+  {% for comment in post.comment_set.all %}
+    {{ comment }}<br>
+  {% endfor %}
 </div>
-
-
-{% endblock body %}
-
