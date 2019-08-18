@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+new post
+{% endblock title %}
+
+
+{% block body %}
+<form action="" method='POST'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit"> 작성 </button>
+</form>
+{% endblock body %}
+

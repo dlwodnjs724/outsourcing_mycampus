@@ -1,0 +1,26 @@
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static "accounts/css/mail.css" %}">
+<div id="mail__wrapper">
+    <div class="mail__logo">
+        <div class="logo-img">
+            <img src="{% static "images/logo2.png" %}" alt="my campus">
+        </div>
+    </div>
+    <div class="mail__message">
+        <p>Please click on the link for using the anonymous community.
+        </p>
+        <p>
+            The information used for verification is not matched to the information for using the service.
+        </p>
+        <p>No one can figure out what e-mail owner wrote, so Please feel free to use MY CAMPUS!!</p>
+    </div>
+    <div class="mail__validate-button">
+        <a href="{{ url }}">
+            <div class="mail__verify-button">
+                <span>
+                    Verify my email
+                </span>
+            </div>
+        </a>
+    </div>
+</div>

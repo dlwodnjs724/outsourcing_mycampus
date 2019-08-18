@@ -47,10 +47,13 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 LOCAL_APPS = [
+    'api',
     'core',
     'accounts',
     'board',
 ]
+
+THIRD_PARTY_APPS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -59,7 +62,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-] + LOCAL_APPS
+] + LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,6 +72,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middlewares.UnivCheckMiddleware'
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -138,11 +142,29 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'config', 'static')
+    os.path.join(BASE_DIR, 'config', 'static'),
+    os.path.join(BASE_DIR, 'accounts', 'static')
 ]
+
 STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')
 
 AUTH_USER_MODEL = 'accounts.User'
+
+LOGOUT_REDIRECT_URL = '/auth/login/'
+
+LOGIN_URL = "/auth/login/"
+LOGIN_REDIRECT_URL = "/"
+
+
+# activation email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'wlq4568@gmail.com'
+EMAIL_HOST_PASSWORD = 'eatnug5583**'
+SERVER_EMAIL = 'wlq4568@gmail.com'
+DEFAULT_FROM_MAIL = 'wlq4568'

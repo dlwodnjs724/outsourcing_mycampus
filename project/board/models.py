@@ -15,7 +15,7 @@ class Category(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'Category (PK: {self.pk}, Name: {self.name}, Univ: {self.univ.name})'
+        return f'Category (PK: {self.pk}, Name: {self.name}, Univ: {self.univ.full_name})'
 
 
 class Suggested(models.Model):
@@ -31,7 +31,7 @@ class Suggested(models.Model):
 
 class Post(models.Model):
     ctgy = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts', blank=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', blank=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', blank=False, null=True)
     title = models.CharField(max_length=100, blank=False)
     content = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -39,7 +39,7 @@ class Post(models.Model):
 
     likes = models.ManyToManyField(User, default=0, related_name='liked', blank=True)
     views = models.PositiveIntegerField(default=0)
-    is_anonymous = models.BooleanField(default=True)
+    is_anonymous = models.BooleanField(default=False)
 
     saved = models.ManyToManyField(User, related_name='saved', blank=True)
 
@@ -55,7 +55,7 @@ class Post(models.Model):
         return self.likes.count()
 
     def __str__(self):
-        return f'Post (PK: {self.pk}, Title: {" ".join(self.title.split()[0:2])}... Author: {self.user.username})'
+        return f'Post (PK: {self.pk}, Title: {" ".join(self.title.split()[0:2])}...)'
 
 
 def get_image_filename(instance, filename):
@@ -73,7 +73,7 @@ class Image(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=False)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True)
     content = models.CharField(max_length=200, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -88,6 +88,9 @@ class Comment(models.Model):
 
     def total_likes(self):
         return self.comment_likes.count()
+    
+    def __str__(self):
+        return f'{self.content} by {self.author}'
 
     # def __str__(self):
     #     return f'Comment (PK: {self.pk}, Author: {self.author.username} Parent: {self.parent})'

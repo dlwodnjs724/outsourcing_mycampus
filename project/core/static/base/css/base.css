@@ -1,0 +1,12 @@
+@import "reset.css";
+@import "header.css";
+@import "container.css";
+
+:root {
+--wrapper-color: #E3E3E3;
+--border-radius: 0.5rem;
+}
+
+body {
+    background-color: var(--wrapper-color);
+}
