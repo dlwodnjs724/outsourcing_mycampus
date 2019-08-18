@@ -51,8 +51,6 @@ def post_detail(request, url_name, category_name, post_pk):
         'post': post,
     })
 
-<<<<<<< HEAD
-=======
 
 @login_required
 def post_like(request, url_name):
@@ -73,4 +71,3 @@ def post_like(request, url_name):
         return JsonResponse(context)
     else:
         return redirect('board:main_board', [request.user.univ.url_name])
->>>>>>> email
