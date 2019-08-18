@@ -1,5 +1,5 @@
 from django import forms
-from .models import Univ, Category, Post, Comment
+from .models import Univ, Category, Post, Comment, Suggested
 from core.models import Univ
 
 
@@ -29,3 +29,8 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ("content",)
+
+class SuggestForm(froms.ModelForm):
+    class Meta:
+        model = Suggested
+        fields = ('title', 'content')
