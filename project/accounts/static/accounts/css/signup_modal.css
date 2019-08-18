@@ -68,5 +68,12 @@
 .modal__exit-button span {
     color:var(--main-color);
     font-size: 1.5rem;
+    transition: all linear .1s;
+}
+
+
+.modal__exit-button span:hover {
+    font-size: 2.0rem;
+    cursor: pointer;
 }
 
