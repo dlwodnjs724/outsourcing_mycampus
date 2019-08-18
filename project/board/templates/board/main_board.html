@@ -6,8 +6,37 @@
 
 <ul>
   {% for post in posts %}
-  <li>
-    {{ post.title }}
-  </li>
+    <li>
+      <input type="button" class="like" name="{{ post.pk }}" value="Like">
+      {{ post.total_likes }} :
+      {{ post.title }}
+    </li>
   {% endfor %}
 </ul>
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+
+<script>
+  $('.like').click(function () {
+    const univUrlName = "{{ univ.url_name }}";
+    $.ajax({
+      type: 'POST',
+      {#url: "{% url 'board:post_like' univUrlName %}",#}
+      url: `/uof/like/`,
+      data: {
+        pk: $(this).attr('name'),
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+      datatype: "json",
+      success: function (response) {
+        $(this).html(response['likes_count']);
+      },
+      error: function() {
+          console.log(500)
+        }
+    })
+  });
+</script>

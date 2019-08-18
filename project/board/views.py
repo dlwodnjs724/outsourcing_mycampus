@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 
 from board.models import Category, Post
@@ -46,5 +47,27 @@ def post_detail(request, url_name, category_name, post_pk):
     post = get_object_or_404(Post, ctgy=selected_category, pk=post_pk)
 
     return render(request, 'board/post_detail.html', {
+        'univ': univ,
         'post': post,
     })
+
+
+@login_required
+def post_like(request, url_name):
+    if request.user.univ.url_name != url_name:
+        return redirect('board:main_board', [request.user.univ.url_name])
+
+    if request.method == 'POST':
+        user = request.user
+        post = Post.objects.get(request.POST.get('pk', None))
+
+        if post.likes.filter(pk=user.pk).exists():
+            post.likes.remove(user)
+        else:
+            post.likes.add(user)
+        context = {
+            'likes_count': post.total_likes,
+        }
+        return JsonResponse(context)
+    else:
+        return redirect('board:main_board', [request.user.univ.url_name])
