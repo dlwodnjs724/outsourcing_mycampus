@@ -1,4 +1,5 @@
-from django.shortcuts import redirect,reverse
+from django.shortcuts import redirect, reverse
+
 
 class UnivCheckMiddleware:
     def __init__(self, get_response):
@@ -7,19 +8,17 @@ class UnivCheckMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         path = request.path.split('/')[1]
-        exception_list= [ 
+        exception_list = [
             'admin',
             'auth',
             '',
             'api',
-            
+
         ]
 
-        if  request.user.is_authenticated and (path not in exception_list):
+        if request.user.is_authenticated and path not in exception_list:
             user = request.user.univ.url_name
-            print(user)
-            if (user != path):
+            if user != path:
                 return redirect('/')
-
 
         return response

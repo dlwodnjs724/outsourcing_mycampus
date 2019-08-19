@@ -20,7 +20,7 @@ class Category(models.Model):
 
 class Suggested(models.Model):
     univ = models.ForeignKey(Univ, on_delete=models.CASCADE, related_name='suggested_category', blank=False)
-    name = models.CharField(max_length=30, blank=False)
+    name = models.CharField(max_length=30, blank=False, unique=True)
     dscrp = models.TextField(blank=False)
     suggested_at = models.DateTimeField(auto_now_add=True)
     suggested_by = models.ForeignKey(User, on_delete=models.CASCADE)

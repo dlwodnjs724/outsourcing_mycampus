@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .forms import SuggestForm
+from .forms import SuggestForm, CategoryForm
 from .models import Category, Post, Image, Comment, Suggested
 from core.models import Univ
 
@@ -44,7 +44,8 @@ class SuggestedAdmin(admin.ModelAdmin):
         suggested_urls = [
             path('suggested', self.admin_site.admin_view(self.suggestion_confirm_view)),
             path('suggested/<int:pk>/', self.admin_site.admin_view(self.suggestion_detail_view), name="s_detail"),
-            path('suggested/<int:pk>/edit', self.admin_site.admin_view(self.suggestion_edit_view), name="s_edit")
+            path('suggested/<int:pk>/edit', self.admin_site.admin_view(self.suggestion_edit_view), name="s_edit"),
+            path('suggested/<int:pk>/approve', self.admin_site.admin_view(self.suggestion_approve_view), name="s_approve")
 
         ]
         return suggested_urls + urls
@@ -65,6 +66,16 @@ class SuggestedAdmin(admin.ModelAdmin):
             'univ': univ,
             'dscrp': dscrp,
         }
+        if request.method =='POST':
+            instance = Category(
+            univ = suggested.univ,
+            name = suggested.name,
+            dscrp = suggested.dscrp,
+            )
+            instance.save()
+            return render(request, "admin/suggestions_detail.html", ctx)
+
+
         return render(request, "admin/suggestions_detail.html", ctx)
 
     def suggestion_edit_view(self, request, pk):
@@ -78,6 +89,7 @@ class SuggestedAdmin(admin.ModelAdmin):
         }
         if request.method == 'POST':
             form = SuggestForm(request.POST, instance=suggested)
+            print(request.POST)
             if form.is_valid():
                 suggested = form.save()
                 return render(request, "admin/suggestions_detail.html", ctx)
@@ -89,6 +101,15 @@ class SuggestedAdmin(admin.ModelAdmin):
             'form': form,
             })
 
+    def suggestion_approve_view(self, request, pk):
+        suggested = get_object_or_404(Suggested, pk=pk)
+        ctx = dict(
+            self.admin_site.each_context(request),
+            s_ctgy=Suggested.objects.all(),
+        )
+
+
+        return render(request, "admin/suggestions.html", ctx)
 
 
 class CommentAdmin(admin.ModelAdmin):

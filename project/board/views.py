@@ -70,4 +70,4 @@ def post_like(request, url_name):
         }
         return JsonResponse(context)
     else:
-        return redirect('board:main_board', [request.user.univ.url_name])
+        return redirect('core:board:main_board', [request.user.univ.url_name])

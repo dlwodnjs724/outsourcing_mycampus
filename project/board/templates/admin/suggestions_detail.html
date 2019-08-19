@@ -7,7 +7,10 @@
     <p>{{ dscrp}}</p>
     <hr/>
     <button type="button"><a href="/admin/board/suggested/suggested/{{ suggested.pk }}/edit">edit</a></button>
-    <button>approve</button>
+    <form method="post" action="">
+        {% csrf_token %}
+        <button type="submit">approve</button>
+    </form>
     <button>disapprove</button>
 {% endblock %}
     
