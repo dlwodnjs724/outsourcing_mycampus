@@ -1,3 +1,5 @@
+from django.shortcuts import redirect,reverse
+
 class UnivCheckMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -9,13 +11,15 @@ class UnivCheckMiddleware:
             'admin',
             'auth',
             '',
-            'board',
             'api',
             
         ]
-        if str(request.user) != "AnonymousUser" and (path not in exception_list):
+
+        if  request.user.is_authenticated and (path not in exception_list):
             user = request.user.univ.url_name
+            print(user)
             if (user != path):
-                raise Exception("학교가 다름!!! ")
+                return redirect('/')
+
 
         return response
