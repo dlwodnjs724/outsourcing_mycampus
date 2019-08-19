@@ -11,7 +11,7 @@ class UnivCheckMiddleware:
             '',
             'board',
             'api',
-            
+            'favicon.ico'
         ]
         if str(request.user) != "AnonymousUser" and (path not in exception_list):
             user = request.user.univ.url_name

@@ -8,7 +8,7 @@ class Token(models.Model):
     target_email = models.EmailField(unique=True)
 
     is_used = models.BooleanField(default=False) # 회원가입이 완료된 계정의 토큰
-    accepted = models.BooleanField(default=False) # 토큰 인증을 받은 상태인지 확인
+    is_accepted = models.BooleanField(default=False) # 토큰 인증을 받은 상태인지 확인
 
     created_at = models.IntegerField()
 
