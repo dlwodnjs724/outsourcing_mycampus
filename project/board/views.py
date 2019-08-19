@@ -40,7 +40,7 @@ def category_board(request, url_name, category_name):
 @login_required
 def post_detail(request, url_name, category_name, post_pk):
     if request.user.univ.url_name != url_name:
-        return redirect('board:main_board', [request.user.univ.url_name])
+        return redirect('board:main_board', request.user.univ.url_name)
 
     univ = get_object_or_404(Univ, url_name=url_name)
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
@@ -55,19 +55,20 @@ def post_detail(request, url_name, category_name, post_pk):
 @login_required
 def post_like(request, url_name):
     if request.user.univ.url_name != url_name:
-        return redirect('board:main_board', [request.user.univ.url_name])
+        return redirect('core:board:main_board', request.user.univ.url_name)
 
     if request.method == 'POST':
         user = request.user
-        post = Post.objects.get(request.POST.get('pk', None))
+        post = Post.objects.get(pk=request.POST.get('pk', None))
 
         if post.likes.filter(pk=user.pk).exists():
             post.likes.remove(user)
         else:
             post.likes.add(user)
         context = {
-            'likes_count': post.total_likes,
+            'pk': post.pk,
+            'likes_count': post.total_likes(),
         }
         return JsonResponse(context)
     else:
-        return redirect('board:main_board', [request.user.univ.url_name])
+        return redirect('core:board:main_board', request.user.univ.url_name)
