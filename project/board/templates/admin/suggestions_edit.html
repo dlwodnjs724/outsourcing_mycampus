@@ -1,0 +1,20 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+    <form action="" method="post">
+        {%csrf_token%}
+        {{ form.as_p }}
+    <button type="submit">edit</button>
+    </form>
+
+{% comment %} 
+    <h1><b>TITLE</b></h1>
+    <h1>{{ suggested }}</h1>
+    <hr/>
+    <h3>Descripton</h3>
+    <p>{{ dscrp}}</p>
+    <hr/> {% endcomment %}
+    {% comment %} <button>edit</button>
+    <button>approve</button>
+    <button>disapprove</button> {% endcomment %}
+{% endblock %}
+    

@@ -30,7 +30,7 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ("content",)
 
-class SuggestForm(froms.ModelForm):
+class SuggestForm(forms.ModelForm):
     class Meta:
         model = Suggested
-        fields = ('title', 'content')
+        fields = ('name', 'dscrp')

@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import path
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
+from .forms import SuggestForm
 from .models import Category, Post, Image, Comment, Suggested
 from core.models import Univ
 
@@ -42,7 +43,9 @@ class SuggestedAdmin(admin.ModelAdmin):
         urls = super(SuggestedAdmin, self).get_urls()
         suggested_urls = [
             path('suggested', self.admin_site.admin_view(self.suggestion_confirm_view)),
-            path('suggested/<int:pk>/', self.admin_site.admin_view(self.suggestion_detail_view), name="s_detail")
+            path('suggested/<int:pk>/', self.admin_site.admin_view(self.suggestion_detail_view), name="s_detail"),
+            path('suggested/<int:pk>/edit', self.admin_site.admin_view(self.suggestion_edit_view), name="s_edit")
+
         ]
         return suggested_urls + urls
 
@@ -63,6 +66,29 @@ class SuggestedAdmin(admin.ModelAdmin):
             'dscrp': dscrp,
         }
         return render(request, "admin/suggestions_detail.html", ctx)
+
+    def suggestion_edit_view(self, request, pk):
+        suggested = get_object_or_404(Suggested, pk=pk)
+        univ = suggested.univ
+        dscrp = suggested.dscrp
+        ctx = {
+            'suggested': suggested,
+            'univ': univ,
+            'dscrp': dscrp,
+        }
+        if request.method == 'POST':
+            form = SuggestForm(request.POST, instance=suggested)
+            if form.is_valid():
+                suggested = form.save()
+                return render(request, "admin/suggestions_detail.html", ctx)
+        else:
+            form = SuggestForm(instance=suggested)
+        return render(request, 'admin/suggestions_edit.html', {
+            'pk':pk,
+            'suggested': suggested,
+            'form': form,
+            })
+
 
 
 class CommentAdmin(admin.ModelAdmin):

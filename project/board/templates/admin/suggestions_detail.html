@@ -1,7 +1,13 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
-    <h2>Suggested Category</h2>
+    <h1><b>TITLE</b></h1>
     <h1>{{ suggested }}</h1>
+    <hr/>
+    <h3>Descripton</h3>
     <p>{{ dscrp}}</p>
+    <hr/>
+    <button type="button"><a href="/admin/board/suggested/suggested/{{ suggested.pk }}/edit">edit</a></button>
+    <button>approve</button>
+    <button>disapprove</button>
 {% endblock %}
     
