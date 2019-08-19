@@ -1,5 +1,5 @@
 from django.shortcuts import render
 
 
-def main(request, url_name):
+def main(request):
     return render(request, 'core/main.html')
