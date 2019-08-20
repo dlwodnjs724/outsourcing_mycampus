@@ -41,8 +41,8 @@ def send_mail(request):
             email = request.POST.get('email')
             univ = request.POST.get('univ')
             token = get_token(email)
-
-            url = reverse("api:activate") + "?email=" + email + "&token=" + token.token + "&univ=" + univ
+            domain_mycampus = "http://127.0.0.1:8000"
+            url = domain_mycampus + reverse("api:activate") + "?email=" + email + "&token=" + token.token + "&univ=" + univ
 
             mail_subject = '[MY CAMPUS] Activate your account.'
             message = render_to_string('accounts/mail.html', {
@@ -52,6 +52,7 @@ def send_mail(request):
             email = EmailMessage(
                         mail_subject, message, to=[email]
             )
+            email.content_subtype = "html"
             email.send()
             return HttpResponse(status=200)
         else:

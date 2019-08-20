@@ -70,6 +70,10 @@ class Post(models.Model):
     def __str__(self):
         return f'Post (PK: {self.pk}, Title: {" ".join(self.title.split()[0:2])}...)'
 
+    @property
+    def name(self):
+        return 'anon' if self.is_anonymous else self.author.username
+
 
 def get_image_filename(instance, filename):
     id = instance.post.id
@@ -81,7 +85,7 @@ class Image(models.Model):
     image = models.ImageField(upload_to=get_image_filename)
 
     def __str__(self):
-        return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.user.username})'
+        return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.author.username})'
 
 
 class Comment(models.Model):
@@ -103,9 +107,13 @@ class Comment(models.Model):
 
     def total_likes(self):
         return self.comment_likes.count()
-    
+
     def __str__(self):
         return f'{self.content} by {self.author}'
+
+    @property
+    def name(self):
+        return 'anon' if self.is_anonymous else self.author.username
 
     # def __str__(self):
     #     return f'Comment (PK: {self.pk}, Author: {self.author.username} Parent: {self.parent})'

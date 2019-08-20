@@ -19,6 +19,10 @@ class UnivCheckMiddleware:
         if request.user.is_authenticated and path not in exception_list:
             user = request.user.univ.url_name
             if user != path:
+<<<<<<< HEAD
                 return redirect('/')
+=======
+                return redirect('core:board:main_board', request.user.univ.url_name)
+>>>>>>> board-jw
 
         return response
