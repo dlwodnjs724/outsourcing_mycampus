@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib import messages
 from .models import Category, Post, Image, Comment, Suggested, Report
 from core.models import Univ
+# from django.urls import path
+# from django.shortcuts import render, redirect,get_object_or_404
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -56,16 +58,16 @@ class SuggestedAdmin(admin.ModelAdmin):
             messages.success(request, f'{ c } suggestion(s) successfully approved!!!!!!!!!!!!!!!!!!!!!!!!!!')
     suggestion_approve_view.short_description = "approve suggestions"
 
-    # # def get_urls(self):
-    # #     urls = super(SuggestedAdmin, self).get_urls()
-    # #     suggested_urls = [
-    # #         path('suggested', self.admin_site.admin_view(self.suggestion_confirm_view)),
-    # #         path('suggested/<int:pk>/', self.admin_site.admin_view(self.suggestion_detail_view), name="s_detail"),
-    # #         path('suggested/<int:pk>/edit', self.admin_site.admin_view(self.suggestion_edit_view), name="s_edit"),
-    # #         path('suggested/<int:pk>/delete', self.admin_site.admin_view(self.suggestion_delete_view), name="s_delete"),
+    # def get_urls(self):
+    #     urls = super(SuggestedAdmin, self).get_urls()
+    #     suggested_urls = [
+    #         path('suggested', self.admin_site.admin_view(self.suggestion_confirm_view)),
+    #         path('suggested/<int:pk>/', self.admin_site.admin_view(self.suggestion_detail_view), name="s_detail"),
+    #         # path('suggested/<int:pk>/edit', self.admin_site.admin_view(self.suggestion_edit_view), name="s_edit"),
+    #         # path('suggested/<int:pk>/delete', self.admin_site.admin_view(self.suggestion_delete_view), name="s_delete"),
 
-    # #     ]
-    # #     return suggested_urls + urls
+    #     ]
+    #     return suggested_urls + urls
 
     # def suggestion_confirm_view(self, request):
     #     ctx = dict(
@@ -87,24 +89,26 @@ class SuggestedAdmin(admin.ModelAdmin):
     #         self.admin_site.each_context(request),
     #         s_ctgy=Suggested.objects.all(),
     #     )
+        # print("hello ><")
+        # print(request.content_type)
+        # exist = Category.objects.filter(univ=univ).values_list('name', flat=True)
 
-    #     exist = Category.objects.filter(univ=univ).values_list('name', flat=True)
-
-    #     if request.method =='POST':
-    #         instance = Category(
-    #         univ = suggested.univ,
-    #         name = suggested.name,
-    #         dscrp = suggested.dscrp,
-    #         )
-    #         if suggested.name in exist:
-    #             ctx['message'] = 'already exist in this Univ'
-    #             return render(request, "admin/suggestions_detail.html", ctx)
-    #         instance.save()
-    #         suggested.delete()
-    #         ctx['message'] = 'Create New Category, Delete Suggestion'
-    #         return render(request, "admin/suggestions.html", ctx2)
+        # if request.method =='POST':
+        #     instance = Category(
+        #     univ = suggested.univ,
+        #     name = suggested.name,
+        #     dscrp = suggested.dscrp,
+        #     )
+        #     print(request.body)
+        #     if suggested.name in exist:
+        #         ctx['message'] = 'already exist in this Univ'
+        #         return render(request, "admin/suggestions_detail.html", ctx)
+        #     instance.save()
+        #     suggested.delete()
+        #     ctx['message'] = 'Create New Category, Delete Suggestion'
+        #     return render(request, "admin/suggestions.html", ctx2)
         
-    #     return render(request, "admin/suggestions_detail.html", ctx)
+        # return render(request, "admin/suggestions_detail.html", ctx)
 
     # def suggestion_edit_view(self, request, pk):
     #     suggested = get_object_or_404(Suggested, pk=pk)

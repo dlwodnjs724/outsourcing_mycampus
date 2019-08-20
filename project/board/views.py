@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 
-from board.models import Category, Post
+from board.models import Category, Post, Comment
 from core.models import Univ
 
 
@@ -71,3 +71,13 @@ def post_like(request, url_name):
         return JsonResponse(context)
     else:
         return redirect('core:board:main_board', [request.user.univ.url_name])
+
+def report_send(request, pk, content_type):
+    if content_type == 'comment':
+        q = get_object_or_404(Comment, pk=pk)
+    elif content_type == 'post':
+        q = get_object_or_404(Post, pk=pk)
+    if request.method == 'POST':
+        form = ReportForm    
+
+    return

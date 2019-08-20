@@ -1,5 +1,5 @@
 from django import forms
-from .models import Univ, Category, Post, Comment, Suggested
+from .models import Univ, Category, Post, Comment, Suggested, Report
 from core.models import Univ
 
 
@@ -34,3 +34,8 @@ class SuggestForm(forms.ModelForm):
     class Meta:
         model = Suggested
         fields = ('name', 'dscrp')
+
+class ReportForm(forms.ModelForm):
+    class Meta:
+        model = Report
+        fields = ('what',)
