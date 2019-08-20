@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contents %}
+<div class="form">
+  <input type="text" id="target">
+  <input type="submit" id="t_submit">
+  <input type="text" id="message">
+  <input type="submit" id="m_submit">
+</div>
+<div id="chatroom">
+</div>
+{% endblock contents %}
+
+{% block javascript %}
+
+<script>
+sb.connect("{{ user.username }}", function (user, error) {
+    if (error) return;
+    user.nickname = "{{user.username}}"
+    console.log(user)
+});
+</script>
+
+<script src="{% static 'js/chat.js'  %}"></script>
+
+{% endblock javascript %}

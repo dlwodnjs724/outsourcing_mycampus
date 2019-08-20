@@ -53,6 +53,7 @@ LOCAL_APPS = [
     'core',
     'accounts',
     'board',
+    'chat',
 ]
 
 THIRD_PARTY_APPS = []
