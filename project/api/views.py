@@ -72,7 +72,7 @@ def activate(request):
         if token.is_expired:
             return HttpResponseBadRequest(content="Token is expired")
 
-        return redirect(reverse("accounts:signup") + "?email=" + user_email + "&univ=" + univ)
+        return redirect(reverse("core:accounts:signup") + "?email=" + user_email, url_name=univ)
     except Token.DoesNotExist:
         return HttpResponseBadRequest(content="Unauthorized token")
 

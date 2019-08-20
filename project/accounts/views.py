@@ -15,7 +15,11 @@ User = get_user_model()
 
 # Create your views here.
 
-def login(request):
+def login(request, url_name):
+    univ = Univ.objects.get(url_name=url_name)
+
+    if request.user:
+        return redirect(reverse("core:board:main_board"), univ=request.user.univ.url_name)
     form = LoginForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
@@ -24,16 +28,17 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 auth.login(request, user)
-                return redirect('core:board:main_board')
+                return redirect(reverse('core:board:main_board'))
     return render(request, 'registration/login.html', {
-        'form': form
+        'form': form,
+        "univ": univ
     })
 
 
 @login_required
 def logout(request):
     auth.logout(request)
-    return redirect('main')
+    return redirect(reverse('main'))
 
 
 def check_mail(request, url_name):

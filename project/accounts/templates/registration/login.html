@@ -18,7 +18,9 @@
                     <form method="post" class= "accounts__user-info">
                         {% csrf_token %}
                         <input class="user-info__button login-info" type="text" name="username" placeholder="ID"/>
+                        {{ form.username.error }}
                         <input class="user-info__button login-info" type="password" name="password" placeholder="PW"/>
+                        {{ form.password.error }}
                         <button class="user-info__button login-button" type="submit">Login</button>
                         <button class="user-info__button forgot-button">Forgot your ID / Password? </button>
                     </form>
@@ -37,7 +39,7 @@
             <div class="signup-form">
                 <div class="signup-form__input">
                     <label for="univ" content="Your University" class="signup__form-label">Your Universiy</label>
-                    <input name="univ" type="text" readonly value="{{ univ_full_name }}" class="signup__verification-form" />
+                    <input name="univ" type="text" readonly value="{{ univ.url_name }}" class="signup__verification-form" />
                 </div>
                 <div class="signup-form__input">
                     <label for="email" class="signup__form-label">Enter your university email</label>
