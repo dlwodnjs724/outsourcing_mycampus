@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
+from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 
@@ -14,10 +15,34 @@ def main_board(request, url_name):
 
     univ = get_object_or_404(Univ, url_name=url_name)
     categories = get_list_or_404(Category, univ=univ)
-    posts = Post.objects.prefetch_related('likes').filter(ctgy__univ=univ)
+    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved')\
+        .filter(ctgy__univ=univ) \
+        .annotate(num_likes=Count('likes')) \
+        .order_by('-num_likes', '-created_at')
     return render(request, 'board/main_board.html', {
         'univ': univ,
         'categories': categories,
+        'posts': posts,
+    })
+
+
+@login_required
+def main_board_new(request, url_name):
+    if request.user.is_authenticated and url_name != request.user.univ.url_name:
+        return redirect('core:board:main_board', request.user.univ.url_name)
+
+    univ = get_object_or_404(Univ, url_name=url_name)
+    categories = get_list_or_404(Category, univ=univ)
+    posts = Post.objects.select_related('ctgy').prefetch_related('likes').filter(ctgy__univ=univ)
+
+    search = request.GET.get('search', '')
+    if search:
+        posts = posts.filter(Q(title__icontains=search) | Q(content__icontains=search))
+
+    return render(request, 'board/main_board.html', {
+        'univ': univ,
+        'categories': categories,
+        'search': search,
         'posts': posts,
     })
 
@@ -46,7 +71,7 @@ def post_detail(request, url_name, category_name, post_pk):
 
     univ = get_object_or_404(Univ, url_name=url_name)
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
-    post = get_object_or_404(Post.objects.prefetch_related('comment_set'), ctgy=selected_category, pk=post_pk)
+    post = get_object_or_404(Post, ctgy=selected_category, pk=post_pk)
     comments = Comment.objects.prefetch_related('comment_likes').select_related('author').filter(post=post)
 
     return render(request, 'board/post_detail.html', {
@@ -81,7 +106,28 @@ def post_like(request, url_name):
 
 
 @login_required
-def post_new(request, url_name):
+def post_bookmark(request, url_name):
+    if request.user.univ.url_name != url_name:
+        return redirect('core:board:main_board', request.user.univ.url_name)
+
+    if request.method == 'POST':
+        user = request.user
+        post = Post.objects.get(pk=request.POST.get('pk', None))
+
+        if post.saved.filter(pk=user.pk).exists():
+            post.saved.remove(user)
+        else:
+            post.saved.add(user)
+        context = {
+            'pk': post.pk,
+        }
+        return JsonResponse(context)
+    else:
+        return redirect('core:board:main_board', request.user.univ.url_name)
+
+
+@login_required
+def post_create(request, url_name):
     if request.user.univ.url_name != url_name:
         return redirect('core:board:main_board', request.user.univ.url_name)
 
@@ -107,10 +153,12 @@ def comment_new(request, url_name, category_name, post_pk):
     if request.user.univ.url_name != url_name:
         return redirect('core:board:main_board', request.user.univ.url_name)
     if request.method == 'POST':
+        is_anonymous = True if request.POST.get('comment_is_anonymous', '') == 'true' else False
         comment = Comment.objects.create(
             post=Post.objects.get(pk=post_pk),
             author=request.user,
-            content=request.POST.get('comment_content', '')
+            content=request.POST.get('comment_content', ''),
+            is_anonymous=is_anonymous
         )
         context = {
             'comments': serialize('json', Comment.objects.filter(post=post_pk))

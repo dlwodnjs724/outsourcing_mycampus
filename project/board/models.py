@@ -57,6 +57,10 @@ class Post(models.Model):
     def __str__(self):
         return f'Post (PK: {self.pk}, Title: {" ".join(self.title.split()[0:2])}...)'
 
+    @property
+    def name(self):
+        return 'anon' if self.is_anonymous else self.author.username
+
 
 def get_image_filename(instance, filename):
     id = instance.post.id
@@ -91,6 +95,10 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.content} by {self.author}'
+
+    @property
+    def name(self):
+        return 'anon' if self.is_anonymous else self.author.username
 
     # def __str__(self):
     #     return f'Comment (PK: {self.pk}, Author: {self.author.username} Parent: {self.parent})'

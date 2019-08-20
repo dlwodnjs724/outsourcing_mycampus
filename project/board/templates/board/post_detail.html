@@ -8,7 +8,7 @@
 
     <div>
       title : {{ post.title }}<br>
-      author : {{ post.author }}<br>
+      author : {{ post.name }}<br>
       content : {{ post.content }}<br>
       <br>
 
@@ -18,13 +18,14 @@
       <br>
 
       write comment: {{ comment_form.content }}
+      is_anonymous: {{ comment_form.is_anonymous }}
       <button type="button" id="comment_write" onclick="commentWrite()">comment</button>
 
       <div class="comment_list">
         {% for comment in comments %}
           <input type="button" class="comment_like" name="{{ comment.pk }}" value="Like">
           <span id="comment_{{ comment.pk }}">{{ comment.total_likes }}</span>
-          {{ comment }}
+          {{ comment.content }} {{ comment.name }}
           <span style="font-size: 13px; color: grey;">{{ comment.created_at }}</span>
           <br>
         {% endfor %}
@@ -64,7 +65,6 @@
 
     // 댓글 좋아요
     $('.comment_like').click(function () {
-      console.log($(this).attr('name'));
       const url = '{% url 'core:board:comment_like' 'url_name' 'category' 0 %}'
           .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
       $.ajax({
@@ -94,13 +94,13 @@
         url: url,
         data: {
           'csrfmiddlewaretoken': '{{ csrf_token }}',
-          'comment_content': document.querySelector('#id_content').value
+          'comment_content': document.querySelector('#id_content').value,
+          'comment_is_anonymous': document.querySelector('#id_is_anonymous').checked,
         },
         datatype: "json",
         success: function (response) {
           let commentList = '';
           let comments = JSON.parse(response['comments']);
-          console.log(comments)
           comments.forEach(el => {
             commentList += `
               <input type="button" class="comment_like" name="${el['pk']}" value="Like">

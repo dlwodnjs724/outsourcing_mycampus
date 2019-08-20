@@ -5,16 +5,39 @@
     {{ univ.full_name }} <br>
     {{ univ.short_name }} <br>
     {% for category in categories %}
-      {{ category.name }}
+      <a href="{% url 'core:board:category_board' univ.url_name category.name %}">{{ category.name }}</a>
     {% endfor %}
 
+    <a href="{% url 'core:board:main_board' univ.url_name %}">hot</a>
+    <a href="{% url 'core:board:main_board_new' univ.url_name %}">new</a>
+    <br>
+    <a href="{% url 'core:board:post_create' univ.url_name %}">Create</a>
+    <br>
+    <form action="" method="get">
+      <input type="text" placeholder="Search mycampus" name="search" value="{{ search }}">
+      <input type="submit" value="search">
+    </form>
     <ul>
       {% for post in posts %}
         <li style="margin: 10px 0;">
+          {% if user in post.likes.all %}
+            좋아요 눌림
+          {% else %}
+            안눌림
+          {% endif %}
           <input type="button" class="like" name="{{ post.pk }}" value="Like">
 
           <span id="post_{{ post.pk }}">{{ post.total_likes }}</span> :
+          author - {{ post.name }}
+          category - {{ post.ctgy.name }} /
           <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
+          content - {{ post.content }} /
+          bookmark -
+          {% if user in post.saved.all %}
+            <input type="button" class="bookmark" name="{{ post.pk }}" value="O">
+          {% else %}
+            <input type="button" class="bookmark" name="{{ post.pk }}" value="X">
+          {% endif %}
         </li>
       {% endfor %}
     </ul>
@@ -41,6 +64,27 @@
         datatype: "json",
         success: function (response) {
           $(`#post_${response['pk']}`).text(response['likes_count']);
+        },
+        error: function (request, status, error) {
+          alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+        }
+      })
+    });
+
+
+    $('.bookmark').click(function () {
+      const url = '{% url 'core:board:post_bookmark' 0 %}'.replace('0', "{{ univ.url_name }}");
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          'pk': $(this).attr('name'),
+          'csrfmiddlewaretoken': '{{ csrf_token }}',
+          url_name: url,
+        },
+        datatype: "json",
+        success: function (response) {
+          console.log(200)
         },
         error: function (request, status, error) {
           alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
