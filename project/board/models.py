@@ -2,7 +2,18 @@ from django.db import models
 from datetime import datetime, timezone
 from accounts.models import User
 from core.models import Univ
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 
+class Report(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
+    object_id = models.PositiveIntegerField(db_column='object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    what = models.TextField(max_length=500, blank=False)
+    
 
 class Category(models.Model):
     univ = models.ForeignKey(Univ, on_delete=models.CASCADE, related_name='category', blank=False)
@@ -42,6 +53,8 @@ class Post(models.Model):
     is_anonymous = models.BooleanField(default=False)
 
     saved = models.ManyToManyField(User, related_name='saved', blank=True)
+    report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
+
 
     class Meta:
         ordering = ['-created_at']
@@ -83,6 +96,8 @@ class Comment(models.Model):
     # 대댓글
     parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
 
+    report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='comments')
+
     class Meta:
         ordering = ['-created_at']
 
@@ -94,3 +109,4 @@ class Comment(models.Model):
 
     # def __str__(self):
     #     return f'Comment (PK: {self.pk}, Author: {self.author.username} Parent: {self.parent})'
+

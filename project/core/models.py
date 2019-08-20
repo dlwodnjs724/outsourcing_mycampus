@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Univ(models.Model):
     full_name = models.CharField(max_length=50)
     domain = models.CharField(max_length=20)        # univ email address(@ 뒤에)
@@ -11,3 +10,11 @@ class Univ(models.Model):
 
     def __str__(self):
         return f'{self.full_name}: {self.domain}'
+
+
+# class Report(models.Model):
+#     reported_user = models.ForeignKey(User, on_delete=models.SET_NULL)
+#     reported_by = models.ForeignKey(User, on_delete=models.SET_NULL)
+
+#     what = models.TextField(max_length=500, blank=False)
+    

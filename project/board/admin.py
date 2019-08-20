@@ -1,9 +1,6 @@
 from django.contrib import admin
-from django.urls import path
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from .forms import SuggestForm, CategoryForm
-from .models import Category, Post, Image, Comment, Suggested
+from .models import Category, Post, Image, Comment, Suggested, Report
 from core.models import Univ
 
 
@@ -43,19 +40,12 @@ class SuggestedAdmin(admin.ModelAdmin):
     def suggestion_approve_view(self, request, queryset):
         c = 0
         for q in queryset:
-            univ = q.univ
-            dscrp = q.dscrp
-            ctx = {
-                'suggested': q,
-                'univ': univ,
-                'dscrp': dscrp,
-            }
             instance = Category(
                 univ = q.univ,
                 name = q.name,
                 dscrp = q.dscrp,
             )
-            exist = Category.objects.filter(univ=univ).values_list('name', flat=True)
+            exist = Category.objects.filter(univ=q.univ).values_list('name', flat=True)
             if q.name in exist:
                 messages.error(request, f'『{ q.name }』 already exist at 『{ q.univ.full_name }』')
             else:
@@ -163,3 +153,4 @@ admin.site.register(Suggested, SuggestedAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Image)
 admin.site.register(Comment, CommentAdmin)
+admin.site.register(Report)
