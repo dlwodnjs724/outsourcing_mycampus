@@ -18,17 +18,23 @@ User = get_user_model()
 def login(request, url_name):
     univ = Univ.objects.get(url_name=url_name)
 
-    if request.user:
-        return redirect(reverse("core:board:main_board"), univ=request.user.univ.url_name)
-    form = LoginForm(request.POST or None)
+    if not request.user.is_anonymous:
+        if request.user.univ.url_name == url_name:
+            return redirect(reverse("core:board:main_board"), url_name=url_name)
+        else:
+            redirect(reverse('main'))
+
     if request.method == 'POST':
+        form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 auth.login(request, user)
-                return redirect(reverse('core:board:main_board'))
+                return redirect(reverse('core:board:main_board'), url_name=univ.url_name)
+    else:
+        form = LoginForm()
     return render(request, 'registration/login.html', {
         'form': form,
         "univ": univ
@@ -36,7 +42,7 @@ def login(request, url_name):
 
 
 @login_required
-def logout(request):
+def logout(request, url_name):
     auth.logout(request)
     return redirect(reverse('main'))
 

@@ -14,7 +14,7 @@ class User(AbstractUser):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=False, null=False)
     class_of = models.IntegerField(null=True, blank=False)
     terms_acceptance = models.BooleanField(default=False, blank=False)
-    univ = models.ForeignKey(to=Univ, on_delete=models.SET_NULL, null=True, blank=False)
+    univ = models.ForeignKey(Univ, on_delete=models.SET_NULL, null=True, blank=False)
     email = models.EmailField(blank=False, null=False)
 
     is_validated = models.BooleanField(default=False)
