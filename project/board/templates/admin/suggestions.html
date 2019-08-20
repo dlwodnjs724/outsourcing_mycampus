@@ -6,5 +6,11 @@
             <li><a href="/admin/board/suggested/suggested/{{ list.pk }}/">{{ list.name }}</a></li>
         {% endfor %}
     </ul>
+<script>
+if ('{{message}}') {
+    alert('{{ message }}');
+    console.log("hello");
+}   
+</script>
 {% endblock %}
     
