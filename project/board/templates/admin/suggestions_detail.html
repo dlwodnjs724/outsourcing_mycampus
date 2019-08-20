@@ -11,6 +11,12 @@
         {% csrf_token %}
         <button type="submit">approve</button>
     </form>
-    <button>disapprove</button>
+    <button type="button"><a href="/admin/board/suggested/suggested/{{ suggested.pk }}/delete">disapprove</a></button>
+
+<script>
+    if ('{{message}}') {
+       alert('{{ message }}');
+       console.log("hello");
+    }
+</script>
 {% endblock %}
-    
