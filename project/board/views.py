@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, get_list_or_404, redirec
 
 from board.models import Category, Post, Comment
 from core.models import Univ
-
+from .forms import ReportForm
 
 def main_board(request, url_name):
     if request.user.is_authenticated and url_name != request.user.univ.url_name:
@@ -77,7 +77,15 @@ def report_send(request, pk, content_type):
         q = get_object_or_404(Comment, pk=pk)
     elif content_type == 'post':
         q = get_object_or_404(Post, pk=pk)
+
     if request.method == 'POST':
-        form = ReportForm    
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            r = form.save(commit=False)
+            r = Report(content_object=q)
+            r.save()
+            return 
+    else:
+        form = ReportForm()
 
     return
