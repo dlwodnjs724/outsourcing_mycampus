@@ -1,4 +1,29 @@
-GOOD!
+{% extends "base.html" %}
+{% load staticfiles %}
 
-<div>{{ email }}</div>
-<div>{{ request.urlencode }}</div>
+{% block contents %}
+    <div class="container">
+        <div class="signup__white-wrapper">
+            <div class="accounts__signup-form">
+                <form method="post" action="" class="accounts__form-tag">
+                    <div class="signup__login-info">
+                        {{ form.username }}
+                        {{ form.password1 }}
+                        {{ form.passowrd2 }}
+                    </div>
+                    <div class="signup__sub-info">
+                        {{ form.gender }}
+                        {{ form.class_of }}
+                    </div>
+                    <div class="signup__terms-acceptance">
+                        <p class="signup__terms">
+
+                        </p>
+                        {{ form.terms_acceptance }}
+                    </div>
+                    <button class="signup__submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

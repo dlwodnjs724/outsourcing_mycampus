@@ -16,6 +16,8 @@ import json
 
 from django.core.exceptions import ImproperlyConfigured
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django.urls import reverse
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Quick-start development settings - unsuitable for production
@@ -153,10 +155,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')
 
 AUTH_USER_MODEL = 'accounts.User'
 
-LOGOUT_REDIRECT_URL = '/auth/login/'
-
-LOGIN_URL = "/auth/login/"
-LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = '/'
 
 
 # activation email

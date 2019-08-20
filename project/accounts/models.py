@@ -11,11 +11,14 @@ class User(AbstractUser):
         ('o', 'Other')
     )
 
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
-    class_of = models.IntegerField(null=True)
-    terms_acceptance = models.BooleanField(default=False)
-    univ = models.ForeignKey(Univ, on_delete=models.SET_NULL, null=True)
-    email = models.EmailField()
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=False, null=False)
+    class_of = models.IntegerField(null=True, blank=False)
+    terms_acceptance = models.BooleanField(default=False, blank=False)
+    univ = models.ForeignKey(Univ, on_delete=models.SET_NULL, null=True, blank=False)
+    email = models.EmailField(blank=False, null=False)
 
-    is_validate = models.BooleanField(default=False)
+    is_validated = models.BooleanField(default=False)
     is_suspended = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
