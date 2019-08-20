@@ -10,6 +10,7 @@ import random
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
+from core.models import Univ
 from .models import Token
 
 
@@ -63,17 +64,22 @@ def send_mail(request):
 
 
 def activate(request):
-    univ = request.GET.get('univ')
+    url_name = request.GET.get('univ')
     token = request.GET.get('token')
     user_email = request.GET.get('email')
 
     try:
         token = Token.objects.get(token=token, target_email=user_email)
+        univ = Univ.objects.get(url_name=url_name)
 
         if token.is_expired:
             return HttpResponseBadRequest(content="Token is expired")
 
-        return redirect(reverse("core:accounts:signup") + "?email=" + user_email, url_name=univ)
+        #인증 성공
+        token.is_accepted = True
+        token.save()
+
+        return redirect(reverse("core:accounts:signup", args=[url_name]) + "?email=" + user_email)
     except Token.DoesNotExist:
         return HttpResponseBadRequest(content="Unauthorized token")
 

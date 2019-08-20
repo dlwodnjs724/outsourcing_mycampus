@@ -12,15 +12,14 @@
             <div class="accounts__wrapper">
                 <div class="accounts__logo-box">
                     <img src="{% static "images/logo.png" %}" alt="my_campus">
-                    <h1 class="accounts__mycampus">MY CAMPUS</h1>
+                    <h1 class="accounts__mycampus">MY CAMPUS | {{ univ.short_name }}</h1>
                 </div>
                 <div class="accounts__login-box">
                     <form method="post" class= "accounts__user-info">
                         {% csrf_token %}
                         <input class="user-info__button login-info" type="text" name="username" placeholder="ID"/>
-                        {{ form.username.error }}
                         <input class="user-info__button login-info" type="password" name="password" placeholder="PW"/>
-                        {{ form.password.error }}
+                        <span style="color: red; font-size:0.8rem">{{ error }}</span>
                         <button class="user-info__button login-button" type="submit">Login</button>
                         <button class="user-info__button forgot-button">Forgot your ID / Password? </button>
                     </form>
@@ -39,14 +38,14 @@
             <div class="signup-form">
                 <div class="signup-form__input">
                     <label for="univ" content="Your University" class="signup__form-label">Your Universiy</label>
-                    <input name="univ" type="text" readonly value="{{ univ.url_name }}" class="signup__verification-form" />
+                    <input name="univ" type="text" readonly value="{{ univ.full_name }}" class="signup__verification-form" />
                 </div>
                 <div class="signup-form__input">
                     <label for="email" class="signup__form-label">Enter your university email</label>
-                    <input name='email' type="text" class="signup__verification-form" placeholder="ex) example@{{ univ_domain }}"/>
+                    <input name='email' type="text" class="signup__verification-form" placeholder="ex) example@{{ univ.domain }}"/>
                 </div>
                 <div class="signup-form__input signup-form__submit">
-                    <button class="signup-form__next-button" onclick="sendMail('hanyang')">
+                    <button class="signup-form__next-button" onclick="sendMail('{{ univ.url_name }}')">
                         Next
                     </button>
                 </div>
@@ -70,8 +69,6 @@
             email = document.querySelector('input[name="email"]').value;
             req.open("POST", "{% url "api:send_mail" %}");
             req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-            console.log(univ, email);
             req.send(`univ=${univ}&email=${email}`)
 
             req.onreadystatechange = function (e) {
