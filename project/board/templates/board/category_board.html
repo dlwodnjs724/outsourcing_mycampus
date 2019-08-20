@@ -1,15 +1,21 @@
-{{ univ.full_name }} <br>
-{{ univ.short_name }} <br>
-{% for category in categories %}
-  {{ category.name }}
-{% endfor %}
-<br>
-선택된 카테고리: {{ selected_category.name }}
+{% extends 'base.html' %}
 
-<ul>
-  {% for post in posts %}
-  <li>
-    {{ post.title }}
-  </li>
-  {% endfor %}
-</ul>
+{% block contents %}
+  <div class="container">
+    {{ univ.full_name }} <br>
+    {{ univ.short_name }} <br>
+    {% for category in categories %}
+      <a href="{% url 'core:board:category_board' univ.url_name category.name %}">{{ category.name }}</a>
+    {% endfor %}d
+    <br>
+    선택된 카테고리: {{ selected_category.name }}
+
+    <ul>
+      {% for post in posts %}x
+        <li>
+          {{ post.title }}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

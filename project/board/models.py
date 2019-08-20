@@ -2,7 +2,18 @@ from django.db import models
 from datetime import datetime, timezone
 from accounts.models import User
 from core.models import Univ
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 
+class Report(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
+    object_id = models.PositiveIntegerField(db_column='object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    what = models.TextField(max_length=500, blank=False)
+    
 
 class Category(models.Model):
     univ = models.ForeignKey(Univ, on_delete=models.CASCADE, related_name='category', blank=False)
@@ -20,7 +31,7 @@ class Category(models.Model):
 
 class Suggested(models.Model):
     univ = models.ForeignKey(Univ, on_delete=models.CASCADE, related_name='suggested_category', blank=False)
-    name = models.CharField(max_length=30, blank=False)
+    name = models.CharField(max_length=30, blank=False, unique=True)
     dscrp = models.TextField(blank=False)
     suggested_at = models.DateTimeField(auto_now_add=True)
     suggested_by = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -42,6 +53,8 @@ class Post(models.Model):
     is_anonymous = models.BooleanField(default=False)
 
     saved = models.ManyToManyField(User, related_name='saved', blank=True)
+    report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
+
 
     class Meta:
         ordering = ['-created_at']
@@ -57,6 +70,10 @@ class Post(models.Model):
     def __str__(self):
         return f'Post (PK: {self.pk}, Title: {" ".join(self.title.split()[0:2])}...)'
 
+    @property
+    def name(self):
+        return 'anon' if self.is_anonymous else self.author.username
+
 
 def get_image_filename(instance, filename):
     id = instance.post.id
@@ -68,7 +85,7 @@ class Image(models.Model):
     image = models.ImageField(upload_to=get_image_filename)
 
     def __str__(self):
-        return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.user.username})'
+        return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.author.username})'
 
 
 class Comment(models.Model):
@@ -83,14 +100,21 @@ class Comment(models.Model):
     # 대댓글
     parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
 
+    report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='comments')
+
     class Meta:
         ordering = ['-created_at']
 
     def total_likes(self):
         return self.comment_likes.count()
-    
+
     def __str__(self):
         return f'{self.content} by {self.author}'
 
+    @property
+    def name(self):
+        return 'anon' if self.is_anonymous else self.author.username
+
     # def __str__(self):
     #     return f'Comment (PK: {self.pk}, Author: {self.author.username} Parent: {self.parent})'
+
