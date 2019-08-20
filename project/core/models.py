@@ -11,10 +11,3 @@ class Univ(models.Model):
     def __str__(self):
         return f'{self.full_name}: {self.domain}'
 
-
-# class Report(models.Model):
-#     reported_user = models.ForeignKey(User, on_delete=models.SET_NULL)
-#     reported_by = models.ForeignKey(User, on_delete=models.SET_NULL)
-
-#     what = models.TextField(max_length=500, blank=False)
-    
