@@ -68,7 +68,7 @@ class Image(models.Model):
     image = models.ImageField(upload_to=get_image_filename)
 
     def __str__(self):
-        return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.user.username})'
+        return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.author.username})'
 
 
 class Comment(models.Model):
@@ -88,7 +88,7 @@ class Comment(models.Model):
 
     def total_likes(self):
         return self.comment_likes.count()
-    
+
     def __str__(self):
         return f'{self.content} by {self.author}'
 

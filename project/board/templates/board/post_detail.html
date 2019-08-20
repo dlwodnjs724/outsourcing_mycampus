@@ -1,20 +1,120 @@
-{{ post.title }}
+{% extends 'base.html' %}
 
-<div>
-  title : {{ post.title }}<br>
-  author : {{ post.author }}<br>
-  content : {{ post.content }}<br>
-  <br>
+{% load static %}
 
-  <form action="" method="POST">
-    {% csrf_token %}
-    write comment: <input type="text" name='comment' required>
-    <input type="submit">
-  </form>
+{% block contents %}
+  <div class="container">
+    {{ post.title }}
 
-  <br>
+    <div>
+      title : {{ post.title }}<br>
+      author : {{ post.author }}<br>
+      content : {{ post.content }}<br>
+      <br>
 
-  {% for comment in post.comment_set.all %}
-    {{ comment }}<br>
-  {% endfor %}
-</div>
+      <input type="button" class="like" name="{{ post.pk }}" value="Like">
+      <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
+
+      <br>
+
+      write comment: {{ comment_form.content }}
+      <button type="button" id="comment_write" onclick="commentWrite()">comment</button>
+
+      <div class="comment_list">
+        {% for comment in comments %}
+          <input type="button" class="comment_like" name="{{ comment.pk }}" value="Like">
+          <span id="comment_{{ comment.pk }}">{{ comment.total_likes }}</span>
+          {{ comment }}
+          <span style="font-size: 13px; color: grey;">{{ comment.created_at }}</span>
+          <br>
+        {% endfor %}
+      </div>
+    </div>
+
+    <a href="{% url 'core:board:main_board' univ.url_name %}">Go list</a>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+          integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+          crossorigin="anonymous"></script>
+
+  <script>
+    // 게시글 좋아요
+    $('.like').click(function () {
+      const url = '{% url 'core:board:post_like' 0 %}'.replace('0', '{{ univ.url_name }}');
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          'pk': $(this).attr('name'),
+          'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        datatype: "json",
+        success: function (response) {
+          $(`#post_${response['pk']}`).text(response['likes_count']);
+        },
+        error: function (request, status, error) {
+          alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+        }
+      })
+    });
+
+
+    // 댓글 좋아요
+    $('.comment_like').click(function () {
+      console.log($(this).attr('name'));
+      const url = '{% url 'core:board:comment_like' 'url_name' 'category' 0 %}'
+          .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          'pk': $(this).attr('name'),
+          'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        datatype: "json",
+        success: function (response) {
+          $(`#comment_${response['pk']}`).text(response['likes_count']);
+        },
+        error: function (request, status, error) {
+          alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+        }
+      })
+    });
+
+
+    // 댓글 작성
+    function commentWrite() {
+      const url = '{% url 'core:board:comment_new' 'url_name' 'category' 0 %}'
+          .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          'csrfmiddlewaretoken': '{{ csrf_token }}',
+          'comment_content': document.querySelector('#id_content').value
+        },
+        datatype: "json",
+        success: function (response) {
+          let commentList = '';
+          let comments = JSON.parse(response['comments']);
+          console.log(comments)
+          comments.forEach(el => {
+            commentList += `
+              <input type="button" class="comment_like" name="${el['pk']}" value="Like">
+              <span id="comment_${el['pk']}">${el['fields']['comment_likes'].length}</span>
+              <div>${el['fields']['content']} by ${el['fields']['author']}</div>
+            `
+          });
+          document.querySelector('#id_content').value = '';
+          document.querySelector('.comment_list').innerHTML = commentList;
+        },
+        error: function (request, status, error) {
+          alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+        }
+      })
+    }
+  </script>
+{% endblock %}

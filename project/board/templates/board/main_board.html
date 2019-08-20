@@ -1,44 +1,51 @@
-{{ univ.full_name }} <br>
-{{ univ.short_name }} <br>
-{% for category in categories %}
-  {{ category.name }}
-{% endfor %}
+{% extends 'base.html' %}
 
-<ul>
-  {% for post in posts %}
-    <li>
-      <input type="button" class="like" name="{{ post.pk }}" value="Like">
+{% block contents %}
+  <div class="container">
+    {{ univ.full_name }} <br>
+    {{ univ.short_name }} <br>
+    {% for category in categories %}
+      {{ category.name }}
+    {% endfor %}
 
-      <span id="post_{{ post.pk }}">{{ post.total_likes }}</span> :
-      {{ post.title }}
-    </li>
-  {% endfor %}
-</ul>
+    <ul>
+      {% for post in posts %}
+        <li style="margin: 10px 0;">
+          <input type="button" class="like" name="{{ post.pk }}" value="Like">
 
+          <span id="post_{{ post.pk }}">{{ post.total_likes }}</span> :
+          <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous"></script>
+{% block javascript %}
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+          integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+          crossorigin="anonymous"></script>
 
-<script>
-  $('.like').click(function () {
-    const univUrlName = "{{ univ.url_name }}";
-    const url = '{% url 'core:board:post_like' 0 %}'.replace('0', univUrlName);
-    $.ajax({
-      type: 'POST',
-      url: url,
-      data: {
-        'pk': $(this).attr('name'),
-        'csrfmiddlewaretoken': '{{ csrf_token }}',
-        url_name: univUrlName
-      },
-      datatype: "json",
-      success: function (response) {
-        $(`#post_${response['pk']}`).text(response['likes_count']);
-      },
-      error: function(request, status, error) {
-          alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+  <script>
+    $('.like').click(function () {
+      const univUrlName = "{{ univ.url_name }}";
+      const url = '{% url 'core:board:post_like' 0 %}'.replace('0', univUrlName);
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          'pk': $(this).attr('name'),
+          'csrfmiddlewaretoken': '{{ csrf_token }}',
+          url_name: univUrlName
+        },
+        datatype: "json",
+        success: function (response) {
+          $(`#post_${response['pk']}`).text(response['likes_count']);
+        },
+        error: function (request, status, error) {
+          alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
         }
-    })
-  });
-</script>
+      })
+    });
+  </script>
+{% endblock %}
