@@ -4,12 +4,8 @@ from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 
-<<<<<<< HEAD
-from board.models import Category, Post, Comment
-=======
 from board.forms import PostForm, CommentForm
 from board.models import Category, Post, Image, Comment
->>>>>>> board-jw
 from core.models import Univ
 from .forms import ReportForm
 
@@ -190,7 +186,6 @@ def comment_like(request, url_name, category_name, post_pk):
         }
         return JsonResponse(context)
     else:
-<<<<<<< HEAD
         return redirect('core:board:main_board', [request.user.univ.url_name])
 
 def report_send(request, pk, content_type):
@@ -210,6 +205,3 @@ def report_send(request, pk, content_type):
         form = ReportForm()
 
     return
-=======
-        return redirect('core:board:main_board', request.user.univ.url_name)
->>>>>>> board-jw
