@@ -1,50 +1,106 @@
-{{ univ.full_name }} <br>
-{{ univ.short_name }} <br>
-{% for category in categories %}
-  {{ category.name }}
-{% endfor %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}
+<link rel="stylesheet" href="{% static "board/css/board_header.css" %}" type="text/css">
+    <div class="board__header__search">
+        <form action="" method="get">
+            <button type="submit" value="search">
+            <object type="image/svg+xml" data="{% static "/svg/search.svg" %}"></object>
+            </button>
+            <input type="text" placeholder="Search mycampus" name="search" value="{{ search }}">
+        </form>
+    </div>
+    <div class="board__header__right">
+        <ul class="board__buttons">
+            <li><object type="image/svg+xml" data="{% static "/svg/alarm.svg" %}"></object></li>
+            <li><object type="image/svg+xml" data="{% static "/svg/messege box.svg" %}"></object></li>
+            <li><object type="image/svg+xml" data="{% static "/svg/mypage.svg" %}"></object></li>
+            <li><object type="image/svg+xml" data="{% static "/svg/post.svg" %}"></object></li>
+        </ul>
+    </div>
+{% endblock %}
+
+{##}
+{#{{ univ.full_name }} <br>#}
+{#{{ univ.short_name }} <br>#}
+{#{% for category in categories %}#}
+{#  {{ category.name }}#}
+{#{% endfor %}#}
 
 {% block contents %}
-  <div class="container">
-    {{ univ.full_name }} <br>
-    {{ univ.short_name }} <br>
-    {% for category in categories %}
-      <a href="{% url 'core:board:category_board' univ.url_name category.name %}">{{ category.name }}</a>
-    {% endfor %}
+    <link rel="stylesheet" href="{% static "board/css/board_post.css" %}" type="text/css">
+
+  <div class="container board__main">
+
 
     <a href="{% url 'core:board:main_board' univ.url_name %}">hot</a>
     <a href="{% url 'core:board:main_board_new' univ.url_name %}">new</a>
     <br>
     <a href="{% url 'core:board:post_create' univ.url_name %}">Create</a>
     <br>
-    <form action="" method="get">
-      <input type="text" placeholder="Search mycampus" name="search" value="{{ search }}">
-      <input type="submit" value="search">
-    </form>
+    <div class="board__pannel__left">
     <ul>
       {% for post in posts %}
-        <li style="margin: 10px 0;">
-          {% if user in post.likes.all %}
-            좋아요 눌림
-          {% else %}
-            안눌림
-          {% endif %}
-          <input type="button" class="like" name="{{ post.pk }}" value="Like">
+          <div>
+            <li class="board__post__container">
 
-          <span id="post_{{ post.pk }}">{{ post.total_likes }}</span> :
-          author - {{ post.name }}
-          category - {{ post.ctgy.name }} /
-          <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
-          content - {{ post.content }} /
-          bookmark -
-          {% if user in post.saved.all %}
-            <input type="button" class="bookmark" name="{{ post.pk }}" value="O">
-          {% else %}
-            <input type="button" class="bookmark" name="{{ post.pk }}" value="X">
-          {% endif %}
-        </li>
+            <div class="board__post__like">
+                <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
+
+                <button type="button" class="like" name="{{ post.pk }}" value="Like">
+                    <img src="{% static "/svg/like.svg" %}"/>
+                </button>
+            </div>
+
+            <div class="board__post__content">
+
+                <div class="post__text">
+                    <div class="post__top">
+                        <div class="post__top__category">
+                            {{ post.ctgy.name }}
+                        </div>
+                        <div class="post__top__author">
+                            {{ post.name }}
+                        </div>
+                    </div>
+                    <div class="post__mid">
+                        <div class="post__mid__title">
+                           <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
+                        </div>
+                        <div class="post__mid__content">
+                            {{ post.content }}
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="post__bottom">
+                    {% if user in post.saved.all %}
+                    <input type="button" class="bookmark" name="{{ post.pk }}" value="O">
+                    {% else %}
+                    <input type="button" class="bookmark" name="{{ post.pk }}" value="X">
+                    {% endif %}
+
+                    </div>
+                </div>
+
+                <div class="post__image">
+
+                </div>
+
+            </div>
+            </li>
+          </div>
       {% endfor %}
     </ul>
+    </div>
+
+    <div class="board__pannel__right">
+        {{ univ.full_name }} <br>
+        {{ univ.short_name }} <br>
+        {% for category in categories %}
+            <p><a href="{% url 'core:board:category_board' univ.url_name category.name %}">{{ category.name }}</a></p>
+        {% endfor %}
+    </div>
   </div>
 {% endblock %}
 

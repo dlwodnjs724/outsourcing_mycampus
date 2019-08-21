@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="42.736" height="43.852" viewBox="0 0 42.736 43.852">
+  <g id="그룹_458" data-name="그룹 458" transform="translate(-1635 -3446.843)">
+    <g id="그룹_456" data-name="그룹 456" transform="translate(1635 3446.843)">
+      <path id="사각형_16" data-name="사각형 16" d="M.2,0h8.43a.2.2,0,0,1,.2.2V8.807a.2.2,0,0,1-.2.2H.2a.2.2,0,0,1-.2-.2V.2A.2.2,0,0,1,.2,0Z" transform="translate(0 0)" fill="#5d5c5e"/>
+      <rect id="사각형_17" data-name="사각형 17" width="8.831" height="9.008" rx="0.201" transform="translate(11.617 0)" fill="#5d5c5e"/>
+      <path id="사각형_18" data-name="사각형 18" d="M.2,0h8.43a.2.2,0,0,1,.2.2V8.808a.2.2,0,0,1-.2.2H.2a.2.2,0,0,1-.2-.2V.2A.2.2,0,0,1,.2,0Z" transform="translate(23.237 0)" fill="#5d5c5e"/>
+      <rect id="사각형_19" data-name="사각형 19" width="8.831" height="9.006" rx="0.2" transform="translate(0 12.374)" fill="#5d5c5e"/>
+      <path id="사각형_20" data-name="사각형 20" d="M.2,0H8.63a.2.2,0,0,1,.2.2v8.6a.2.2,0,0,1-.2.2H.2a.2.2,0,0,1-.2-.2V.2A.2.2,0,0,1,.2,0Z" transform="translate(11.617 12.374)" fill="#5d5c5e"/>
+      <rect id="사각형_21" data-name="사각형 21" width="8.831" height="9.006" rx="0.2" transform="translate(23.237 12.374)" fill="#bdbebf"/>
+      <path id="사각형_22" data-name="사각형 22" d="M.2,0h8.43a.2.2,0,0,1,.2.2V8.807a.2.2,0,0,1-.2.2H.2a.2.2,0,0,1-.2-.2V.2A.2.2,0,0,1,.2,0Z" transform="translate(0 24.746)" fill="#5d5c5e"/>
+      <path id="사각형_23" data-name="사각형 23" d="M.2,0H8.63a.2.2,0,0,1,.2.2V8.807a.2.2,0,0,1-.2.2H.2a.2.2,0,0,1-.2-.2V.2A.2.2,0,0,1,.2,0Z" transform="translate(11.617 24.746)" fill="#5d5c5e"/>
+      <path id="사각형_24" data-name="사각형 24" d="M.2,0h8.43a.2.2,0,0,1,.2.2V8.807a.2.2,0,0,1-.2.2H.2a.2.2,0,0,1-.2-.2V.2A.2.2,0,0,1,.2,0Z" transform="translate(23.237 24.746)" fill="#bdbebf"/>
+    </g>
+    <g id="그룹_457" data-name="그룹 457" transform="translate(1659.563 3472.522)">
+      <ellipse id="타원_1" data-name="타원 1" cx="9.086" cy="9.086" rx="9.086" ry="9.086" transform="translate(0 0)" fill="#5d5c5e"/>
+      <rect id="사각형_25" data-name="사각형 25" width="1.156" height="7.938" transform="translate(8.667 5.321)" fill="#fff"/>
+      <rect id="사각형_26" data-name="사각형 26" width="7.94" height="1.156" transform="translate(5.275 8.711)" fill="#fff"/>
+    </g>
+  </g>
+</svg>
