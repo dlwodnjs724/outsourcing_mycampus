@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contents %}
+{% for acc in users %}
+<a href="./{{acc.id}}">{{acc.username}}</a>
+{% endfor %}
+{% endblock contents %}
+
+{% block javascript %}
+{% endblock javascript %}
