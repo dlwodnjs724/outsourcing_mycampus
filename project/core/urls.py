@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 app_name = "core"
 
 urlpatterns = [
+    path('chat/', include("chat.urls")),
     path("auth/", include("accounts.urls")),
     path('', include('board.urls'))
 

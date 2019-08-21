@@ -12,6 +12,7 @@
     {% block css %}
     {% endblock %}
 </head>
+
 <body>
     <div class="base__header">
         <div class="base__header__used-space container">
@@ -23,7 +24,12 @@
     {% block contents %}
 
     {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/sendbird@3.0.105/SendBird.min.js"></script>
+    <script src="{% static 'js/API.js'  %}"></script>
+
     {% block javascript %}
     {% endblock %}
 </body>
+
 </html>

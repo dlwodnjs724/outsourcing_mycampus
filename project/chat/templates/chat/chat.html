@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contents %}
+{{user}}
+{{partner}}
+<div class="form">
+  <input type="text" id="message">
+  <input type="submit" id="m_submit">
+</div>
+<div id="chatroom">
+</div>
+{% endblock contents %}
+
+{% block javascript %}
+
+<script>
+const m_btn = document.getElementById('m_submit')
+const chatroom = document.getElementById('chatroom')
+const url = []
+sb.connect("{{ user.username }}", function (user, error) {
+    if (error) return;
+    user.nickname = "{{user.username}}"
+});
+const params = new sb.GroupChannelParams();
+params.isDistinct = true;
+params.name = 'test';
+params.addUserIds(['{{partner}}']);
+    sb.GroupChannel.createChannel(params, function (groupChannel, error) {
+        if (error) return;
+        url.push(groupChannel.url)
+    });
+
+m_btn.addEventListener('click', e => {
+    sb.GroupChannel.getChannel(url[0], function (groupChannel, error) {
+        if (error) return;
+        groupChannel.sendUserMessage(document.getElementById('message').value, function (userMessage,
+            error) {
+            if (error) return;
+            chatroom.innerHTML = chatroom.innerHTML +`${userMessage._sender.userId} : ${userMessage.message}<br>`
+        });
+
+    });
+})
+</script>
+
+{% endblock javascript %}
