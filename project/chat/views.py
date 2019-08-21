@@ -6,6 +6,6 @@ from accounts.models import User
 def index(request, url_name):
     return render(request, 'chat/index.html', {'users':User.objects.all()})
 
-def chat(request, url_name, user_name):
-    user = User.objects.get(username=user_name)
+def chat(request, url_name, user_ame):
+    user = User.objects.get(username=username)
     return render(request, 'chat/chat.html', {'partner':user})
