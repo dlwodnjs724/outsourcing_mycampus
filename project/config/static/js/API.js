@@ -24,4 +24,13 @@ ChannelHandler.onMessageReceived = function (channel, message) {
     chatroom.innerHTML += strfy(message)
     chatroom.scrollTop = chatroom.scrollHeight;
 };
+
+ChannelHandler.onUserReceivedInvitation = function(groupChannel, inviter, invitees) {
+    if(sb.currentUser.userId != inviter.userId) {
+        sb.currentUser.createMetaData({
+            [inviter.userId]: groupChannel.url
+        })
+    }
+};
+
 sb.addChannelHandler(0, ChannelHandler);
