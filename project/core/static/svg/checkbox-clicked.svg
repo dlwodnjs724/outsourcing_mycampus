@@ -1,0 +1,27 @@
+<svg id="checkbox" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40.387" height="40.386" viewBox="0 0 40.387 40.386">
+  <defs>
+    <clipPath id="clip-path">
+      <path id="path" d="M29.924,3H6.366A3.375,3.375,0,0,0,3,6.366V29.924A3.375,3.375,0,0,0,6.366,33.29H29.924a3.375,3.375,0,0,0,3.366-3.366V6.366A3.375,3.375,0,0,0,29.924,3ZM14.779,26.559l-8.414-8.09L8.721,16.2l6.058,5.825,12.789-12.3L29.924,12,14.779,26.559Z" transform="translate(-3 -3)" fill="#4fbcbd" clip-rule="evenodd"/>
+    </clipPath>
+  </defs>
+  <rect id="check_box_off" width="40.386" height="40.387" fill="none"/>
+  <g id="check_box_on_light" transform="translate(5.048 5.048)" clip-path="url(#clip-path)">
+    <g id="그룹_29" data-name="그룹 29">
+      <g id="그룹_301" data-name="그룹 301">
+        <g id="그룹_300" data-name="그룹 300">
+          <g id="그룹_299" data-name="그룹 299">
+            <g id="그룹_298" data-name="그룹 298">
+              <g id="그룹_297" data-name="그룹 297">
+                <g id="그룹_296" data-name="그룹 296">
+                  <g id="그룹_295" data-name="그룹 295">
+                    <path id="패스_86" data-name="패스 86" d="M29.924,3H6.366A3.375,3.375,0,0,0,3,6.366V29.924A3.375,3.375,0,0,0,6.366,33.29H29.924a3.375,3.375,0,0,0,3.366-3.366V6.366A3.375,3.375,0,0,0,29.924,3ZM14.779,26.559l-8.414-8.09L8.721,16.2l6.058,5.825,12.789-12.3L29.924,12,14.779,26.559Z" transform="translate(-3 -3)" fill="#4fbcbd" fill-rule="evenodd"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
