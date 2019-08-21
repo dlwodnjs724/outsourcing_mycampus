@@ -2,10 +2,20 @@
 {% load static %}
 
 {% block contents %}
-{% for acc in users %}
-<a href="./{{acc.id}}">{{acc.username}}</a>
-{% endfor %}
+<div id='chat-list'>
+</div>
 {% endblock contents %}
 
 {% block javascript %}
+<script>
+    const chat_list = document.getElementById('chat-list')
+    sb.connect("{{ user.username }}", function (user, error) {
+        if (error) return;
+        for(k of Object.keys(sb.currentUser.metaData)){
+            chat_list.innerHTML += `<div>
+            <a href="./${k}">chat with ${k}</a>
+            </div>`
+        }
+    });
+</script>
 {% endblock javascript %}
