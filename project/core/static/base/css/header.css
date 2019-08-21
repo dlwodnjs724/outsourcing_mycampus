@@ -12,12 +12,19 @@
 .base__header__used-space {
     display:flex;
     align-items: center;
+    justify-content: space-between;
     height: 100%;
+    width: 60% !important;
 }
 
 .base__logo {
     display: flex;
     align-items: center;
+    width: 30%;
+}
+
+.base__logo object {
+    width: 100%;
 }
 
 .base__logo span {

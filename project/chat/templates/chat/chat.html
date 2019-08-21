@@ -2,13 +2,17 @@
 {% load static %}
 
 {% block contents %}
-{{user}}
-{{partner}}
+<div id='chat'>
+<div id='title'>
+{{user}}'s chat with {{partner}}
+</div>
+<div id='chatroom' style="overflow:scroll; width:500px; height:150px;">
+
+</div>
 <div class="form">
   <input type="text" id="message">
   <input type="submit" id="m_submit">
 </div>
-<div id="chatroom">
 </div>
 {% endblock contents %}
 
@@ -16,7 +20,6 @@
 
 <script>
 const m_btn = document.getElementById('m_submit')
-const chatroom = document.getElementById('chatroom')
 const url = []
 sb.connect("{{ user.username }}", function (user, error) {
     if (error) return;
@@ -38,6 +41,7 @@ m_btn.addEventListener('click', e => {
             error) {
             if (error) return;
             chatroom.innerHTML = chatroom.innerHTML +`${userMessage._sender.userId} : ${userMessage.message}<br>`
+            chatroom.scrollTop = chatroom.scrollHeight;
         });
 
     });
