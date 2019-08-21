@@ -10,3 +10,8 @@
 body {
     background-color: var(--wrapper-color);
 }
+
+@font-face {
+    font-family: YDIYGO340;
+    src: url("../../fonts/YDIYGO340.ttf") format('truetype');
+}
