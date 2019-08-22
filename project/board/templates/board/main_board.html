@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block header %}
     <link rel="stylesheet" href="{% static "board/css/board_header.css" %}" type="text/css">
@@ -54,7 +55,12 @@
                                 <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
 
                                 <button type="button" class="like" name="{{ post.pk }}" value="Like">
-                                    <img src="{% static "/svg/like.svg" %}"/>
+                                  {% if user in post.likes.all %}
+                                    <img id="like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
+                                  {% else %}
+                                    <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
+                                  {% endif %}
+
                                 </button>
                             </div>
 
@@ -81,24 +87,36 @@
                                     <div class="post__bottom">
                                         <div class="post__bottom__icon">
                                             <div class="s_con post__bottom__view">
+                                            {% if user in post.viewed_by.all %}
+                                                <img src="{% static "/svg/view-clicked.svg" %}"/>
+                                            {% else %}
                                                 <img src="{% static "/svg/view.svg" %}"/>
-                                                <span>3</span>
+                                            {% endif %}
+                                                <span>{{post.views}}</span>
                                             </div>
                                             <div class="s_con post__bottom__comment">
+                                            {% if user.pk in post.comments_author %}
+                                                <img src="{% static "/svg/comment-clicked.svg" %}"/>
+                                            {% else %}
                                                 <img src="{% static "/svg/comment.svg" %}"/>
-                                                <span>3</span>
+                                            {% endif %}
+                                                <span>{{ post.comments.all.count }}</span>
                                             </div>
                                             <div class="s_con post__bottom__bookmark">
+                                                {% if user in post.saved.all %}
+                                                    <img src="{% static "/svg/bookmark.svg" %}"/>
+                                                {% else %}
                                                 <img src="{% static "/svg/scrap.svg" %}"/>
-                                                <span>3</span>
+                                                {% endif %}
+                                                <span>{{ post.saved.all.count }}</span>
                                             </div>
                                         </div>
                                         <div class="post__bottom__time">
-                                            3 days...
+                                            {{ post.created_at|naturaltime }}
                                         </div>
                                         {##}
                                         {##}
-                                        {#                                        {% if user in post.saved.all %}#}
+                                        {#         {% if user in post.saved.all %}#}
                                         {#                                            <input type="button" class="bookmark" name="{{ post.pk }}" value="O">#}
                                         {#                                        {% else %}#}
                                         {#                                            <input type="button" class="bookmark" name="{{ post.pk }}" value="X">#}
@@ -150,6 +168,20 @@
 
     <script>
         $('.like').click(function () {
+            var pk = $(this).attr('name')
+            var like_img = document.getElementById(`like_id_${pk}`);
+            console.log(like_img.classList.contains('clicked'));
+            if (!(like_img.classList.contains('clicked'))) {
+              like_img.src="/static/svg/like-clicked.svg";
+              like_img.setAttribute('class','clicked');
+            } else {
+              like_img.src="/static/svg/like.svg";
+              like_img.removeAttribute('class','clicked');
+            }
+
+
+
+
             const univUrlName = "{{ univ.url_name }}";
             const url = '{% url 'core:board:post_like' 0 %}'.replace('0', univUrlName);
             $.ajax({

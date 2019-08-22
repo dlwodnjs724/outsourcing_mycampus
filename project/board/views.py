@@ -3,7 +3,7 @@ from django.core.serializers import serialize
 from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
-
+import datetime
 from board.forms import PostForm, CommentForm
 from board.models import Category, Post, Image, Comment
 from core.models import Univ
@@ -73,6 +73,16 @@ def post_detail(request, url_name, category_name, post_pk):
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
     post = get_object_or_404(Post, ctgy=selected_category, pk=post_pk)
     comments = Comment.objects.prefetch_related('comment_likes').select_related('author').filter(post=post)
+    post.viewed_by.add(request.user)
+    post.views_double_check.add(request.user)
+    if not request.user in post.views_double.check: 
+        post.views += 1
+    post.save()
+    print(post.viewed_by.all)
+
+    # [2] 그 날 당일 밤 12시에 쿠키 삭제
+    tomorrow = datetime.datetime.replace(datetime.datetime.now(), hour=23, minute=59, second=0)
+    expires = datetime.datetime.strftime(tomorrow, "%a, %d-%b-%Y %H:%M:%S GMT")
 
     return render(request, 'board/post_detail.html', {
         'univ': univ,
