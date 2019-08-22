@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
-
+import datetime
 from board.forms import PostForm, CommentForm
 from board.models import Category, Post, Image, Comment
 from core.models import Univ
@@ -150,14 +150,47 @@ def post_detail(request, url_name, category_name, post_pk):
     comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
         .select_related('author', 'parent', 'parent__author')\
         .filter(post=post, parent=None)
+   
+    # post.viewed_by.add(request.user)
+    # post.views_double_check.add(request.user)
+    # if not request.user in post.views_double_check: 
+    #     post.views += 1
+    # post.save()
+    # print(post.viewed_by.all)
 
-    return render(request, 'board/post_detail.html', {
+    ctx = {
         'univ': univ,
         'post': post,
         'selected_category': selected_category,
         'comments': comments,
         'comment_form': CommentForm(request=request),
-    })
+    }
+
+    response = render(request, 'board/post_detail.html', ctx)
+
+    cookie_name = f'hit:{request.user}'
+    # print(cookie_name)
+    # [2] 그 날 당일 밤 12시에 쿠키 삭제
+    tomorrow = datetime.datetime.replace(datetime.datetime.now(), hour=23, minute=59, second=0)
+    expires = datetime.datetime.strftime(tomorrow, "%a, %d-%b-%Y %H:%M:%S GMT")
+    print(post.views)
+    print('***************************')
+    if request.COOKIES.get(cookie_name) is not None:
+        cookies = request.COOKIES.get(cookie_name)
+        cookies_list = cookies.split('|')
+        if str(post_pk) not in cookies_list:
+            response.set_cookie(cookie_name, cookies + f'|{post_pk}', expires =expires)
+            post.views += 1
+            post.save()
+            return response
+    # [4] hit를 check하는 쿠키가 없는 경우
+    else:
+        response.set_cookie(cookie_name, post_pk, expires =expires)
+        post.views += 1
+        post.save()
+        return response
+
+    return render(request, 'board/post_detail.html', ctx)
 
 
 @login_required

@@ -21,33 +21,29 @@
 <script>
     const chatroom = document.getElementById('chatroom')
     const m_btn = document.getElementById('m_submit')
-    const params = new sb.GroupChannelParams();
-    params.addUserIds(['{{partner}}']);
-    
-    sb.GroupChannel.createDistinctChannelIfNotExist(params, function (groupChannel, error) {
+
+    sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
-        const inviter = groupChannel.channel.inviter
-        const invitee = groupChannel.channel.members[0].userId == inviter.userId ? groupChannel.channel.members[1] : groupChannel.channel.members[0]
-        if(!invitee) {
-            chatroom.innerHTML += "no such user"
-            return
-        }
-        if (groupChannel.isCreated && sb.currentUser.userId == inviter.userId) {
-            sb.currentUser.createMetaData({
-                [invitee.userId]: groupChannel.channel.url
-            })
-        }
-        
-        loadLog(groupChannel.channel).load(function (messages, error) {
-            if (error) return;
-            for (m of messages) chatroom.innerHTML += strfy(m)
+        const chats = await loadChatList(sb)
+        const target = chats.filter(cur => cur.members.filter(cur => cur.userId == "{{partner}}").length)[0]
+        loadLog(target).load(function (messages, error) {
+            if (error) {
+                return;
+            }
+            chatroom.innerHTML = messages.reduce((acc,cur) => {
+                return acc + strfy(cur)
+            },"")
             chatroom.scrollTop = chatroom.scrollHeight;
-        });
+
+        })
+
     });
 
+    m_btn.addEventListener('click', async (e) => {
+        const chats = await loadChatList(sb)
+        const target = chats.filter(cur => cur.members.filter(cur => cur.userId == "{{partner}}").length)[0]
 
-    m_btn.addEventListener('click', e => {
-        sb.GroupChannel.getChannel(sb.currentUser.metaData['{{ partner }}'], function (groupChannel, error) {
+        sb.GroupChannel.getChannel(target.url, function (groupChannel, error) {
             if (error) return;
             groupChannel.sendUserMessage(document.getElementById('message').value, function (message,
                 error) {

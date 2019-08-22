@@ -21,7 +21,7 @@ def login(request, url_name):
     if not request.user.is_anonymous:
         return redirect("core:board:main_board", url_name=request.user.univ.url_name)
 
-    ctx = {"univ" : univ}
+    ctx = {"univ": univ}
     if request.method == 'POST':
 
         username = request.POST['username']

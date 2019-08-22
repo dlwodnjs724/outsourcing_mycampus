@@ -15,21 +15,82 @@ const loadLog = (channel) => {
     log.reverse = false;
     return log
 }
+const findInvitee = (channel) => {
+    const first = channel.members[0]
+    const second = channel.members[1]
 
-const sb = new SendBird({ appId: 'A0DB6C4C-7F09-4D64-B43C-0823B2B35256' });
+    if (channel.inviter.userId == first.userId) return second
+    else return first
+}
+
+const getNext = (Query, to) => {
+    return new Promise((res,rej) => {
+        const list = []
+        Query.next(function (channelList, error) {
+            if (error) return;
+            for (c of channelList) {
+                list.push(c.members.filter(v => v.userId != sb.currentUser.userId)[0].userId)
+            }
+            if (to) to.innerHTML = list.map(cur => `<a href="./${cur}">with ${cur}</a><br>`).join('')
+            else res(channelList)
+            res('success')
+        })
+    })
+}
+
+const loadChatList = async (sb, to) => {
+    const CLQ = sb.GroupChannel.createMyGroupChannelListQuery()
+    CLQ.includeEmpty = true;
+    if (CLQ.hasNext) {
+        return await getNext(CLQ, to)
+    };
+}
+
+const leaveChat = (channel) => {
+    return new Promise( (resolve, reject) => {
+        channel.leave(function(response, error) {
+            if (error) return
+            reject('no such user')
+        })
+    })
+}
+
+const openChat = (sb, other) => {
+    const params = new sb.GroupChannelParams();
+    params.addUserIds([other]);
+    if (sb.currentUser.userId == other) throw new Error('recursive')
+    return new Promise(async (resolve, reject) => {
+        sb.GroupChannel.createDistinctChannelIfNotExist(params, async function (groupChannel, error) {
+            if (error) reject(error)
+            if (!groupChannel.isCreated) reject('already exist')
+            const invitee = findInvitee(groupChannel.channel)
+            if (!invitee) {
+                try { await leaveChat(groupChannel.channel) }
+                catch (e) { alert(e) }
+            }
+            resolve('created')
+        })
+    })
+}
+
+const sb = new SendBird({
+    appId: 'A0DB6C4C-7F09-4D64-B43C-0823B2B35256'
+});
 
 const ChannelHandler = new sb.ChannelHandler();
 
 ChannelHandler.onMessageReceived = function (channel, message) {
-    chatroom.innerHTML += strfy(message)
-    chatroom.scrollTop = chatroom.scrollHeight;
+    try {
+        chatroom.innerHTML += strfy(message)
+        chatroom.scrollTop = chatroom.scrollHeight;
+    } catch {
+        console.log('got message')
+    }
 };
 
-ChannelHandler.onUserReceivedInvitation = function(groupChannel, inviter, invitees) {
-    if(sb.currentUser.userId != inviter.userId) {
-        sb.currentUser.createMetaData({
-            [inviter.userId]: groupChannel.url
-        })
+ChannelHandler.onUserReceivedInvitation = function (groupChannel, inviter, invitees) {
+    if (sb.currentUser.userId != inviter.userId) {
+        console.log('invited')
     }
 };
 
