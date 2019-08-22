@@ -10,7 +10,7 @@ class UnivCheckMiddleware:
         path = request.path.split('/')[1]
         exception_list = [
             'admin',
-            'auth',
+            # 'auth',
             '',
             'api',
             'favicon.ico'
