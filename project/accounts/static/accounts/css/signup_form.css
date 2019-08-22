@@ -1,0 +1,127 @@
+.flex-container {
+    display: flex;
+    justify-content: center;
+}
+
+.signup__white-wrapper {
+    width: 60%;
+    height: fit-content;
+    padding: 3rem 0;
+    margin-top: auto;
+    border-radius: var(--border-radius);
+    background-color: #fff;
+}
+
+#accounts__login-title-span {
+    margin: 1rem 0;
+}
+
+form.accounts__form-tag input {
+    margin: 0;
+}
+
+form.accounts__form-tag > div.accounts__form__box {
+    margin-bottom: 2rem;
+}
+
+.accounts__signup-form {
+    width:100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.accounts__form-tag {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+.accounts__form__box {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.accounts__login-info input, .sub-info__class-of input {
+    height: 2.5rem;
+    margin: 0.25rem;
+    text-indent: 1rem;
+}
+
+.sub-info__gender {
+    display: flex;
+    flex-direction: column;
+}
+
+.gender-choice {
+    visibility: hidden;
+}
+
+.info__choices {
+    display: flex;
+    justify-content: space-between;
+}
+
+.info__choices-and-label {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #B2B4B7;
+    border-radius: var(--border-radius);
+    height: 2rem
+}
+
+label[for="male"] {
+    margin: 0 .2rem;
+}
+
+.gender-choice:checked + label{
+    background-color: var(--main-color);
+    color: #fff;
+}
+
+.accounts__sub-info {
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sub-info__gender-wrapper {
+    margin-bottom: 2rem;
+}
+
+.sub-info__class-of {
+    display: flex;
+    flex-direction: column;
+}
+
+#accounts__sub-info-class-of-span {
+    margin-bottom: 1rem;
+}
+
+.accounts__form__box p {
+    line-height: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.accounts__form__box p a {
+    color: #3DA6E0;
+    text-decoration: none;
+}
+
+.accounts__form__box button {
+    background-color: var(--main-color);
+    color: #fff;
+    border: none;
+    height: 2.5rem;
+}
