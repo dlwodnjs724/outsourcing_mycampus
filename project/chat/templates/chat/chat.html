@@ -28,7 +28,7 @@
         if (error) return;
         const inviter = groupChannel.channel.inviter
         const invitee = groupChannel.channel.members[0].userId == inviter.userId ? groupChannel.channel.members[1] : groupChannel.channel.members[0]
-        if (groupChannel.isCreated && sb.currentUser.userId == inviter.userId ) {
+        if (groupChannel.isCreated && sb.currentUser.userId == inviter.userId && invitee) {
             sb.currentUser.createMetaData({
                 [invitee.userId]: groupChannel.channel.url
             })
