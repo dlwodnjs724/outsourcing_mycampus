@@ -12,7 +12,7 @@
       content : {{ post.content }}<br>
       <br>
 
-      <input type="button" class="like" name="{{ post.pk }}" value="Like">
+      <input type="button" class="like" name="{{ post.pk }}" value="Like" onclick="postLike({{ post.pk }})">
       <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
 
       <br>
@@ -23,7 +23,8 @@
 
       <div class="comment_list">
         {% for comment in comments %}
-          <input type="button" class="comment_like" name="{{ comment.pk }}" value="Like">
+          <input type="button" class="comment_like" name="{{ comment.pk }}" value="Like"
+                 onclick="commentLike({{ comment.pk }})">
           <span id="comment_{{ comment.pk }}">{{ comment.total_likes }}</span>
           {{ comment.content }} {{ comment.name }}
           <span style="font-size: 13px; color: grey;">{{ comment.created_at }}</span>
@@ -43,13 +44,13 @@
 
   <script>
     // 게시글 좋아요
-    $('.like').click(function () {
+    function postLike(postPk) {
       const url = '{% url 'core:board:post_like' 0 %}'.replace('0', '{{ univ.url_name }}');
       $.ajax({
         type: 'POST',
         url: url,
         data: {
-          'pk': $(this).attr('name'),
+          'pk': postPk,
           'csrfmiddlewaretoken': '{{ csrf_token }}',
         },
         datatype: "json",
@@ -60,18 +61,18 @@
           alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
         }
       })
-    });
+    }
 
 
     // 댓글 좋아요
-    $('.comment_like').click(function () {
+    function commentLike(commentPk) {
       const url = '{% url 'core:board:comment_like' 'url_name' 'category' 0 %}'
           .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
       $.ajax({
         type: 'POST',
         url: url,
         data: {
-          'pk': $(this).attr('name'),
+          'pk': commentPk,
           'csrfmiddlewaretoken': '{{ csrf_token }}',
         },
         datatype: "json",
@@ -82,7 +83,7 @@
           alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
         }
       })
-    });
+    }
 
 
     // 댓글 작성
@@ -103,9 +104,11 @@
           let comments = JSON.parse(response['comments']);
           comments.forEach(el => {
             commentList += `
-              <input type="button" class="comment_like" name="${el['pk']}" value="Like">
+              <input type="button" class="comment_like" name="${el['pk']}" value="Like" onclick="commentLike(${el['pk']})">
               <span id="comment_${el['pk']}">${el['fields']['comment_likes'].length}</span>
-              <div>${el['fields']['content']} by ${el['fields']['author']}</div>
+              ${el['fields']['content']} ${el['fields']['author']}
+              <span style="font-size: 13px; color: grey;">${el['fields']['created_at']}</span>
+              <br>
             `
           });
           document.querySelector('#id_content').value = '';
