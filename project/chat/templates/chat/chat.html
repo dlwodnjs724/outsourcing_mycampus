@@ -21,29 +21,10 @@
 <script>
     const chatroom = document.getElementById('chatroom')
     const m_btn = document.getElementById('m_submit')
-    const params = new sb.GroupChannelParams();
-    params.addUserIds(['{{partner}}']);
-    
-    sb.GroupChannel.createDistinctChannelIfNotExist(params, function (groupChannel, error) {
-        if (error) return;
-        const { inviter, invitee } = findInviter(groupChannel.channel)
-        if(!invitee) {
-            chatroom.innerHTML += "no such user"
-            return
-        }
-        if (groupChannel.isCreated && sb.currentUser.userId == inviter.userId) {
-            sb.currentUser.createMetaData({
-                [invitee.userId]: groupChannel.channel.url
-            })
-        }
-        
-        loadLog(groupChannel.channel).load(function (messages, error) {
-            if (error) return;
-            for (m of messages) chatroom.innerHTML += strfy(m)
-            chatroom.scrollTop = chatroom.scrollHeight;
-        });
-    });
 
+    sb.connect("{{ user.username }}", async function (user, error) {
+        if (error) return;
+    });
 
     m_btn.addEventListener('click', e => {
         sb.GroupChannel.getChannel(sb.currentUser.metaData['{{ partner }}'], function (groupChannel, error) {
