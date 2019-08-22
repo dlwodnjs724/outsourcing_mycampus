@@ -123,4 +123,5 @@ label[for="male"] {
     background-color: var(--main-color);
     color: #fff;
     border: none;
+    height: 2.5rem;
 }
