@@ -16,7 +16,7 @@
       <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
 
       <br>
-
+      <h1>{{post.views}}</h1>
       write comment: {{ comment_form.content }}
       is_anonymous: {{ comment_form.is_anonymous }}
       <button type="button" id="comment_write" onclick="commentWrite()">comment</button>
