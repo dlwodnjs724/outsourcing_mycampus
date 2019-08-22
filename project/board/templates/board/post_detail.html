@@ -101,13 +101,13 @@
         datatype: "json",
         success: function (response) {
           let commentList = '';
-          let comments = JSON.parse(response['comments']);
+          let comments = response['comments'];
           comments.forEach(el => {
             commentList += `
               <input type="button" class="comment_like" name="${el['pk']}" value="Like" onclick="commentLike(${el['pk']})">
-              <span id="comment_${el['pk']}">${el['fields']['comment_likes'].length}</span>
-              ${el['fields']['content']} ${el['fields']['author']}
-              <span style="font-size: 13px; color: grey;">${el['fields']['created_at']}</span>
+              <span id="comment_${el['pk']}">${el['comment_likes']}</span>
+              ${el['content']} ${el['name']}
+              <span style="font-size: 13px; color: grey;">${el['created_at']}</span>
               <br>
             `
           });

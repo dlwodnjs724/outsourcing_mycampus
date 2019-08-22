@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
 from django.db.models import Q, Count
@@ -174,8 +176,16 @@ def comment_new(request, url_name, category_name, post_pk):
             content=request.POST.get('comment_content', ''),
             is_anonymous=is_anonymous
         )
+
+        comments_queryset = Comment.objects.filter(post=post_pk)
+        comments = list(comments_queryset.values('pk', 'content', 'created_at'))
+
+        for i, comment in enumerate(comments_queryset):
+            comments[i]['name'] = comment.name
+            comments[i]['comment_likes'] = comment.total_likes()
+
         context = {
-            'comments': serialize('json', Comment.objects.filter(post=post_pk))
+            'comments': comments
         }
         return JsonResponse(context)
     return redirect('core:board:post_detail', url_name, category_name, post_pk)
