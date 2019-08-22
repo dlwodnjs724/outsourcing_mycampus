@@ -1,9 +1,10 @@
 from django.db import models
-from datetime import datetime, timezone
+import datetime
 from accounts.models import User
 from core.models import Univ
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
+from pytz import utc
 
 class Report(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
@@ -60,9 +61,11 @@ class Post(models.Model):
         ordering = ['-created_at']
 
     def time_interval(self):
-        now = datetime.now(timezone.utc)
-        time_interval = now - self.created_at
-        return time_interval
+        now = utc.localize(datetime.datetime.utcnow())
+        create = utc.localize(self.created_at)
+        time_intervals = now - create
+        
+        return time_intervals
 
     def total_likes(self):
         return self.likes.count()
