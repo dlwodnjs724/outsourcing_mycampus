@@ -3,6 +3,7 @@
 
 {% block contents %}
 username : {{user.username}}<br>
+<input type="text" id="other"><input type="submit" id="submit">
 <div id='chat_list'>
 </div>
 {% endblock contents %}
@@ -10,13 +11,16 @@ username : {{user.username}}<br>
 {% block javascript %}
 <script>
     const chat_list = document.getElementById('chat_list')
+    const other = document.getElementById('other')
+    const submit = document.getElementById('submit')
     sb.connect("{{ user.username }}", function (user, error) {
         if (error) return;
-        for(k of Object.keys(sb.currentUser.metaData)){
-            chat_list.innerHTML += `<div>
-            <a href="./${k}">chat with ${k}</a>
-            </div>`
-        }
+        loadChatList(sb, chat_list)
     });
+    submit.addEventListener('click', async (e) => {
+        try { await openChat(sb, other.value) }
+        catch (e) { alert(e) }
+        loadChatList(sb, chat_list)
+    })
 </script>
 {% endblock javascript %}

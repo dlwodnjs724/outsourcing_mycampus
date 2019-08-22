@@ -23,19 +23,26 @@ const findInvitee = (channel) => {
     else return first
 }
 
-const loadChatList = (sb, to) => {
-    const list = []
-    const CLQ = sb.GroupChannel.createMyGroupChannelListQuery()
-    CLQ.includeEmpty = true;
-    if (CLQ.hasNext) {
-        CLQ.next(function (channelList, error) {
+const getNext = (Query, to) => {
+    return new Promise((res,rej) => {
+        const list = []
+        Query.next(function (channelList, error) {
             if (error) return;
             for (c of channelList) {
                 list.push(c.members.filter(v => v.userId != sb.currentUser.userId)[0].userId)
             }
             if (to) to.innerHTML = list.map(cur => `<a href="./${cur}">with ${cur}</a><br>`).join('')
-            else return list
+            else res(channelList)
+            res('success')
         })
+    })
+}
+
+const loadChatList = async (sb, to) => {
+    const CLQ = sb.GroupChannel.createMyGroupChannelListQuery()
+    CLQ.includeEmpty = true;
+    if (CLQ.hasNext) {
+        return await getNext(CLQ, to)
     };
 }
 
