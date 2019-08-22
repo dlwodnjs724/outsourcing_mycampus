@@ -26,10 +26,11 @@
     
     sb.GroupChannel.createDistinctChannelIfNotExist(params, function (groupChannel, error) {
         if (error) return;
-        const target = groupChannel.channel.members[0]
-        if (groupChannel.isCreated && sb.currentUser.userId != target.userId ) {
+        const inviter = groupChannel.channel.members[0]
+        const invitee = groupChannel.channel.members[1]
+        if (groupChannel.isCreated && sb.currentUser.userId == inviter.userId ) {
             sb.currentUser.createMetaData({
-                [target.userId]: groupChannel.channel.url
+                [invitee.userId]: groupChannel.channel.url
             })
         }
         
