@@ -87,16 +87,28 @@
                                     <div class="post__bottom">
                                         <div class="post__bottom__icon">
                                             <div class="s_con post__bottom__view">
+                                            {% if user in post.viewed_by.all %}
+                                                <img src="{% static "/svg/view-clicked.svg" %}"/>
+                                            {% else %}
                                                 <img src="{% static "/svg/view.svg" %}"/>
-                                                <span>3</span>
+                                            {% endif %}
+                                                <span>{{post.views}}</span>
                                             </div>
                                             <div class="s_con post__bottom__comment">
+                                            {% if user.pk in post.comments_author %}
+                                                <img src="{% static "/svg/comment-clicked.svg" %}"/>
+                                            {% else %}
                                                 <img src="{% static "/svg/comment.svg" %}"/>
-                                                <span>3</span>
+                                            {% endif %}
+                                                <span>{{ post.comments.all.count }}</span>
                                             </div>
                                             <div class="s_con post__bottom__bookmark">
+                                                {% if user in post.saved.all %}
+                                                    <img src="{% static "/svg/bookmark.svg" %}"/>
+                                                {% else %}
                                                 <img src="{% static "/svg/scrap.svg" %}"/>
-                                                <span>3</span>
+                                                {% endif %}
+                                                <span>{{ post.saved.all.count }}</span>
                                             </div>
                                         </div>
                                         <div class="post__bottom__time">

@@ -51,6 +51,8 @@ class Post(models.Model):
 
     likes = models.ManyToManyField(User, default=0, related_name='liked', blank=True)
     views = models.PositiveIntegerField(default=0)
+    views_double_check =  models.ManyToManyField(User, related_name='double_check', blank=True)
+    viewed_by = models.ManyToManyField(User, related_name='viewed', blank=True)
     is_anonymous = models.BooleanField(default=False)
 
     saved = models.ManyToManyField(User, related_name='saved', blank=True)
@@ -77,6 +79,12 @@ class Post(models.Model):
     def name(self):
         return 'anon' if self.is_anonymous else self.author.username
 
+    # def comments_author(self):
+    #     c_list= []
+    #     for comment in self.comments.all:
+    #         c_list.append(comment.author.pk)
+    #     return c_list
+        
 
 def get_image_filename(instance, filename):
     id = instance.post.id
@@ -92,7 +100,7 @@ class Image(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=False)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=False, related_name="comments")
     author = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True)
     content = models.CharField(max_length=200, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
