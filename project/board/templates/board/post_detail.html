@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% load child_comments %}
 {% load static %}
 
 {% block contents %}
@@ -12,21 +13,39 @@
       content : {{ post.content }}<br>
       <br>
 
-      <input type="button" class="like" name="{{ post.pk }}" value="Like">
+      <input type="button" class="like" name="{{ post.pk }}" value="Like" onclick="likePost({{ post.pk }})">
       <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
 
       <br>
       <h1>{{post.views}}</h1>
       write comment: {{ comment_form.content }}
       is_anonymous: {{ comment_form.is_anonymous }}
-      <button type="button" id="comment_write" onclick="commentWrite()">comment</button>
+      <button type="button" id="comment_write" onclick="writeComment()">comment</button>
 
       <div class="comment_list">
         {% for comment in comments %}
-          <input type="button" class="comment_like" name="{{ comment.pk }}" value="Like">
+          <input type="button" class="comment_like" name="{{ comment.pk }}" value="Like"
+                 onclick="likeComment({{ comment.pk }})">
           <span id="comment_{{ comment.pk }}">{{ comment.total_likes }}</span>
-          {{ comment.content }} {{ comment.name }}
+          {{ comment.content }} {{ comment.name }} / {{ comment.pk }}
           <span style="font-size: 13px; color: grey;">{{ comment.created_at }}</span>
+          <button type="button" onclick="clickNestedComment({{ comment.pk }})">
+            대댓글
+          </button>
+          <div class="nested_comment">
+            <div class="nested_comment_form" id="nested_comment_form_{{ comment.pk }}"></div>
+            <div class="nested_comment_list" id="nested_comment_list_{{ comment.pk }}" style="margin-left: 50px;">
+              {% for nested_comment in comment|child_comments %}
+                <div>
+                  <input type="button" class="comment_like" name="{{ nested_comment.pk }}" value="Like"
+                         onclick="likeComment({{ nested_comment.pk }})">
+                  <span id="comment_{{ nested_comment.pk }}">{{ nested_comment.total_likes }}</span>
+                  {{ nested_comment.content }} {{ nested_comment.name }} / {{ nested_comment.pk }}
+                  <span style="font-size: 13px; color: grey;">{{ nested_comment.created_at }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
           <br>
         {% endfor %}
       </div>
@@ -43,13 +62,13 @@
 
   <script>
     // 게시글 좋아요
-    $('.like').click(function () {
+    function likePost(postPk) {
       const url = '{% url 'core:board:post_like' 0 %}'.replace('0', '{{ univ.url_name }}');
       $.ajax({
         type: 'POST',
         url: url,
         data: {
-          'pk': $(this).attr('name'),
+          'pk': postPk,
           'csrfmiddlewaretoken': '{{ csrf_token }}',
         },
         datatype: "json",
@@ -60,18 +79,18 @@
           alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
         }
       })
-    });
+    }
 
 
     // 댓글 좋아요
-    $('.comment_like').click(function () {
+    function likeComment(commentPk) {
       const url = '{% url 'core:board:comment_like' 'url_name' 'category' 0 %}'
           .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
       $.ajax({
         type: 'POST',
         url: url,
         data: {
-          'pk': $(this).attr('name'),
+          'pk': commentPk,
           'csrfmiddlewaretoken': '{{ csrf_token }}',
         },
         datatype: "json",
@@ -82,12 +101,12 @@
           alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
         }
       })
-    });
+    }
 
 
     // 댓글 작성
-    function commentWrite() {
-      const url = '{% url 'core:board:comment_new' 'url_name' 'category' 0 %}'
+    function writeComment() {
+      const url = '{% url 'core:board:comment_create' 'url_name' 'category' 0 %}'
           .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
       $.ajax({
         type: 'POST',
@@ -100,16 +119,79 @@
         datatype: "json",
         success: function (response) {
           let commentList = '';
-          let comments = JSON.parse(response['comments']);
+          let comments = response['comments'];
           comments.forEach(el => {
             commentList += `
-              <input type="button" class="comment_like" name="${el['pk']}" value="Like">
-              <span id="comment_${el['pk']}">${el['fields']['comment_likes'].length}</span>
-              <div>${el['fields']['content']} by ${el['fields']['author']}</div>
+              <input type="button" class="comment_like" name="${el['pk']}" value="Like" onclick="likeComment(${el['pk']})">
+              <span id="comment_${el['pk']}">${el['comment_likes']}</span>
+              ${el['content']} ${el['name']}
+              <span style="font-size: 13px; color: grey;">${el['created_at']}</span>
+              <button type="button" onclick="clickNestedComment(${el['pk']})">
+                대댓글
+              </button>
+              <div class="nested_comment">
+                <div class="nested_comment_form" id="nested_comment_form_${el['pk']}"></div>
+                <div class="nested_comment_list" id="nested_comment_list_${el['pk']}" style="margin-left: 50px;">
+
+                </div>
+              </div>
+              <br>
             `
           });
           document.querySelector('#id_content').value = '';
           document.querySelector('.comment_list').innerHTML = commentList;
+        },
+        error: function (request, status, error) {
+          alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+        }
+      })
+    }
+
+
+    // 대댓글 버튼 클릭
+    function clickNestedComment(commentPk) {
+      let nestedCommentBox = document.querySelector(`#nested_comment_form_${commentPk}`);
+      let commentForm;
+      if (nestedCommentBox.innerHTML)
+        commentForm = '';
+      else
+        commentForm = `
+          write comment: <textarea name="nested_comment_content" required id="nested_comment_write_${commentPk}"></textarea>
+          is_anonymous: <input type="checkbox" name="nested_comment_content" id="nested_comment_is_anonymous_${commentPk}" checked>
+          <button type="button" id="comment_write_${commentPk}" onclick="writeNestedComment(${commentPk})">comment</button>
+        `;
+      nestedCommentBox.innerHTML = commentForm;
+    }
+
+
+    // 대댓글 작성
+    function writeNestedComment(commentPk) {
+      const url = '{% url 'core:board:comment_nest_create' 'url_name' 'category' 0 %}'
+          .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          'csrfmiddlewaretoken': '{{ csrf_token }}',
+          'nested_comment_content': document.querySelector(`#nested_comment_write_${commentPk}`).value,
+          'nested_comment_is_anonymous': document.querySelector(`#nested_comment_is_anonymous_${commentPk}`).checked,
+          'parent_id': commentPk
+        },
+        datatype: "json",
+        success: function (response) {
+          let commentList = '';
+          let comments = response['comments'];
+          comments.forEach(el => {
+            commentList += `
+              <input type="button" class="comment_like" name="${el['pk']}" value="Like" onclick="likeComment(${el['pk']})">
+              <span id="comment_${el['pk']}">${el['comment_likes']}</span>
+              ${el['content']} ${el['name']}
+              <span style="font-size: 13px; color: grey;">${el['created_at']}</span>
+              <br>
+            `;
+          });
+          document.querySelector(`#nested_comment_form_${commentPk}`).innerHTML = '';
+          document.querySelector(`#nested_comment_list_${commentPk}`).innerHTML = commentList;
         },
         error: function (request, status, error) {
           alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
