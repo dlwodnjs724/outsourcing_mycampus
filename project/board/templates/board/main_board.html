@@ -55,7 +55,12 @@
                                 <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
 
                                 <button type="button" class="like" name="{{ post.pk }}" value="Like">
+                                  {% if user in post.likes.all %}
+                                    <img id="like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
+                                  {% else %}
                                     <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
+                                  {% endif %}
+
                                 </button>
                             </div>
 
