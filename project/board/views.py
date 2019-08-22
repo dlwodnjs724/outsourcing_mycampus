@@ -1,7 +1,4 @@
-import json
-
 from django.contrib.auth.decorators import login_required
-from django.core.serializers import serialize
 from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
@@ -150,7 +147,9 @@ def post_detail(request, url_name, category_name, post_pk):
     univ = get_object_or_404(Univ, url_name=url_name)
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
     post = get_object_or_404(Post, ctgy=selected_category, pk=post_pk)
-    comments = Comment.objects.prefetch_related('comment_likes').select_related('author').filter(post=post)
+    comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
+        .select_related('author', 'parent', 'parent__author')\
+        .filter(post=post, parent=None)
 
     return render(request, 'board/post_detail.html', {
         'univ': univ,
@@ -167,17 +166,43 @@ def post_edit(request):
 
 
 @login_required
-def comment_new(request, url_name, category_name, post_pk):
+def comment_create(request, url_name, category_name, post_pk):
     if request.method == 'POST':
         is_anonymous = True if request.POST.get('comment_is_anonymous', '') == 'true' else False
         comment = Comment.objects.create(
-            post=Post.objects.get(pk=post_pk),
+            post_id=post_pk,
             author=request.user,
             content=request.POST.get('comment_content', ''),
             is_anonymous=is_anonymous
         )
 
-        comments_queryset = Comment.objects.filter(post=post_pk)
+        comments_queryset = Comment.objects.filter(post_id=post_pk, parent=None)
+        comments = list(comments_queryset.values('pk', 'content', 'created_at'))
+
+        for i, comment in enumerate(comments_queryset):
+            comments[i]['name'] = comment.name
+            comments[i]['comment_likes'] = comment.total_likes()
+
+        context = {
+            'comments': comments
+        }
+        return JsonResponse(context)
+    return redirect('core:board:post_detail', url_name, category_name, post_pk)
+
+
+@login_required
+def comment_nest_create(request, url_name, category_name, post_pk):
+    if request.method == 'POST':
+        is_anonymous = True if request.POST.get('nested_comment_is_anonymous', '') == 'true' else False
+        comment = Comment.objects.create(
+            post_id=post_pk,
+            author=request.user,
+            content=request.POST.get('nested_comment_content', ''),
+            is_anonymous=is_anonymous,
+            parent_id=request.POST.get('parent_id')
+        )
+
+        comments_queryset = Comment.objects.filter(parent_id=request.POST.get('parent_id'))
         comments = list(comments_queryset.values('pk', 'content', 'created_at'))
 
         for i, comment in enumerate(comments_queryset):
