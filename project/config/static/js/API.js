@@ -15,21 +15,46 @@ const loadLog = (channel) => {
     log.reverse = false;
     return log
 }
+const findInviter = (channel) => {
+    const result = {}
+    const first = channel.members[0] 
+    const second = channel.members[1]
+    
+    if (channel.inviter.userId == first.userId) {
+        result["inviter"] = first
+        result["invitee"] = second
+    }
+    else{
+        result["inviter"] = second
+        result["invitee"] = first
+    }
+    return result
+}
 
-const sb = new SendBird({ appId: 'A0DB6C4C-7F09-4D64-B43C-0823B2B35256' });
+const sb = new SendBird({
+    appId: 'A0DB6C4C-7F09-4D64-B43C-0823B2B35256'
+});
+
+
 
 const ChannelHandler = new sb.ChannelHandler();
 
 ChannelHandler.onMessageReceived = function (channel, message) {
-    chatroom.innerHTML += strfy(message)
-    chatroom.scrollTop = chatroom.scrollHeight;
+    try {
+        chatroom.innerHTML += strfy(message)
+        chatroom.scrollTop = chatroom.scrollHeight;
+    }
+    catch{
+        console.log('got message')
+    }
 };
 
-ChannelHandler.onUserReceivedInvitation = function(groupChannel, inviter, invitees) {
-    if(sb.currentUser.userId != inviter.userId) {
+ChannelHandler.onUserReceivedInvitation = function (groupChannel, inviter, invitees) {
+    if (sb.currentUser.userId != inviter.userId) {
         sb.currentUser.createMetaData({
             [inviter.userId]: groupChannel.url
         })
+        console.log('invited')
     }
 };
 

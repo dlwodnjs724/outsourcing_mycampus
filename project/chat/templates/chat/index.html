@@ -3,13 +3,13 @@
 
 {% block contents %}
 username : {{user.username}}<br>
-<div id='chat-list'>
+<div id='chat_list'>
 </div>
 {% endblock contents %}
 
 {% block javascript %}
 <script>
-    const chat_list = document.getElementById('chat-list')
+    const chat_list = document.getElementById('chat_list')
     sb.connect("{{ user.username }}", function (user, error) {
         if (error) return;
         for(k of Object.keys(sb.currentUser.metaData)){
