@@ -92,6 +92,7 @@ class Post(models.Model):
 
 
 class Image(models.Model):
+<<<<<<< HEAD
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, blank=False, related_name="images")        
     image = models.ImageField(upload_to='board/post/images/')
     image_thumbnail = ImageSpecField(
@@ -99,6 +100,10 @@ class Image(models.Model):
 		processors = [Thumbnail(200, 200)], # 처리할 작업목록
 		format = 'JPEG',		   # 최종 저장 포맷
 		options = {'quality': 60})
+=======
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, blank=False)
+    image = models.ImageField(upload_to='board/post/images/')
+>>>>>>> c1379f6d6862260b0470a288954da510f0ca7898
 
     def __str__(self):
         return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.author.username})'
