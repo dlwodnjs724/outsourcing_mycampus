@@ -12,6 +12,7 @@ from .forms import ReportForm
 def main_board(request, url_name):
     univ = get_object_or_404(Univ, url_name=url_name)
     categories = get_list_or_404(Category, univ=univ)
+    state = "hot"
     posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments') \
         .filter(ctgy__univ=univ) \
         .annotate(num_likes=Count('likes')) \
@@ -27,6 +28,7 @@ def main_board(request, url_name):
         'univ': univ,
         'categories': categories,
         'posts': posts,
+        'state': state,
     })
 
 
@@ -40,12 +42,14 @@ def main_board_new(request, url_name):
     search = request.GET.get('search', '')
     if search:
         posts = posts.filter(Q(title__icontains=search) | Q(content__icontains=search))
+    state = "new"
 
     return render(request, 'board/main_board.html', {
         'univ': univ,
         'categories': categories,
         'search': search,
         'posts': posts,
+        'state': state,
     })
 
 
@@ -114,7 +118,7 @@ def category_board(request, url_name, category_name):
     if search:
         posts = posts.filter(Q(title__icontains=search) | Q(content__icontains=search))
 
-    return render(request, 'board/category_board.html', {
+    return render(request, 'board/main_board.html', {
         'univ': univ,
         'categories': categories,
         'selected_category': selected_category,
@@ -170,23 +174,21 @@ def post_detail(request, url_name, category_name, post_pk):
 
     cookie_name = f'hit:{request.user}'
     # print(cookie_name)
-    # [2] 그 날 당일 밤 12시에 쿠키 삭제
     tomorrow = datetime.datetime.replace(datetime.datetime.now(), hour=23, minute=59, second=0)
     expires = datetime.datetime.strftime(tomorrow, "%a, %d-%b-%Y %H:%M:%S GMT")
-    print(post.views)
-    print('***************************')
     if request.COOKIES.get(cookie_name) is not None:
         cookies = request.COOKIES.get(cookie_name)
         cookies_list = cookies.split('|')
         if str(post_pk) not in cookies_list:
             response.set_cookie(cookie_name, cookies + f'|{post_pk}', expires =expires)
             post.views += 1
+            post.viewed_by.add(request.user)
             post.save()
             return response
-    # [4] hit를 check하는 쿠키가 없는 경우
     else:
         response.set_cookie(cookie_name, post_pk, expires =expires)
         post.views += 1
+        post.viewed_by.add(request.user)
         post.save()
         return response
 

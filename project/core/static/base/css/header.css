@@ -4,9 +4,11 @@
 
 .base__header {
     width: 100%;
-    height: 3rem;
+    height: 4rem;
     background-color: var(--main-color);
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
+    position: sticky;
+    top: 0px;
 }
 
 .base__header__used-space {
@@ -14,7 +16,6 @@
     align-items: center;
     justify-content: space-between;
     height: 100%;
-    width: 60% !important;
 }
 
 .base__logo {
