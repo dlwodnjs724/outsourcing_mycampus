@@ -92,7 +92,6 @@ def post_detail(request, url_name, category_name, post_pk):
 
     cookie_name = f'hit:{request.user}'
     # print(cookie_name)
-    # [2] 그 날 당일 밤 12시에 쿠키 삭제
     tomorrow = datetime.datetime.replace(datetime.datetime.now(), hour=23, minute=59, second=0)
     expires = datetime.datetime.strftime(tomorrow, "%a, %d-%b-%Y %H:%M:%S GMT")
     print(post.views)
@@ -105,7 +104,6 @@ def post_detail(request, url_name, category_name, post_pk):
             post.views += 1
             post.save()
             return response
-    # [4] hit를 check하는 쿠키가 없는 경우
     else:
         response.set_cookie(cookie_name, post_pk, expires =expires)
         post.views += 1
