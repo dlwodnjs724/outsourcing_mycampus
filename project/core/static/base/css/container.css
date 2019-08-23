@@ -4,19 +4,19 @@
   margin: auto auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 548px) {
   .container {
     width: 750px;
   }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 772px) {
   .container {
     width: 970px;
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 980px) {
   .container {
     width: 1170px;
   }

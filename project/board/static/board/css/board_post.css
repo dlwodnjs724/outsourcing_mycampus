@@ -3,10 +3,21 @@
     flex-direction: row;
 }
 
-.board__pannel__top a{
+.board__pannel__top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pannel__top__state {
+    width: 300px;
+}
+
+.board__pannel__top a {
     text-decoration: none;
     width: auto;
-    margin-right:-10px;
+    margin-right: -10px;
 }
 
 .board__pannel__top img {
@@ -15,14 +26,17 @@
 
 .board__pannel__left {
     display: flex;
-    width: 911px;
+    width: 80%;
+}
 
+.board__pannel__left ul {
+    width: 100%;
 }
 
 .board__post__container {
     background-color: #ffffff;
     height: 201px;
-    width: 911px;
+    width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -38,7 +52,7 @@
     align-items: center;
     background-color: #e8e8e8;
     border-radius: 5px;
-    width: 70px;
+    width: 10%;
     height: 70px;
     margin-left: 25px;
     margin-right: 25px;
@@ -54,12 +68,12 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 100%;
+    width: 90%;
     margin: 10px;
 }
 
 .post__text {
-    width: 580px;
+    width: 70%;
     display: flex;
     flex-direction: column;
 }
@@ -80,13 +94,13 @@
 }
 
 .post__image {
-    width: 181px;
+    width: 10%;
     height: 181px;
     margin-left: 10px;
 }
 
 .board__pannel__right {
-    width: 244px;
+    width: 20%;
     margin-left: 20px;
     margin-top: 20px;
 }
@@ -141,24 +155,7 @@
     color: #a6a7a7;
     height: 60px;
 
-    overflow: hidden;
-    /* overflow-wrap: break-word; */
-    text-overflow: ellipsis;
-    white-space: normal;
-    overflow-y: hidden;
-    /* display: -webkit-box;
--webkit-line-clamp: 2;
--webkit-box-orient: vertical; */
-    /* overflow-wrap: break-word ;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    word-wrap: break-word;
-    overflow-y: hidden;
-    white-space: nowrap; */
-
-
+    word-break: break-all;
 }
 
 .post__text hr {
@@ -220,11 +217,10 @@
 }
 
 .pannel__right__create p {
-    font-size: 34px;
+    font-size: 2rem;
     font-weight: normal;
     font-style: normal;
     font-stretch: normal;
-    line-height: 1.21;
     text-align: left;
     color: #4fbcbd;
 }
@@ -241,15 +237,19 @@
 .pannel__right__category p {
     margin-top: 20px;
     margin-bottom: 20px;
-    font-size: 30px;
+    font-size: 2rem;
     font-weight: normal;
     font-style: normal;
     font-stretch: normal;
     color: #4fbcbd;
 }
 
+.right__category__list {
+    width: 90%
+}
+
 .right__category__list li {
-    width: 217.4px;
+    width: 100%;
     height: 43px;
     display: flex;
     align-items: center;
@@ -259,7 +259,7 @@
 }
 
 #category__a {
-    width: 165px;
+    width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
@@ -270,7 +270,7 @@
 }
 
 .c_common {
-    font-size: 21px;
+    font-size: 19px;
     font-weight: normal;
     font-style: normal;
 }

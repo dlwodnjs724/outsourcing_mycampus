@@ -5,6 +5,11 @@ from core.models import Univ
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from pytz import utc
+import arrow
+import math
+from imagekit.models import ImageSpecField
+from imagekit.processors import Thumbnail
+
 
 class Report(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
@@ -61,11 +66,19 @@ class Post(models.Model):
         ordering = ['-created_at']
 
     def time_interval(self):
-        now = utc.localize(datetime.datetime.utcnow())
-        create = utc.localize(self.created_at)
-        time_intervals = now - create
-        
-        return time_intervals
+        now = arrow.now().timestamp
+        # now = utc.localize(datetime.datetime.utcnow())
+        create = self.created_at.timestamp()
+        ti = math.floor(int(now- create) / 60)
+
+
+        if ti < 60 :
+            t = f'{ti} minutes ago'
+        elif 60 <= ti < (24 * 60):
+            t = f'{math.floor(ti/60)} hours ago'
+        else:
+            t = f'{math.floor(ti / (24 * 60))} days ago'
+        return t
 
     def total_likes(self):
         return self.likes.count()
@@ -77,21 +90,15 @@ class Post(models.Model):
     def name(self):
         return 'anon' if self.is_anonymous else self.author.username
 
-    # def comments_author(self):
-    #     c_list= []
-    #     for comment in self.comments.all:
-    #         c_list.append(comment.author.pk)
-    #     return c_list
-        
-
-def get_image_filename(instance, filename):
-    id = instance.post.id
-    return f'post_images/{id}'
-
 
 class Image(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, blank=False)
-    image = models.ImageField(upload_to=get_image_filename)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, blank=False, related_name="images")        
+    image = models.ImageField(upload_to='board/post/images/')
+    image_thumbnail = ImageSpecField(
+		source = 'image', 		   # 원본 ImageField 명
+		processors = [Thumbnail(200, 200)], # 처리할 작업목록
+		format = 'JPEG',		   # 최종 저장 포맷
+		options = {'quality': 60})
 
     def __str__(self):
         return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.author.username})'
