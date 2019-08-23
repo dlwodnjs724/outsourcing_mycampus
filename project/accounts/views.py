@@ -9,6 +9,7 @@ from accounts.forms import SignupForm, LoginForm
 from django.urls import reverse
 
 from core.models import Univ
+from core.utils.url_controll import redirect_with_next
 
 User = get_user_model()
 
@@ -21,7 +22,7 @@ def login(request, url_name):
     if not request.user.is_anonymous:
         return redirect("core:board:main_board", url_name=request.user.univ.url_name)
 
-    ctx = {"univ" : univ}
+    ctx = {"univ": univ}
     if request.method == 'POST':
 
         username = request.POST['username']
@@ -30,7 +31,8 @@ def login(request, url_name):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            return redirect('core:board:main_board', url_name=url_name)
+            url = request.GET.get('next') or reverse("core:board:main_board")
+            return redirect(url, url_name=url_name)
         else:
             ctx["error"] = "Login failed"
 
@@ -96,3 +98,27 @@ def signup(request, url_name):
     except Exception as e:
         print(e)
         return HttpResponseBadRequest("Bad Request: " + str(e))
+
+
+def mypage(request, url_name):
+    if request.user.is_anonymous:
+        params = {
+            "to": [url_name],
+            "next": [url_name]
+        }
+        return redirect_with_next("core:accounts:login", "core:accounts:mypage", params)
+
+    univ = Univ.objects.get(url_name=url_name)
+    if request.user.univ != univ:
+        return redirect("core:accounts:mypage", url_name)
+
+    user = request.user
+
+    if request.method == "GET":
+        ctx = {"user": user}
+        return render(request, "accounts/mypage.html", ctx)
+
+    else:
+        return HttpResponseBadRequest(content="Not allowed method")
+
+

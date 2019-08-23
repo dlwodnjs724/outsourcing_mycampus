@@ -10,10 +10,12 @@ class UnivCheckMiddleware:
         path = request.path.split('/')[1]
         exception_list = [
             'admin',
-            'auth',
+            # 'auth',
             '',
             'api',
-            'favicon.ico'
+            'favicon.ico',
+            'media',
+            'static',
         ]
 
         if request.user.is_authenticated and path not in exception_list:

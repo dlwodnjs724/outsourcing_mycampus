@@ -7,9 +7,15 @@
 --border-radius: 0.5rem;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     background-color: var(--wrapper-color);
+    font-family: YDIYGO340;
 }
+
 
 @font-face {
     font-family: YDIYGO340;

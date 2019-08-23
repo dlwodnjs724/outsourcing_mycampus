@@ -1,16 +1,68 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
+{% block css %}
+    <link rel="stylesheet" href="{% static "accounts/css/signup_form.css" %}">
+{% endblock %}
+
 {% block contents %}
-    <div class="container">
+    <div class="container flex-container">
         <div class="signup__white-wrapper">
             <div class="accounts__signup-form">
                 <form method="post" action="" class="accounts__form-tag">
                     {% csrf_token %}
-                    {{ form.as_p }}
-                    <button class="signup__submit">Submit</button>
+                    <div class="accounts__form__box accounts__login-info">
+                        <span id="accounts__login-title-span"class="info__title">Enter login information</span>
+                        {{ form.username }}
+                        {{ form.password1 }}
+                        {{ form.password2 }}
+                        <div class="info-error accounts__login-info__error">
+                            <span>{{ form.username.errors }}</span>
+                            <span>{{ form.passoword1.errors }}</span>
+                            <span>{{ form.username.errors }}</span>
+                        </div>
+                    </div>
+                    <div class="accounts__form__box accounts__sub-info">
+                        <div class="sub-info-field sub-info__gender">
+                            <div class="sub-info__gender-wrapper">
+                                <span class="info__title">Gender</span>
+                                <div class="info__choices">
+                                    <div class="info__choices-and-label">
+                                        <input id="female" class="gender-choice" type="radio" name="gender" value="f">
+                                        <label for="female">Female</label>
+                                    </div>
+                                    <div class="info__choices-and-label">
+                                        <input id="male" class="gender-choice" type="radio" name="gender" value="m">
+                                        <label for="male">Male</label>
+                                    </div>
+                                    <div class="info__choices-and-label">
+                                        <input id="others" class="gender-choice" type="radio" name="gender" value="o">
+                                        <label for="others">Others</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sub-info-field sub-info__class-of">
+                            <span id="accounts__sub-info-class-of-span" class="info__title">Class of</span>
+                            {{ form.class_of }}
+                            <div class="info-error accounts__login-info__error">
+                                {{ form.class_of.errors }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accounts__form__box terms-info-and-button">
+                        <p class="terms-info">
+                            By clicking submit, you agree to our <a href="#" class="signup__terms-info-link">Terms</a>
+                            and that you have read our <a href="#" class="signup__terms-info-link">Privacy Policy</a>
+                            and <a href="#" class="signup__terms-info-link">Content Policy</a>
+                        </p>
+                        <button class="signup__submit" onclick="onClickSubmit()">Next</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 {% endblock %}
+
+{% block javascript %}{% endblock %}

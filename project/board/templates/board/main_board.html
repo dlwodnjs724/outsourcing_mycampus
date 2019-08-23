@@ -1,29 +1,23 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block header %}
     <link rel="stylesheet" href="{% static "board/css/board_header.css" %}" type="text/css">
     <div class="board__header__search">
         <form action="" method="get">
             <button type="submit" value="search">
-                <object type="image/svg+xml" data="{% static "/svg/search.svg" %}"></object>
+                <img src="{% static "/svg/search.svg" %}">
             </button>
             <input type="text" placeholder="Search mycampus" name="search" value="{{ search }}">
         </form>
     </div>
     <div class="board__header__right">
         <ul class="board__buttons">
-            <li>
-                <object type="image/svg+xml" data="{% static "/svg/alarm.svg" %}"></object>
-            </li>
-            <li>
-                <object type="image/svg+xml" data="{% static "/svg/messege box.svg" %}"></object>
-            </li>
-            <li>
-                <object type="image/svg+xml" data="{% static "/svg/mypage.svg" %}"></object>
-            </li>
-            <li>
-                <object type="image/svg+xml" data="{% static "/svg/post.svg" %}"></object>
+            <li><img src="{% static "/svg/alarm.svg" %}"></li>
+            <li><img src="{% static "/svg/messege box.svg" %}"></li>
+            <li><img src="{% static "/svg/mypage.svg" %}"></li>
+            <li><img id="h__post" src="{% static "/svg/post.svg" %}">
             </li>
         </ul>
     </div>
@@ -38,8 +32,23 @@
 
 {% block contents %}
     <link rel="stylesheet" href="{% static "board/css/main_board.css" %}" type="text/css">
-    <a href="{% url 'core:board:main_board' univ.url_name %}">hot</a>
-    <a href="{% url 'core:board:main_board_new' univ.url_name %}">new</a>
+    <div class="board__pannel__top container">
+      <a href="{% url 'core:board:main_board_new' univ.url_name %}">
+      {% if state == 'new' %}
+        <img src="{% static "/svg/버튼2.svg"%}">
+      {% else %}
+        <img src="{% static "/svg/버튼3.svg"%}">
+      {% endif %}
+      </a>
+      <a href="{% url 'core:board:main_board' univ.url_name %}">
+      {% if state == 'hot' %}
+        <img src="{% static "/svg/버튼4.svg"%}">
+      {% else %}
+        <img src="{% static "/svg/버튼1.svg"%}">
+      {% endif %}
+      </a>
+    </div>
+    
 
     <div class="container board__main">
 
@@ -54,12 +63,16 @@
                                 <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
 
                                 <button type="button" class="like" name="{{ post.pk }}" value="Like">
-                                    <img src="{% static "/svg/like.svg" %}"/>
+                                  {% if user in post.likes.all %}
+                                    <img id="like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
+                                  {% else %}
+                                    <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
+                                  {% endif %}
+
                                 </button>
                             </div>
 
                             <div class="board__post__content">
-
                                 <div class="post__text">
                                     <div class="post__top">
                                         <div class="post__top__category">
@@ -81,24 +94,36 @@
                                     <div class="post__bottom">
                                         <div class="post__bottom__icon">
                                             <div class="s_con post__bottom__view">
+                                            {% if user in post.viewed_by.all %}
+                                                <img src="{% static "/svg/view-clicked.svg" %}"/>
+                                            {% else %}
                                                 <img src="{% static "/svg/view.svg" %}"/>
-                                                <span>3</span>
+                                            {% endif %}
+                                                <span>{{post.views}}</span>
                                             </div>
                                             <div class="s_con post__bottom__comment">
+                                            {% if user.pk in post.comments_author %}
+                                                <img src="{% static "/svg/comment-clicked.svg" %}"/>
+                                            {% else %}
                                                 <img src="{% static "/svg/comment.svg" %}"/>
-                                                <span>3</span>
+                                            {% endif %}
+                                                <span>{{ post.comments.all.count }}</span>
                                             </div>
                                             <div class="s_con post__bottom__bookmark">
+                                                {% if user in post.saved.all %}
+                                                    <img src="{% static "/svg/bookmark.svg" %}"/>
+                                                {% else %}
                                                 <img src="{% static "/svg/scrap.svg" %}"/>
-                                                <span>3</span>
+                                                {% endif %}
+                                                <span>{{ post.saved.all.count }}</span>
                                             </div>
                                         </div>
                                         <div class="post__bottom__time">
-                                            3 days...
+                                            {{ post.created_at|naturaltime }}
                                         </div>
                                         {##}
                                         {##}
-                                        {#                                        {% if user in post.saved.all %}#}
+                                        {#         {% if user in post.saved.all %}#}
                                         {#                                            <input type="button" class="bookmark" name="{{ post.pk }}" value="O">#}
                                         {#                                        {% else %}#}
                                         {#                                            <input type="button" class="bookmark" name="{{ post.pk }}" value="X">#}
@@ -130,7 +155,7 @@
                 <ul class="right__category__list">
                     {% for category in categories %}
                         <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
-                            <a href="{% url 'core:board:category_board' univ.url_name category.name %}">
+                            <a id="category__a" href="{% url 'core:board:category_board' univ.url_name category.name %}">
                                 <span class="c_common">
                                     {{ category.name }}
                                 </span>
@@ -150,6 +175,20 @@
 
     <script>
         $('.like').click(function () {
+            var pk = $(this).attr('name')
+            var like_img = document.getElementById(`like_id_${pk}`);
+            console.log(like_img.classList.contains('clicked'));
+            if (!(like_img.classList.contains('clicked'))) {
+              like_img.src="/static/svg/like-clicked.svg";
+              like_img.setAttribute('class','clicked');
+            } else {
+              like_img.src="/static/svg/like.svg";
+              like_img.removeAttribute('class','clicked');
+            }
+
+
+
+
             const univUrlName = "{{ univ.url_name }}";
             const url = '{% url 'core:board:post_like' 0 %}'.replace('0', univUrlName);
             $.ajax({

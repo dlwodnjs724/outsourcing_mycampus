@@ -2,10 +2,25 @@
 {% load static %}
 
 {% block contents %}
-{% for acc in users %}
-<a href="./{{acc.id}}">{{acc.username}}</a>
-{% endfor %}
+username : {{user.username}}<br>
+<input type="text" id="other"><input type="submit" id="submit">
+<div id='chat_list'>
+</div>
 {% endblock contents %}
 
 {% block javascript %}
+<script>
+    const chat_list = document.getElementById('chat_list')
+    const other = document.getElementById('other')
+    const submit = document.getElementById('submit')
+    sb.connect("{{ user.username }}", function (user, error) {
+        if (error) return;
+        loadChatList(sb, chat_list)
+    });
+    submit.addEventListener('click', async (e) => {
+        try { await openChat(sb, other.value) }
+        catch (e) { alert(e) }
+        loadChatList(sb, chat_list)
+    })
+</script>
 {% endblock javascript %}

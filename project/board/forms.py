@@ -36,6 +36,9 @@ class PostForm(forms.ModelForm):
         self.fields['content'].widget.attrs.update({
             'placeholder': 'Please enter your contents.'
         })
+        self.fields['is_anonymous'].widget.attrs.update({
+            'checked': True
+        })
 
     def save(self, commit=True):
         self.instance.author = self.request.user

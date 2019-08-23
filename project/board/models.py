@@ -1,9 +1,10 @@
 from django.db import models
-from datetime import datetime, timezone
+import datetime
 from accounts.models import User
 from core.models import Univ
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
+from pytz import utc
 
 class Report(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
@@ -47,9 +48,9 @@ class Post(models.Model):
     content = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
     likes = models.ManyToManyField(User, default=0, related_name='liked', blank=True)
     views = models.PositiveIntegerField(default=0)
+    viewed_by = models.ManyToManyField(User, related_name='viewed', blank=True)
     is_anonymous = models.BooleanField(default=False)
 
     saved = models.ManyToManyField(User, related_name='saved', blank=True)
@@ -60,9 +61,11 @@ class Post(models.Model):
         ordering = ['-created_at']
 
     def time_interval(self):
-        now = datetime.now(timezone.utc)
-        time_interval = now - self.created_at
-        return time_interval
+        now = utc.localize(datetime.datetime.utcnow())
+        create = utc.localize(self.created_at)
+        time_intervals = now - create
+        
+        return time_intervals
 
     def total_likes(self):
         return self.likes.count()
@@ -74,6 +77,12 @@ class Post(models.Model):
     def name(self):
         return 'anon' if self.is_anonymous else self.author.username
 
+    # def comments_author(self):
+    #     c_list= []
+    #     for comment in self.comments.all:
+    #         c_list.append(comment.author.pk)
+    #     return c_list
+        
 
 def get_image_filename(instance, filename):
     id = instance.post.id
@@ -82,14 +91,14 @@ def get_image_filename(instance, filename):
 
 class Image(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, blank=False)
-    image = models.ImageField(upload_to=get_image_filename)
+    image = models.ImageField(upload_to='board/post/images/')
 
     def __str__(self):
         return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.author.username})'
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=False)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=False, related_name="comments")
     author = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True)
     content = models.CharField(max_length=200, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
