@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'components/white-wrapper.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/mypage.css' %}">
+{% endblock %}
+{% block contents %}
+    <div class="container flex-container">
+        <div class="white-wrapper">
+            <div class="mypage-wrapper">
+                <div class="mypage-section">
+                    <h1 class="mypage-header">My Page</h1>
+                    <div class="mypage__my-profile">
+                        <div class="profile-wrapper">
+                            <div class="user-profile user-profile-img">
+                                <img src="{% static 'svg/Anon.svg' %}" alt="user">
+                            </div>
+                            <div class="user-profile user-profile-info">
+                                <div>
+                                    <h3 class="profile-info profile-info__username">
+                                        {{ user.username }}
+                                    </h3>
+                                </div>
+                                <div>
+                                    <h4 class="profile-info profile-info__email">
+                                        {{ user.email }}
+                                    </h4>
+                                    <h4 class="profile-info profile-info__class-of">
+                                        {{ user.class_of }}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mypage-section section__with-header">
+                    <div class="section__header">
+                        <h2 class="section-header">History</h2>
+                    </div>
+                    <div class="section__body">
+                        <div class="section__body__component">
+                            <div class="body-component__content">
+                                <h2 class="content__header">My posts</h2>
+                                <h4 class="content__desc">All contents you posted</h4>
+                            </div>
+                            <button class="body-component__button">VIEW ALL</button>
+                        </div>
+                        <div class="section__body__component">
+                            <div class="body-component__content">
+                                <h2 class="content__header">My comments</h2>
+                                <h4 class="content__desc">All contents you commented</h4>
+                            </div>
+                            <button class="body-component__button">VIEW ALL</button>
+                        </div>
+                        <div class="section__body__component">
+                            <div class="body-component__content">
+                                <h2 class="content__header">Saved</h2>
+                                <h4 class="content__desc">
+                                    All contents you saved
+                                </h4>
+                            </div>
+                            <button class="body-component__button">VIEW ALL</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mypage-section section__with-header">
+                    <div class="section__header">
+                        <h2 class="section-header">Account</h2>
+                    </div>
+                    <div class="section__body">
+                        <div class="section__body__component">
+                            <div class="body-component__content">
+                                <h2 class="content__header">Log out</h2>
+                                <h4 class="content__desc">
+                                    Log out
+                                </h4>
+                            </div>
+                            <button class="body-component__button">Log out</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mypage-section section__with-header">
+                    <div class="section__header">
+                        <h2 class="section-header">
+                            Support
+                        </h2>
+                    </div>
+                    <div class="section__body">
+                        <div class="section__body__component">
+                            <div class="body-component__content">
+                                <h2 class="content__header">
+                                    Content Guideline
+                                </h2>
+                                <h4 class="content__desc">
+                                    NO RACISM, NO BULLYING, NO THREATENING!!
+                                </h4>
+                            </div>
+                            <button class="body-component__button">READ ALL</button>
+                        </div>
+                        <div class="section__body__component">
+                            <div class="body-component__content">
+                                <h2 class="content__header">
+                                    Term & Policy
+                                </h2>
+                                <h4 class="content__desc">
+                                    About user privacy, message privacy and security
+                                </h4>
+                            </div>
+                            <button class="body-component__button">READ ALL</button>
+                        </div>
+                        <div class="section__body__component">
+                            <div class="body-component__content">
+                                <h2 class="content__header">
+                                    Contact us & Report a bug
+                                </h2>
+                                <h4 class="content__desc">
+                                    Any question & Thank you for all your feedback in advance
+                                </h4>
+                            </div>
+                            <button class="body-component__button">MESSAGE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

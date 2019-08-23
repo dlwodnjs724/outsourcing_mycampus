@@ -1,0 +1,9 @@
+.white-wrapper {
+    width: 100%;
+    height: fit-content;
+    padding: 3rem 0;
+    margin-top: auto;
+    border-radius: var(--border-radius);
+    background-color: #fff;
+}
+
