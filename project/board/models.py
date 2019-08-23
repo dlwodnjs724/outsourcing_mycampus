@@ -48,10 +48,8 @@ class Post(models.Model):
     content = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
     likes = models.ManyToManyField(User, default=0, related_name='liked', blank=True)
     views = models.PositiveIntegerField(default=0)
-    views_double_check =  models.ManyToManyField(User, related_name='double_check', blank=True)
     viewed_by = models.ManyToManyField(User, related_name='viewed', blank=True)
     is_anonymous = models.BooleanField(default=False)
 
