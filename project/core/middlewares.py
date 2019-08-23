@@ -13,7 +13,9 @@ class UnivCheckMiddleware:
             # 'auth',
             '',
             'api',
-            'favicon.ico'
+            'favicon.ico',
+            'media',
+            'static',
         ]
 
         if request.user.is_authenticated and path not in exception_list:

@@ -36,7 +36,7 @@ def main_board(request, url_name):
 def main_board_new(request, url_name):
     univ = get_object_or_404(Univ, url_name=url_name)
     categories = get_list_or_404(Category, univ=univ)
-    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved') \
+    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments') \
         .filter(ctgy__univ=univ)
 
     search = request.GET.get('search', '')
@@ -109,7 +109,7 @@ def category_board(request, url_name, category_name):
     univ = get_object_or_404(Univ, url_name=url_name)
     categories = get_list_or_404(Category, univ=univ)
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
-    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved') \
+    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments') \
         .filter(ctgy=selected_category) \
         .annotate(num_likes=Count('likes')) \
         .order_by('-num_likes', '-created_at')
@@ -131,7 +131,7 @@ def category_board_new(request, url_name, category_name):
     univ = get_object_or_404(Univ, url_name=url_name)
     categories = get_list_or_404(Category, univ=univ)
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
-    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved') \
+    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments') \
         .filter(ctgy=selected_category)
 
     search = request.GET.get('search', '')
@@ -152,9 +152,9 @@ def post_detail(request, url_name, category_name, post_pk):
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
     post = get_object_or_404(Post, ctgy=selected_category, pk=post_pk)
     comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
-        .select_related('author', 'parent', 'parent__author')\
+        .select_related('author', 'parent', 'post')\
         .filter(post=post, parent=None)
-   
+
     # post.viewed_by.add(request.user)
     # post.views_double_check.add(request.user)
     # if not request.user in post.views_double_check: 
