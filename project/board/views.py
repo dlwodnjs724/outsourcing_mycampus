@@ -15,6 +15,7 @@ def main_board(request, url_name):
 
     univ = get_object_or_404(Univ, url_name=url_name)
     categories = get_list_or_404(Category, univ=univ)
+    state = "hot"
     posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved')\
         .filter(ctgy__univ=univ) \
         .annotate(num_likes=Count('likes')) \
@@ -23,6 +24,7 @@ def main_board(request, url_name):
         'univ': univ,
         'categories': categories,
         'posts': posts,
+        'state': state,
     })
 
 
@@ -38,12 +40,14 @@ def main_board_new(request, url_name):
     search = request.GET.get('search', '')
     if search:
         posts = posts.filter(Q(title__icontains=search) | Q(content__icontains=search))
+    state = "new"
 
     return render(request, 'board/main_board.html', {
         'univ': univ,
         'categories': categories,
         'search': search,
         'posts': posts,
+        'state': state,
     })
 
 
@@ -56,7 +60,7 @@ def category_board(request, url_name, category_name):
     categories = get_list_or_404(Category, univ=univ)
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
     posts = Post.objects.filter(ctgy=selected_category)
-    return render(request, 'board/category_board.html', {
+    return render(request, 'board/main_board.html', {
         'univ': univ,
         'categories': categories,
         'selected_category': selected_category,
@@ -73,7 +77,6 @@ def post_detail(request, url_name, category_name, post_pk):
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
     post = get_object_or_404(Post, ctgy=selected_category, pk=post_pk)
     comments = Comment.objects.prefetch_related('comment_likes').select_related('author').filter(post=post)
-    # post.viewed_by.add(request.user)
     # post.views_double_check.add(request.user)
     # if not request.user in post.views_double_check: 
     #     post.views += 1
@@ -94,19 +97,19 @@ def post_detail(request, url_name, category_name, post_pk):
     # print(cookie_name)
     tomorrow = datetime.datetime.replace(datetime.datetime.now(), hour=23, minute=59, second=0)
     expires = datetime.datetime.strftime(tomorrow, "%a, %d-%b-%Y %H:%M:%S GMT")
-    print(post.views)
-    print('***************************')
     if request.COOKIES.get(cookie_name) is not None:
         cookies = request.COOKIES.get(cookie_name)
         cookies_list = cookies.split('|')
         if str(post_pk) not in cookies_list:
             response.set_cookie(cookie_name, cookies + f'|{post_pk}', expires =expires)
             post.views += 1
+            post.viewed_by.add(request.user)
             post.save()
             return response
     else:
         response.set_cookie(cookie_name, post_pk, expires =expires)
         post.views += 1
+        post.viewed_by.add(request.user)
         post.save()
         return response
 

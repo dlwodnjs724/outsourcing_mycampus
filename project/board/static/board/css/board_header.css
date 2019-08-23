@@ -1,7 +1,12 @@
 .board__header__right {
     display: flex;
     align-items: center;
-    width: 23%;
+    width: 240px;
+}
+
+.board__header__right li {
+    display: flex;
+    justify-content: center;
 }
 
 .board__buttons {
@@ -12,15 +17,19 @@
     width:100%;
 }
 
-.board__buttons object{
-    width: 65%;
+.board__buttons img{
+    height: 25px;
+}
+
+#h__post {
+    height: 33px!important;
 }
 
 .board__header__search {
-    height: 1.5rem;
+    height: 2rem;
     background-color: white;
     border-radius: 0.5rem;
-    width: 40%;
+    width: 400px;
 }
 
 .board__header__search form {
@@ -47,6 +56,6 @@
     margin-top: 1px;
 }
 
-.board__header__search button object {
-    width: 60%;
+.board__header__search button img {
+    width: 18px;
 }
