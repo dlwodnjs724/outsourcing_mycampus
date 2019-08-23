@@ -13,7 +13,7 @@ def main_board(request, url_name):
     univ = get_object_or_404(Univ, url_name=url_name)
     categories = get_list_or_404(Category, univ=univ)
     state = "hot"
-    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved')\
+    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments') \
         .filter(ctgy__univ=univ) \
         .annotate(num_likes=Count('likes')) \
         .order_by('-num_likes', '-created_at')
@@ -98,7 +98,7 @@ def post_create(request, url_name):
             post = form.save()
             for image in request.FILES.getlist('images'):
                 Image.objects.create(post=post, image=image)
-            return redirect('core:board:main_board', request.user.univ.url_name)
+            return redirect('core:board:main_board_new', request.user.univ.url_name)
     return render(request, 'board/post_new.html', {
         'form': form,
     })
