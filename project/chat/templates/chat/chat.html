@@ -6,7 +6,7 @@
     <div id='title'>
         {{user}}'s chat with {{partner}}
     </div>
-    <div id='chatroom' style="overflow:scroll; width:500px; height:150px;">
+    <div id='chat_room' style="overflow:scroll; width:500px; height:150px;">
 
     </div>
     <div class="form">
@@ -19,24 +19,15 @@
 {% block javascript %}
 
 <script>
-    const chatroom = document.getElementById('chatroom')
+    const chat_room = document.getElementById('chat_room')
     const m_btn = document.getElementById('m_submit')
 
     sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
         const chats = await loadChatList(sb)
-        const target = chats.filter(cur => cur.members.filter(cur => cur.userId == "{{partner}}").length)[0]
-        loadLog(target).load(function (messages, error) {
-            if (error) {
-                return;
-            }
-            chatroom.innerHTML = messages.reduce((acc,cur) => {
-                return acc + strfy(cur)
-            },"")
-            chatroom.scrollTop = chatroom.scrollHeight;
-
-        })
-
+        const target_server = chats.filter(cur => cur.members.filter(_cur => _cur.userId == "{{partner}}"))[0]
+        chat_room.innerHTML = await loadLog(target_server,10)
+        chat_room.scrollTop = chat_room.scrollHeight;
     });
 
     m_btn.addEventListener('click', async (e) => {
@@ -48,8 +39,8 @@
             groupChannel.sendUserMessage(document.getElementById('message').value, function (message,
                 error) {
                 if (error) return;
-                chatroom.innerHTML += strfy(message)
-                chatroom.scrollTop = chatroom.scrollHeight;
+                chat_room.innerHTML += strfy(message)
+                chat_room.scrollTop = chat_room.scrollHeight;
             });
         });
     });

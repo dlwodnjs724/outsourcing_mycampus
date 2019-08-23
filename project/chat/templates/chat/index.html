@@ -6,21 +6,55 @@ username : {{user.username}}<br>
 <input type="text" id="other"><input type="submit" id="submit">
 <div id='chat_list'>
 </div>
+<div id="chat_box">
+    <div id='chat_header'>
+
+    </div>
+    <div id='chat_room' style="overflow:scroll; width:500px; height:150px;">
+
+    </div>
+    <div class="chat_input">
+        <input type="text" id="message">
+        <input type="submit" id="m_submit">
+    </div>
+</div>
 {% endblock contents %}
 
 {% block javascript %}
 <script>
+    const setBase = async (sb, chat_list, chat_header, chat_room) => {
+        const channels = await loadChatList(sb, chat_list)
+        const buttons = [...document.getElementsByClassName('url')]
+        buttons.forEach(cur => {
+            cur.addEventListener('click', async e => {
+                const target = channels.filter(_cur => _cur.url == cur.value)[0]
+                chat_header.innerHTML = `chat with ${cur.name}`
+                chat_room.innerHTML = await loadLog(target, 10)
+                chat_room.scrollTop = chat_room.scrollHeight
+            })
+        })
+    }
+    const chat_room = document.getElementById('chat_room')
+    const chat_header = document.getElementById('chat_header')
+    const m_btn = document.getElementById('m_submit')
     const chat_list = document.getElementById('chat_list')
     const other = document.getElementById('other')
     const submit = document.getElementById('submit')
-    sb.connect("{{ user.username }}", function (user, error) {
+    let buttons = []
+
+    sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
-        loadChatList(sb, chat_list)
+        await setBase(sb, chat_list, chat_header, chat_room)
+        
     });
     submit.addEventListener('click', async (e) => {
-        try { await openChat(sb, other.value) }
-        catch (e) { alert(e) }
-        loadChatList(sb, chat_list)
+        try {
+            await openChat(sb, other.value)
+        } catch (e) {
+            alert(e)
+        }
+        await setBase(sb, chat_list, chat_header, chat_room)
     })
+
 </script>
 {% endblock javascript %}

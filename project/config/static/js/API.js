@@ -9,12 +9,22 @@ const strfy = (message) => {
  * 채널의 채팅 로그 10개 불러와서 쿼리 리턴해주는 함수.
  * @param {channel} channel sb.GroupChannel 인스턴스?
  */
-const loadLog = (channel) => {
+const loadLog = (channel, length, to) => {
     const log = channel.createPreviousMessageListQuery()
-    log.limit = 10;
+    log.limit = length;
     log.reverse = false;
-    return log
+    return new Promise((res, rej) => {
+        log.load((messages, error) => {
+            if (error) rej(error);
+            res(messages.reduce((acc, cur) => {
+                return acc + strfy(cur)
+            }, ""))
+        })
+    })
 }
+
+const showLog = (channel, length, to) => {}
+
 const findInvitee = (channel) => {
     const first = channel.members[0]
     const second = channel.members[1]
@@ -24,16 +34,18 @@ const findInvitee = (channel) => {
 }
 
 const getNext = (Query, to) => {
-    return new Promise((res,rej) => {
+    return new Promise((res, rej) => {
         const list = []
         Query.next(function (channelList, error) {
             if (error) return;
             for (c of channelList) {
-                list.push(c.members.filter(v => v.userId != sb.currentUser.userId)[0].userId)
+                list.push({
+                    "with": c.members.filter(v => v.userId != sb.currentUser.userId)[0].userId,
+                    "url": c.url
+                })
             }
-            if (to) to.innerHTML = list.map(cur => `<a href="./${cur}">with ${cur}</a><br>`).join('')
-            else res(channelList)
-            res('success')
+            if (to) to.innerHTML = list.map(cur => `<button class="url" value="${cur.url}" name="${cur.with}">with ${cur.with}</button><br>`).join('')
+            res(channelList)
         })
     })
 }
@@ -47,8 +59,8 @@ const loadChatList = async (sb, to) => {
 }
 
 const leaveChat = (channel) => {
-    return new Promise( (resolve, reject) => {
-        channel.leave(function(response, error) {
+    return new Promise((resolve, reject) => {
+        channel.leave(function (response, error) {
             if (error) return
             reject('no such user')
         })
@@ -65,8 +77,11 @@ const openChat = (sb, other) => {
             if (!groupChannel.isCreated) reject('already exist')
             const invitee = findInvitee(groupChannel.channel)
             if (!invitee) {
-                try { await leaveChat(groupChannel.channel) }
-                catch (e) { alert(e) }
+                try {
+                    await leaveChat(groupChannel.channel)
+                } catch (e) {
+                    alert(e)
+                }
             }
             resolve('created')
         })
@@ -81,8 +96,8 @@ const ChannelHandler = new sb.ChannelHandler();
 
 ChannelHandler.onMessageReceived = function (channel, message) {
     try {
-        chatroom.innerHTML += strfy(message)
-        chatroom.scrollTop = chatroom.scrollHeight;
+        chat_room.innerHTML += strfy(message)
+        chat_room.scrollTop = chat_room.scrollHeight;
     } catch {
         console.log('got message')
     }
