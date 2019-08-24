@@ -39,11 +39,12 @@ username : {{user.username}}<br>
     });
 
     submit.addEventListener('click', async (e) => {
+        let channel, buttons
         try {
-            const channel = await openChat(other.value)
+            channel = await openChat(other.value)
+            buttons = document.getElementsByClassName('url')
             addChatBtn(channel, chat_list)
-            const buttons = document.getElementsByClassName('url')
-            setChannelBtn(buttons[buttons.length-1], chat_header, chat_room)
+            setChannelBtn(buttons[buttons.length - 1], chat_header, chat_room)
         } catch (e) {
             alert(e)
         }
@@ -51,9 +52,9 @@ username : {{user.username}}<br>
 
     m_btn.addEventListener('click', async (e) => {
         sb.GroupChannel.getChannel(chat_room.getAttribute('url'), (groupChannel, error) => {
-            if(error) return
-            groupChannel.sendUserMessage(chat_text.value, (message, error)=>{
-                if(error) return
+            if (error) return
+            groupChannel.sendUserMessage(chat_text.value, (message, error) => {
+                if (error) return
                 chat_room.innerHTML += strfy(message)
                 chat_room.scrollTop = chat_room.scrollHeight;
             })

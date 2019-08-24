@@ -30,7 +30,6 @@ const loadLog = (url, length, to) => {
 const findInvitee = (channel) => {
     const first = channel.members[0]
     const second = channel.members[1]
-
     if (channel.inviter.userId == first.userId) return second
     else return first
 }
@@ -77,7 +76,8 @@ const leaveChat = (channel) => {
     return new Promise((resolve, reject) => {
         channel.leave(function (response, error) {
             if (error) return
-            reject('no such user')
+            else if (channel.members.length == 1) reject('self inviting')
+            else reject('no such user')
         })
     })
 }
@@ -85,20 +85,20 @@ const leaveChat = (channel) => {
 const openChat = (other) => {
     const params = new sb.GroupChannelParams();
     params.addUserIds([other]);
-    if (sb.currentUser.userId == other) throw new Error('recursive')
     return new Promise(async (resolve, reject) => {
         sb.GroupChannel.createDistinctChannelIfNotExist(params, async function (groupChannel, error) {
             if (error) reject(error)
             if (!groupChannel.isCreated) reject('already exist')
-            const invitee = findInvitee(groupChannel.channel)
-            if (!invitee) {
+            const channel = groupChannel.channel
+            const invitee = channel.members.filter(cur => channel.inviter.userId != cur.userId)[0]
+            if (!invitee || sb.currentUser.userId == other) {
                 try {
-                    await leaveChat(groupChannel.channel)
+                    await leaveChat(channel)
                 } catch (e) {
                     alert(e)
                 }
             }
-            resolve(groupChannel.channel)
+            resolve(channel)
         })
     })
 }
@@ -110,21 +110,15 @@ const sb = new SendBird({
 const ChannelHandler = new sb.ChannelHandler();
 
 ChannelHandler.onMessageReceived = function (channel, message) {
-    try {
-        if (chat_room.getAttribute('url') == channel.url) {
-            chat_room.innerHTML += strfy(message)
-            chat_room.scrollTop = chat_room.scrollHeight;
-        } else {
-            console.log('got message')
-        }
-    } catch {
-        console.log('got message')
-    }
+    if (chat_room.getAttribute('url') == channel.url) {
+        chat_room.innerHTML += strfy(message)
+        chat_room.scrollTop = chat_room.scrollHeight;
+    } else alert('got message')
 };
 
 ChannelHandler.onUserReceivedInvitation = function (groupChannel, inviter, invitees) {
-    if (sb.currentUser.userId != inviter.userId) {
-        console.log('invited')
+    if (sb.currentUser.userId != inviter.userId && chat_header.getAttribute('with') != inviter.userId) {
+        alert(`${inviter.userId} invited you to chat. plz refresh`)
     }
 };
 
