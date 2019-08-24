@@ -35,7 +35,10 @@ username : {{user.username}}<br>
         if (error) return;
         const channels = await loadChatList()
         channels.forEach(cur => addChatBtn(cur, chat_list))
-        setBase(chat_list, chat_header, chat_room)
+        const buttons = [...chat_list.querySelectorAll('button')]
+        buttons.forEach(cur => {
+            setChannelBtn(cur, chat_header, chat_room)
+        })
     });
 
     submit.addEventListener('click', async (e) => {

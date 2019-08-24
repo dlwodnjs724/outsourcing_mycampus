@@ -110,16 +110,32 @@ const sb = new SendBird({
 const ChannelHandler = new sb.ChannelHandler();
 
 ChannelHandler.onMessageReceived = function (channel, message) {
-    if (chat_room.getAttribute('url') == channel.url) {
-        chat_room.innerHTML += strfy(message)
-        chat_room.scrollTop = chat_room.scrollHeight;
-    } else alert('got message')
+    try{
+        if (chat_room.getAttribute('url') == channel.url) {
+            chat_room.innerHTML += strfy(message)
+            chat_room.scrollTop = chat_room.scrollHeight;
+        } else alert(`got message from ${message._sender.userId}`)
+    }
+    catch(e){
+        alert(`got message`)
+    }
 };
 
-ChannelHandler.onUserReceivedInvitation = function (groupChannel, inviter, invitees) {
-    if (sb.currentUser.userId != inviter.userId && chat_header.getAttribute('with') != inviter.userId) {
-        alert(`${inviter.userId} invited you to chat. plz refresh`)
+ChannelHandler.onUserReceivedInvitation = async function (groupChannel, inviter, invitees) {
+    try {
+        if (sb.currentUser.userId != inviter.userId) {
+            try {
+                const buttons = document.getElementsByClassName('url')
+                addChatBtn(groupChannel, chat_list)
+                setChannelBtn(buttons[buttons.length - 1], chat_header, chat_room)
+            } catch (e) {
+                alert(e)
+            }
+        }
+    } catch (e) {
+        alert(`${inviter.userId} invited you to chat.`)
     }
+
 };
 
 sb.addChannelHandler(0, ChannelHandler);
