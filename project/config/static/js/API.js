@@ -9,21 +9,23 @@ const strfy = (message) => {
  * 채널의 채팅 로그 10개 불러와서 쿼리 리턴해주는 함수.
  * @param {channel} channel sb.GroupChannel 인스턴스?
  */
-const loadLog = (channel, length, to) => {
-    const log = channel.createPreviousMessageListQuery()
-    log.limit = length;
-    log.reverse = false;
+const loadLog = (url, length, to) => {
     return new Promise((res, rej) => {
-        log.load((messages, error) => {
-            if (error) rej(error);
-            res(messages.reduce((acc, cur) => {
-                return acc + strfy(cur)
-            }, ""))
+        sb.GroupChannel.getChannel(url, (groupChannel, error) => {
+            if (error) return
+            const log = groupChannel.createPreviousMessageListQuery()
+            log.limit = length;
+            log.reverse = false;
+            log.load((messages, error) => {
+                if (error) rej(error);
+                res(messages.reduce((acc, cur) => {
+                    return acc + strfy(cur)
+                }, ""))
+            })
         })
     })
 }
 
-const showLog = (channel, length, to) => {}
 
 const findInvitee = (channel) => {
     const first = channel.members[0]
@@ -33,24 +35,37 @@ const findInvitee = (channel) => {
     else return first
 }
 
+const setBase = async (chat_list, chat_header, chat_room) => {
+    const buttons = [...chat_list.querySelectorAll('button')]
+    buttons.forEach(cur => {
+        setChannelBtn(cur, chat_header, chat_room)
+    })
+}
+
+const addChatBtn = async (channel, to) => {
+    const _with = channel.members.filter(v => v.userId != sb.currentUser.userId)[0].userId
+    to.innerHTML += `<button class="url" url="${channel.url}" with="${_with}">with ${_with}</button><br>`
+}
+
+const setChannelBtn = async (button, chat_header, chat_room) => {
+    button.addEventListener('click', async e => {
+        chat_header.innerHTML = `chat with ${button.getAttribute('with')}`
+        chat_room.setAttribute('url', button.getAttribute('url'))
+        chat_room.setAttribute('with', button.getAttribute('with'))
+        chat_room.innerHTML = await loadLog(button.getAttribute('url'), 10)
+        chat_room.scrollTop = chat_room.scrollHeight;
+    })
+}
 const getNext = (Query, to) => {
     return new Promise((res, rej) => {
-        const list = []
         Query.next(function (channelList, error) {
             if (error) return;
-            for (c of channelList) {
-                list.push({
-                    "with": c.members.filter(v => v.userId != sb.currentUser.userId)[0].userId,
-                    "url": c.url
-                })
-            }
-            if (to) to.innerHTML = list.map(cur => `<button class="url" value="${cur.url}" name="${cur.with}">with ${cur.with}</button><br>`).join('')
             res(channelList)
         })
     })
 }
 
-const loadChatList = async (sb, to) => {
+const loadChatList = async (to) => {
     const CLQ = sb.GroupChannel.createMyGroupChannelListQuery()
     CLQ.includeEmpty = true;
     if (CLQ.hasNext) {
@@ -67,7 +82,7 @@ const leaveChat = (channel) => {
     })
 }
 
-const openChat = (sb, other) => {
+const openChat = (other) => {
     const params = new sb.GroupChannelParams();
     params.addUserIds([other]);
     if (sb.currentUser.userId == other) throw new Error('recursive')
@@ -83,7 +98,7 @@ const openChat = (sb, other) => {
                     alert(e)
                 }
             }
-            resolve('created')
+            resolve(groupChannel.channel)
         })
     })
 }
@@ -96,8 +111,12 @@ const ChannelHandler = new sb.ChannelHandler();
 
 ChannelHandler.onMessageReceived = function (channel, message) {
     try {
-        chat_room.innerHTML += strfy(message)
-        chat_room.scrollTop = chat_room.scrollHeight;
+        if (chat_room.getAttribute('url') == channel.url) {
+            chat_room.innerHTML += strfy(message)
+            chat_room.scrollTop = chat_room.scrollHeight;
+        } else {
+            console.log('got message')
+        }
     } catch {
         console.log('got message')
     }
