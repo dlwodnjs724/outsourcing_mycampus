@@ -10,7 +10,7 @@ username : {{user.username}}<br>
     <div id='chat_header'>
 
     </div>
-    <div id='chat_room' style="overflow:scroll; width:500px; height:150px;">
+    <div id='chat_room' id='none' style="overflow:scroll; width:500px; height:150px;">
 
     </div>
     <div class="chat_input">
@@ -22,6 +22,13 @@ username : {{user.username}}<br>
 
 {% block javascript %}
 <script>
+    const chat_room = document.getElementById('chat_room')
+    const chat_header = document.getElementById('chat_header')
+    const m_btn = document.getElementById('m_submit')
+    const chat_list = document.getElementById('chat_list')
+    const other = document.getElementById('other')
+    const submit = document.getElementById('submit')
+    let buttons = []
     const setBase = async (sb, chat_list, chat_header, chat_room) => {
         const channels = await loadChatList(sb, chat_list)
         const buttons = [...document.getElementsByClassName('url')]
@@ -31,21 +38,26 @@ username : {{user.username}}<br>
                 chat_header.innerHTML = `chat with ${cur.name}`
                 chat_room.innerHTML = await loadLog(target, 10)
                 chat_room.scrollTop = chat_room.scrollHeight
+                m_btn.addEventListener('click', async (e) => {
+                    sb.GroupChannel.getChannel(target.url, function (groupChannel, error) {
+                        if (error) return;
+                        groupChannel.sendUserMessage(document.getElementById('message').value,
+                            function (message, error) {
+                                if (error) return;
+                                chat_room.innerHTML += strfy(message)
+                                chat_room.scrollTop = chat_room.scrollHeight;
+                            });
+                    });
+                })
             })
         })
     }
-    const chat_room = document.getElementById('chat_room')
-    const chat_header = document.getElementById('chat_header')
-    const m_btn = document.getElementById('m_submit')
-    const chat_list = document.getElementById('chat_list')
-    const other = document.getElementById('other')
-    const submit = document.getElementById('submit')
-    let buttons = []
+
 
     sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
         await setBase(sb, chat_list, chat_header, chat_room)
-        
+
     });
     submit.addEventListener('click', async (e) => {
         try {
@@ -55,6 +67,5 @@ username : {{user.username}}<br>
         }
         await setBase(sb, chat_list, chat_header, chat_room)
     })
-
 </script>
 {% endblock javascript %}
