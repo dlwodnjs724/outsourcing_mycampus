@@ -6,21 +6,59 @@ username : {{user.username}}<br>
 <input type="text" id="other"><input type="submit" id="submit">
 <div id='chat_list'>
 </div>
+<div id="chat_box" to="none">
+    <div id='chat_header'>
+
+    </div>
+    <div id='chat_room' url='none' with='none' style="overflow:scroll; width:500px; height:150px;">
+
+    </div>
+    <div class="chat_input">
+        <input type="text" id="message">
+        <input type="submit" id="m_submit">
+    </div>
+</div>
 {% endblock contents %}
 
 {% block javascript %}
 <script>
     const chat_list = document.getElementById('chat_list')
+    const chat_header = document.getElementById('chat_header')
+    const chat_room = document.getElementById('chat_room')
+    const chat_text = document.getElementById('message')
+    const m_btn = document.getElementById('m_submit')
     const other = document.getElementById('other')
     const submit = document.getElementById('submit')
-    sb.connect("{{ user.username }}", function (user, error) {
+
+
+    sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
-        loadChatList(sb, chat_list)
+        const channels = await loadChatList()
+        channels.forEach(cur => addChatBtn(cur, chat_list))
+        setBase(chat_list, chat_header, chat_room)
     });
+
     submit.addEventListener('click', async (e) => {
-        try { await openChat(sb, other.value) }
-        catch (e) { alert(e) }
-        loadChatList(sb, chat_list)
+        let channel, buttons
+        try {
+            channel = await openChat(other.value)
+            buttons = document.getElementsByClassName('url')
+            addChatBtn(channel, chat_list)
+            setChannelBtn(buttons[buttons.length - 1], chat_header, chat_room)
+        } catch (e) {
+            alert(e)
+        }
+    })
+
+    m_btn.addEventListener('click', async (e) => {
+        sb.GroupChannel.getChannel(chat_room.getAttribute('url'), (groupChannel, error) => {
+            if (error) return
+            groupChannel.sendUserMessage(chat_text.value, (message, error) => {
+                if (error) return
+                chat_room.innerHTML += strfy(message)
+                chat_room.scrollTop = chat_room.scrollHeight;
+            })
+        })
     })
 </script>
 {% endblock javascript %}

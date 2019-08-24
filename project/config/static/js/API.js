@@ -9,36 +9,62 @@ const strfy = (message) => {
  * 채널의 채팅 로그 10개 불러와서 쿼리 리턴해주는 함수.
  * @param {channel} channel sb.GroupChannel 인스턴스?
  */
-const loadLog = (channel) => {
-    const log = channel.createPreviousMessageListQuery()
-    log.limit = 10;
-    log.reverse = false;
-    return log
-}
-const findInvitee = (channel) => {
-    const first = channel.members[0]
-    const second = channel.members[1]
-
-    if (channel.inviter.userId == first.userId) return second
-    else return first
-}
-
-const getNext = (Query, to) => {
-    return new Promise((res,rej) => {
-        const list = []
-        Query.next(function (channelList, error) {
-            if (error) return;
-            for (c of channelList) {
-                list.push(c.members.filter(v => v.userId != sb.currentUser.userId)[0].userId)
-            }
-            if (to) to.innerHTML = list.map(cur => `<a href="./${cur}">with ${cur}</a><br>`).join('')
-            else res(channelList)
-            res('success')
+const loadLog = (url, length, to) => {
+    return new Promise((res, rej) => {
+        sb.GroupChannel.getChannel(url, (groupChannel, error) => {
+            if (error) return
+            const log = groupChannel.createPreviousMessageListQuery()
+            log.limit = length;
+            log.reverse = false;
+            log.load((messages, error) => {
+                if (error) rej(error);
+                res(messages.reduce((acc, cur) => {
+                    return acc + strfy(cur)
+                }, ""))
+            })
         })
     })
 }
 
-const loadChatList = async (sb, to) => {
+
+const findInvitee = (channel) => {
+    const first = channel.members[0]
+    const second = channel.members[1]
+    if (channel.inviter.userId == first.userId) return second
+    else return first
+}
+
+const setBase = async (chat_list, chat_header, chat_room) => {
+    const buttons = [...chat_list.querySelectorAll('button')]
+    buttons.forEach(cur => {
+        setChannelBtn(cur, chat_header, chat_room)
+    })
+}
+
+const addChatBtn = async (channel, to) => {
+    const _with = channel.members.filter(v => v.userId != sb.currentUser.userId)[0].userId
+    to.innerHTML += `<button class="url" url="${channel.url}" with="${_with}">with ${_with}</button><br>`
+}
+
+const setChannelBtn = async (button, chat_header, chat_room) => {
+    button.addEventListener('click', async e => {
+        chat_header.innerHTML = `chat with ${button.getAttribute('with')}`
+        chat_room.setAttribute('url', button.getAttribute('url'))
+        chat_room.setAttribute('with', button.getAttribute('with'))
+        chat_room.innerHTML = await loadLog(button.getAttribute('url'), 10)
+        chat_room.scrollTop = chat_room.scrollHeight;
+    })
+}
+const getNext = (Query, to) => {
+    return new Promise((res, rej) => {
+        Query.next(function (channelList, error) {
+            if (error) return;
+            res(channelList)
+        })
+    })
+}
+
+const loadChatList = async (to) => {
     const CLQ = sb.GroupChannel.createMyGroupChannelListQuery()
     CLQ.includeEmpty = true;
     if (CLQ.hasNext) {
@@ -47,28 +73,32 @@ const loadChatList = async (sb, to) => {
 }
 
 const leaveChat = (channel) => {
-    return new Promise( (resolve, reject) => {
-        channel.leave(function(response, error) {
+    return new Promise((resolve, reject) => {
+        channel.leave(function (response, error) {
             if (error) return
-            reject('no such user')
+            else if (channel.members.length == 1) reject('self inviting')
+            else reject('no such user')
         })
     })
 }
 
-const openChat = (sb, other) => {
+const openChat = (other) => {
     const params = new sb.GroupChannelParams();
     params.addUserIds([other]);
-    if (sb.currentUser.userId == other) throw new Error('recursive')
     return new Promise(async (resolve, reject) => {
         sb.GroupChannel.createDistinctChannelIfNotExist(params, async function (groupChannel, error) {
             if (error) reject(error)
             if (!groupChannel.isCreated) reject('already exist')
-            const invitee = findInvitee(groupChannel.channel)
-            if (!invitee) {
-                try { await leaveChat(groupChannel.channel) }
-                catch (e) { alert(e) }
+            const channel = groupChannel.channel
+            const invitee = channel.members.filter(cur => channel.inviter.userId != cur.userId)[0]
+            if (!invitee || sb.currentUser.userId == other) {
+                try {
+                    await leaveChat(channel)
+                } catch (e) {
+                    alert(e)
+                }
             }
-            resolve('created')
+            resolve(channel)
         })
     })
 }
@@ -80,17 +110,15 @@ const sb = new SendBird({
 const ChannelHandler = new sb.ChannelHandler();
 
 ChannelHandler.onMessageReceived = function (channel, message) {
-    try {
-        chatroom.innerHTML += strfy(message)
-        chatroom.scrollTop = chatroom.scrollHeight;
-    } catch {
-        console.log('got message')
-    }
+    if (chat_room.getAttribute('url') == channel.url) {
+        chat_room.innerHTML += strfy(message)
+        chat_room.scrollTop = chat_room.scrollHeight;
+    } else alert('got message')
 };
 
 ChannelHandler.onUserReceivedInvitation = function (groupChannel, inviter, invitees) {
-    if (sb.currentUser.userId != inviter.userId) {
-        console.log('invited')
+    if (sb.currentUser.userId != inviter.userId && chat_header.getAttribute('with') != inviter.userId) {
+        alert(`${inviter.userId} invited you to chat. plz refresh`)
     }
 };
 
