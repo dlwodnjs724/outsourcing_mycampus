@@ -9,10 +9,11 @@
     
     <div class="board__header__search pc__header">
         <form action="" method="get">
-            <button type="submit" value="search">
+            <button type="submit" value="term">
                 <img src="{% static "/svg/search.svg" %}">
             </button>
-            <input type="text" placeholder="Search mycampus" name="search" value="{{ search }}">
+            <input type="hidden" name="state" value="{{ state }}">
+            <input type="text" placeholder="Search mycampus" name="term" value="{{ search }}">
         </form>
     </div>
     <div class="board__header__right pc__header">
@@ -29,14 +30,16 @@
 
 {% endblock %}
 
-{% block contents %}
+{% block css %}
     <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_header/board_header_mobile.css" %}" type="text/css">
- 
     <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_post/board_post_mobile.css" %}" type="text/css">
     <link rel="stylesheet" media="(min-width:768px)" href="{% static "board/css/board_post/board_post_small.css" %}" type="text/css">
     <link rel="stylesheet" media="(min-width:992px)" href="{% static "board/css/board_post/board_post_medium.css" %}" type="text/css">
     <link rel="stylesheet" media="(min-width:1200px)" href="{% static "board/css/board_post/board_post_large.css" %}" type="text/css">
+    <link rel="stylesheet" href="{% static "components/spinner.css" %}">
+{% endblock %}
 
+{% block contents %}
     <div class="base__header mobile__header">
         <div class="base__header__used-space container">
             <div class="base__logo"><object type="image/svg+xml" data="{% static "/svg/logo-uf.svg" %}"></object></div>
@@ -65,15 +68,14 @@
 
     <div class="board__pannel__top container pc__board">
         <div class="pannel__top__state">
-
-            <a href="{% url 'core:board:main_board_new' univ.url_name %}">
+            <a href="{% url 'core:board:main_board' univ.url_name %}?state=new">
                 {% if state == 'new' %}
                     <img src="{% static "/svg/버튼2.svg" %}">
                 {% else %}
                     <img src="{% static "/svg/버튼3.svg" %}">
                 {% endif %}
             </a>
-            <a href="{% url 'core:board:main_board' univ.url_name %}">
+            <a href="{% url 'core:board:main_board' univ.url_name %}?state=hot">
                 {% if state == 'hot' %}
                     <img src="{% static "/svg/버튼4.svg" %}">
                 {% else %}
@@ -85,28 +87,21 @@
 
 
     <div class="container board__main pc__board">
-
-
         <div class="board__pannel__left">
             <ul>
                 {% for post in posts %}
                     <div>
                         <li class="board__post__container">
-
                             <div class="board__post__like">
                                 <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
-
                                 <button type="button" class="like" name="{{ post.pk }}" value="Like">
-                                    {% if user in post.likes.all %}
-                                        <img id="like_id_{{ post.pk }}" class='clicked'
-                                             src="{% static "/svg/like-clicked.svg" %}"/>
-                                    {% else %}
-                                        <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
-                                    {% endif %}
-
+                                  {% if user in post.likes.all %}
+                                    <img id="like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
+                                  {% else %}
+                                    <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
+                                  {% endif %}
                                 </button>
                             </div>
-
                             <div class="board__post__content">
                                 <div class="post__text">
                                     <div class="post__top">
@@ -161,16 +156,15 @@
 
                                 <div class="post__image">
                                     {% for image in post.images.all %}
-                                        aoijwef
                                         <img src="{{ image.url }}" alt="">
                                     {% endfor %}
                                 </div>
-
                             </div>
                         </li>
                     </div>
                     
                 {% endfor %}
+                <div id="loading" class="spinner-box"><div class="spinner" /></div>
             </ul>
         </div>
 
@@ -219,11 +213,7 @@
             </a>
         </div>
     </div>
-
-
     <div class="container board__main mobile__board">
-
-
         <div class="board__pannel__left">
             <ul>
                 {% for post in posts %}
@@ -269,8 +259,6 @@
                                                 </button>
                                                 <span id="m_post_{{ post.pk }}">{{ post.total_likes }}</span>
                                             </div>
-
-
 
                                             <div class="s_con post__bottom__comment">
                                                 {% if user.pk in post.comments_author %}
@@ -334,8 +322,47 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
-
     <script>
+
+        var currentPage = 2;
+        var spinner = document.querySelector('#loading')
+        var contents = document.querySelector('.board__pannel__left ul')
+        var loading = false
+
+
+        window.onscroll = function () {
+            var condition = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1500;
+
+            if (condition && !loading) {
+                loading = true;
+                //ajax
+
+                const req = new XMLHttpRequest();
+                req.open("POST", "{% url "core:board:main_board" url_name %}");
+                req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                req.send(`requestPage=${currentPage++}&csrfmiddlewaretoken={{ csrf_token }}`)
+
+                req.onreadystatechange = function (e) {
+                    if (req.readyState !== XMLHttpRequest.DONE) return;
+
+                    if (req.status === 200) {
+                        loading = false;
+                        console.log(req);
+                    } else {
+                        loading = false;
+                        alert(req.responseText);
+                    }
+                };
+            }
+
+            if (loading) {
+                spinner.classList.add('spinner-on')
+            } else {
+                spinner.classList.remove('spinner-on')
+            }
+        }
+      
         sb.connect("{{ user.username }}", async function (user, error) {
             if (error) return;  
             await ((user) => {
@@ -368,7 +395,7 @@
 
 
             const univUrlName = "{{ univ.url_name }}";
-            const url = '{% url 'core:board:post_like' 0 %}'.replace('0', univUrlName);
+            const url = '{% url 'api:post_like' %}';
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -390,7 +417,7 @@
 
 
         $('.bookmark').click(function () {
-            const url = '{% url 'core:board:post_bookmark' 0 %}'.replace('0', "{{ univ.url_name }}");
+            const url = '{% url 'api:post_bookmark' %}';
             $.ajax({
                 type: 'POST',
                 url: url,

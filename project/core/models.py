@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Univ(models.Model):
     full_name = models.CharField(max_length=50)
     domain = models.CharField(max_length=20)        # univ email address(@ 뒤에)
