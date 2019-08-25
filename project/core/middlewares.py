@@ -16,6 +16,7 @@ class UnivCheckMiddleware:
             'favicon.ico',
             'media',
             'static',
+            '__debug__',
         ]
 
         if request.user.is_authenticated and path not in exception_list:
