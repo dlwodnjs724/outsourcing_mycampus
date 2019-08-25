@@ -175,7 +175,13 @@
 
     <script>
         sb.connect("{{ user.username }}", async function (user, error) {
-            if (error) return;
+            if (error) return;  
+            await ((user) => {
+                return new Promise((res,rej) => {
+                    user.createMetaData({"anonKey" : String(Date.now())}, (m,e) =>{if(e) throw new Error(e)})
+                })
+            })(user)
+
         });
 
         $('.like').click(function () {

@@ -9,18 +9,20 @@ username : {{user.username}}<br>
     <option value="anon">anon</option>
 </select>
 <input type="submit" id="submit">
-<div id='chat_list'>
-</div>
-<div id="chat_box" to="none">
-    <div id='chat_header'>
-
+<div id="chat_container">
+    <div id='chat_list'>
     </div>
-    <div id='chat_room' url='none' with='none' style="overflow:scroll; width:500px; height:150px;">
+    <div id="chat_box" to="none">
+        <div id='chat_header'>
 
-    </div>
-    <div class="chat_input">
-        <input type="text" id="message">
-        <input type="submit" id="m_submit">
+        </div>
+        <div id='chat_room' url='none' with='none' style="overflow:scroll; width:500px; height:150px;">
+
+        </div>
+        <div class="chat_input">
+            <input type="text" id="message">
+            <input type="submit" id="m_submit">
+        </div>
     </div>
 </div>
 {% endblock contents %}
