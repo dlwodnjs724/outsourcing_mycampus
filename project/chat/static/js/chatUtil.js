@@ -30,14 +30,14 @@ const loadLog = (url, length, to) => {
 
 const addChannelBtn = (channel, to, flag) => {
     const _with = channel.members.filter(v => v.userId != sb.currentUser.userId)[0]
-    to.innerHTML += `<button class="url" url="${channel.url}" with="${_with.userId}" flag="${flag}" anonKey="${_with.metaData.anonKey}">with ${flag=="norm" ? _with.userId : `anon_${_with.metaData.anonKey}`}</button><br>`
+    to.innerHTML += `<button class="url" url="${channel.url}" with="${flag=="anon" ? "anon" : _with.userId}" flag="${flag}" anonKey="${_with.metaData.anonKey}">with ${flag=="norm" ? _with.userId : `anon_${_with.metaData.anonKey}`}</button><br>`
 }
 
 const setChannelBtn = async (button, chat_header, chat_room) => {
     button.addEventListener('click', async e => {
         chat_header.innerHTML = `chat with ${button.getAttribute('flag')=="norm" ? button.getAttribute('with') : button.getAttribute('flag')+'_'+button.getAttribute('anonKey') }`
         chat_room.setAttribute('url', button.getAttribute('url'))
-        chat_room.setAttribute('with', button.getAttribute('with'))
+        chat_room.setAttribute('with', `${button.getAttribute('flag')=="norm" ? button.getAttribute('with') : button.getAttribute('flag')}`)
         chat_room.setAttribute('flag', button.getAttribute('flag'))
         chat_room.innerHTML = await loadLog(button.getAttribute('url'), 10)
         chat_room.scrollTop = chat_room.scrollHeight;
@@ -65,6 +65,18 @@ const customCreateChannel = (other, type) => {
     return new Promise( (res, rej) => {
         sb.GroupChannel.createChannelWithUserIds([other], DISTINCT = false, CUSTOM_TYPE = type, function (groupChannel, error) {
             if (error) console.log(error)
+            else if (groupChannel.members.length!=2) {
+                ((channel) => {
+                    return new Promise((res,rej) => {
+                        channel.leave(function(response, error) {
+                            if (error) {
+                                return;
+                            }
+                        })
+                    })
+                })(groupChannel)
+                rej('no such user')
+            }
             res(groupChannel)
         })
     })
@@ -78,7 +90,5 @@ const openAChat = async (other, type) => {
     })
     if (targets.length == 2) throw new Error('already 2 chat')
     else if (targets.length == 1 && targets[0].customType == type) throw new Error(`already existing ${type} chat`)
-    const ret =  await customCreateChannel(other, type)
-    console.log(ret)
-    return ret
+    return await customCreateChannel(other, type)
 }

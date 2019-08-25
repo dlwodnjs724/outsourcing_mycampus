@@ -178,10 +178,9 @@
             if (error) return;  
             await ((user) => {
                 return new Promise((res,rej) => {
-                    user.createMetaData({"anonKey" : String(Date.now())}, (m,e) =>{if(e) throw new Error(e)})
+                    if (!user.metaData["anonKey"]) user.createMetaData({"anonKey": String(Date.now())}, (m, e) => {if (e) return})
                 })
             })(user)
-
         });
 
         $('.like').click(function () {
