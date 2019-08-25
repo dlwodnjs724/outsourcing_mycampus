@@ -125,3 +125,15 @@ label[for="male"] {
     border: none;
     height: 2.5rem;
 }
+
+.info-error {
+    padding: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-error span {
+    color: red;
+    font-weight: 100;
+    font-size: 0.8rem;
+}

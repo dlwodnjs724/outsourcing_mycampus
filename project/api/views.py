@@ -38,30 +38,37 @@ def get_token(email):
 @csrf_exempt
 def send_mail(request):
     try:
-        if request.method == "POST":
-
-            email = request.POST.get('email')
-            univ = request.POST.get('univ')
-            token = get_token(email)
-            domain_mycampus = "http://127.0.0.1:8000"
-            url = domain_mycampus + reverse("api:activate") + "?email=" + email + "&token=" + token.token + "&univ=" + univ
-
-            mail_subject = '[MY CAMPUS] Activate your account.'
-            message = render_to_string('accounts/mail.html', {
-                "url": url
-            })
-
-            email = EmailMessage(
-                        mail_subject, message, to=[email]
-            )
-            email.content_subtype = "html"
-            email.send()
-            return HttpResponse(status=200)
-        else:
+        if not request.method == "POST":
             raise Exception("Not allowed method")
+
+        email = request.POST.get('email')
+        email_domain = email.split('@')[1]
+
+        univ = request.POST.get('univ')
+        univ_domain = Univ.objects.get(url_name=univ).domain
+
+        if univ_domain != email_domain:
+            raise Exception("Not allowed Email domain")
+
+        token = get_token(email)
+
+        url = request.build_absolute_uri(reverse('api:activate') + '?email=' + email + "&token=" + token.token + "&univ=" + univ)
+
+        mail_subject = '[MY CAMPUS] Activate your account.'
+        message = render_to_string('accounts/mail.html', {
+            "url": url
+        })
+
+        email = EmailMessage(
+                    mail_subject, message, to=[email]
+        )
+        email.content_subtype = "html"
+        email.send()
+        return HttpResponse(status=200)
+
     except Exception as e:
         print(e)
-        return HttpResponse(status=400, content="Failed")
+        return HttpResponseBadRequest(content="Failed: " + str(e))
 
 
 def activate(request):
