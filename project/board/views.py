@@ -14,11 +14,7 @@ def main_board(request, url_name):
     univ = get_object_or_404(Univ, url_name=url_name)
     categories = get_list_or_404(Category, univ=univ)
     state = "hot"
-<<<<<<< HEAD
     posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments')\
-=======
-    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments') \
->>>>>>> c1379f6d6862260b0470a288954da510f0ca7898
         .filter(ctgy__univ=univ) \
         .annotate(num_likes=Count('likes')) \
         .order_by('-num_likes', '-created_at')
