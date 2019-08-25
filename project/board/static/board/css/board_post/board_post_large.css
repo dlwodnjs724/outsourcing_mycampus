@@ -1,3 +1,7 @@
+.mobile__board {
+    display: none!important;
+}
+
 .board__main {
     display: flex;
     flex-direction: row;
@@ -26,7 +30,7 @@
 
 .board__pannel__left {
     display: flex;
-    width: 80%;
+    width: 78%;
 }
 
 .board__pannel__left ul {
@@ -101,7 +105,7 @@
 
 .board__pannel__right {
     width: 20%;
-    margin-left: 20px;
+    margin-left: auto;
     margin-top: 20px;
 }
 

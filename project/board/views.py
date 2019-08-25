@@ -7,13 +7,14 @@ from board.forms import PostForm, CommentForm
 from board.models import Category, Post, Image, Comment
 from core.models import Univ
 from .forms import ReportForm
+import arrow
 
 
 def main_board(request, url_name):
     univ = get_object_or_404(Univ, url_name=url_name)
     categories = get_list_or_404(Category, univ=univ)
     state = "hot"
-    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments') \
+    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments')\
         .filter(ctgy__univ=univ) \
         .annotate(num_likes=Count('likes')) \
         .order_by('-num_likes', '-created_at')
@@ -23,7 +24,7 @@ def main_board(request, url_name):
         if not request.user.is_authenticated:
             return redirect('core:accounts:login', url_name)
         posts = posts.filter(Q(title__icontains=search) | Q(content__icontains=search))
-
+    print(arrow.now().timestamp)
     return render(request, 'board/main_board.html', {
         'univ': univ,
         'categories': categories,
@@ -117,12 +118,13 @@ def category_board(request, url_name, category_name):
     search = request.GET.get('search', '')
     if search:
         posts = posts.filter(Q(title__icontains=search) | Q(content__icontains=search))
-
-    return render(request, 'board/main_board.html', {
+    state = "hot"
+    return render(request, 'board/category_board.html', {
         'univ': univ,
         'categories': categories,
         'selected_category': selected_category,
         'posts': posts,
+        'state': state,
     })
 
 
@@ -137,12 +139,13 @@ def category_board_new(request, url_name, category_name):
     search = request.GET.get('search', '')
     if search:
         posts = posts.filter(Q(title__icontains=search) | Q(content__icontains=search))
-
+    state = "new"
     return render(request, 'board/category_board.html', {
         'univ': univ,
         'categories': categories,
         'selected_category': selected_category,
         'posts': posts,
+        'state': state,
     })
 
 

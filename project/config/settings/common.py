@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'imagekit',
 ] + LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
