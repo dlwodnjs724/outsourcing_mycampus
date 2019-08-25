@@ -94,8 +94,7 @@ def main(request, url_name):
                 'use_category': False,
                 'posts': posts.object_list,
                 'state': state,
-                'new_url': url + '?state=new',
-                'hot_url': url + '?state=hot'
+                'url': url
             })
     except Univ.DoesNotExist as e:
         raise Http404(e)
@@ -152,9 +151,14 @@ def category_board(request, url_name, category_name):
         if request.is_ajax():  # 무한스크롤
             if not request.method == "POST":
                 raise Exception("Not allowed request method")
-                
-            next_posts = post_paginator(current_page + 1)
-            return JsonResponse({"next_posts": next_posts})
+
+            requested_page = request.POST.get('requestPage')
+            next_posts = post_paginator(requested_page)
+            object_list = serializers.serialize("json", next_posts.object_list)
+            has_next = next_posts.has_next()
+
+            return JsonResponse({"next_posts": object_list, "has_next": has_next})
+
         else:
             url = reverse("core:board:category_board", args=[url_name, category_name])
 
@@ -165,8 +169,7 @@ def category_board(request, url_name, category_name):
                 'use_category': False,
                 'state': state,
                 'posts': posts,
-                'new_url': url + '?state=new',
-                'hot_url': url + '?state=hot'
+                'url': url
             })
 
     except Exception as e:
