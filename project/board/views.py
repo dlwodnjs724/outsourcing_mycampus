@@ -5,6 +5,9 @@ from django.db.models import Q, Count, Prefetch
 from django.http import JsonResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 import datetime
+
+from django.urls import reverse
+
 from board.forms import PostForm, CommentForm
 from board.models import Category, Post, Image, Comment, Report
 from core.models import Univ
@@ -83,12 +86,16 @@ def main(request, url_name):
             return JsonResponse({"next_posts": object_list, "has_next": has_next})
 
         else:
+            url = reverse('core:board:main_board', args=[url_name])
             return render(request, 'board/main_board.html', {
                 'univ': univ,
                 "url_name": url_name,
                 'categories': univ.category.all(),
+                'use_category': False,
                 'posts': posts.object_list,
-                'state': state
+                'state': state,
+                'new_url': url + '?state=new',
+                'hot_url': url + '?state=hot'
             })
     except Univ.DoesNotExist as e:
         raise Http404(e)
@@ -149,12 +156,17 @@ def category_board(request, url_name, category_name):
             next_posts = post_paginator(current_page + 1)
             return JsonResponse({"next_posts": next_posts})
         else:
+            url = reverse("core:board:category_board", args=[url_name, category_name])
+
             return render(request, 'board/main_board.html', {
                 'univ': univ,
                 'categories': univ.category.all(),
                 'selected_category': selected_category,
+                'use_category': False,
                 'state': state,
                 'posts': posts,
+                'new_url': url + '?state=new',
+                'hot_url': url + '?state=hot'
             })
 
     except Exception as e:
