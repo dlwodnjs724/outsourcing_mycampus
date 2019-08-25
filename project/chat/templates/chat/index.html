@@ -46,25 +46,18 @@
     sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
         const channels = await loadChatList()
-        if (channels.length) {
-            channels.forEach(cur => addChannelBtn(cur, chat_list, cur.customType))
-            const buttons = [...chat_list.querySelectorAll('.url')]
-            buttons.forEach(cur => {
-                setChannelBtn(cur, chat_header, chat_box)
-            })
-            buttons[0].click()
-        }
+        const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
+        if(first_btn) first_btn.click()
     });
 
     chat_search.addEventListener('keypress', async (e) => {
         if (e.key == "Enter" && chat_search.value != "") {
-            let channel, buttons
             flag = 'norm'
             try {
-                channel = await openAChat(chat_search.value, flag)
-                addChannelBtn(channel, chat_list, flag)
-                buttons = document.getElementsByClassName('url')
-                setChannelBtn(buttons[buttons.length - 1], chat_header, chat_box)
+                await openAChat(chat_search.value, flag)
+                const channels = await loadChatList()
+                const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
+                first_btn.click()
             } catch (e) {
                 console.log(e)
                 alert('check username')
@@ -74,12 +67,11 @@
     chat_search.addEventListener('click', async (e) => {
         if (chat_search.value != "") {
             flag = 'anon'
-            let channel, buttons
             try {
-                channel = await openAChat(chat_search.value, flag)
-                addChannelBtn(channel, chat_list, flag)
-                buttons = document.getElementsByClassName('url')
-                setChannelBtn(buttons[buttons.length - 1], chat_header, chat_box)
+                await openAChat(chat_search.value, flag)
+                const channels = await loadChatList()
+                const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
+                first_btn.click()
             } catch (e) {
                 console.log(e)
                 alert('check username')
@@ -96,12 +88,8 @@
                     chat_box.scrollTop = chat_box.scrollHeight;
                     chat_text.value = ""
                     const channels = await loadChatList()
-                    chat_list.innerHTML = ""
-                    channels.forEach(cur => addChannelBtn(cur, chat_list, cur.customType))
-                    const buttons = [...chat_list.querySelectorAll('.url')]
-                    buttons.forEach(cur => {
-                        setChannelBtn(cur, chat_header, chat_box)
-                    })
+                    await renderChatList(channels, chat_list,
+                        chat_header, chat_box)
                 })
             })
         }
@@ -117,12 +105,8 @@
                     chat_box.scrollTop = chat_box.scrollHeight;
                     chat_text.value = ""
                     const channels = await loadChatList()
-                    chat_list.innerHTML = ""
-                    channels.forEach(cur => addChannelBtn(cur, chat_list, cur.customType))
-                    const buttons = [...chat_list.querySelectorAll('.url')]
-                    buttons.forEach(cur => {
-                        setChannelBtn(cur, chat_header, chat_box)
-                    })
+                    await renderChatList(channels, chat_list,
+                        chat_header, chat_box)
                 })
             })
         }
