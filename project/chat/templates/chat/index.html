@@ -1,24 +1,26 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static "chat/css/index.css" %}" type="text/css">
+{% endblock %}
 {% block contents %}
-username : {{user.username}}<br>
-<input type="text" id="other">
-<select name="flag" id="flag">
-    <option value="norm">norm</option>
-    <option value="anon">anon</option>
-</select>
-<input type="submit" id="submit">
 <div id="chat_container">
-    <div id='chat_list'>
+    <div class="chat_left">
+        <div class="chat_list_headr">
+            messanger
+        </div>
+        <input class="chat_search" type="text">
+        <ul id='chat_list'>
+        </ul>
     </div>
-    <div id="chat_box" to="none">
+    <div id="chat_right">
         <div id='chat_header'>
 
         </div>
-        <div id='chat_room' url='none' with='none' style="overflow:scroll; width:500px; height:150px;">
+        <ul id='chat_room' url='none' with='none'>
 
-        </div>
+        </ul>
         <div class="chat_input">
             <input type="text" id="message">
             <input type="submit" id="m_submit">
@@ -44,25 +46,25 @@ username : {{user.username}}<br>
         const channels = await loadChatList()
         if (channels.length) {
             channels.forEach(cur => addChannelBtn(cur, chat_list, cur.customType))
-            const buttons = [...chat_list.querySelectorAll('button')]
+            const buttons = [...chat_list.querySelectorAll('.url')]
             buttons.forEach(cur => {
                 setChannelBtn(cur, chat_header, chat_room)
             })
         }
     });
 
-    submit.addEventListener('click', async (e) => {
-        let channel, buttons
-        try {
-            channel = await openAChat(other.value, flag.value)
-            addChannelBtn(channel, chat_list, flag.value)
-            buttons = document.getElementsByClassName('url')
-            setChannelBtn(buttons[buttons.length - 1], chat_header, chat_room)
-        } catch (e) {
-            alert('check username')
+    chat_text.addEventListener('keypress', async (e) => {
+        if (e.key == 'Enter' && chat_room.getAttribute('url') != 'none') {
+            sb.GroupChannel.getChannel(chat_room.getAttribute('url'), (groupChannel, error) => {
+                if (error) return
+                groupChannel.sendUserMessage(chat_text.value, (message, error) => {
+                    if (error) return
+                    chat_room.innerHTML += strfy(message, groupChannel.customType)
+                    chat_room.scrollTop = chat_room.scrollHeight;
+                })
+            })
         }
     })
-
 
     m_btn.addEventListener('click', async (e) => {
         sb.GroupChannel.getChannel(chat_room.getAttribute('url'), (groupChannel, error) => {
