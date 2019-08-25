@@ -379,12 +379,12 @@
 
             console.log(like_img.classList.contains('clicked'));
             if (!(like_img.classList.contains('clicked'))) {
-                like_img.src = "/static/svg/like-clicked.svg";
-                like_img.setAttribute('class', 'clicked');
+              like_img.src = '{% static 'svg/like-clicked.svg' %}';
+              like_img.setAttribute('class','clicked');
             } else {
-                like_img.src = "/static/svg/like.svg";
-                like_img.removeAttribute('class', 'clicked');
-            }
+              like_img.src = '{% static 'svg/like.svg' %}';
+              like_img.removeAttribute('class','clicked');
+
             if (!(m_like_img.classList.contains('clicked'))) {
                 m_like_img.src = "/static/svg/like-clicked.svg";
                 m_like_img.setAttribute('class', 'clicked');

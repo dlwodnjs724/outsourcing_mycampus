@@ -186,9 +186,9 @@ def category_board(request, url_name, category_name):
 def post_detail(request, url_name, category_name, post_pk):
     univ = get_object_or_404(Univ, url_name=url_name)
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
-    post = get_object_or_404(Post, ctgy=selected_category, pk=post_pk)
-    comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author') \
-        .select_related('author', 'parent', 'post') \
+    post = get_object_or_404(Post.objects.prefetch_related('likes'), ctgy=selected_category, pk=post_pk)
+    comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
+        .select_related('author', 'parent', 'post')\
         .filter(post=post, parent=None)
 
     # post.viewed_by.add(request.user)
@@ -203,7 +203,7 @@ def post_detail(request, url_name, category_name, post_pk):
         'post': post,
         'selected_category': selected_category,
         'comments': comments,
-        'comment_form': CommentForm(request=request),
+        # 'comment_form': CommentForm(request=request),
     }
 
     response = render(request, 'board/post_detail.html', ctx)
@@ -239,52 +239,72 @@ def post_edit(request):
 @login_required
 def comment_create(request, url_name, category_name, post_pk):
     if request.method == 'POST':
-        is_anonymous = True if request.POST.get('comment_is_anonymous', '') == 'true' else False
+        is_anonymous = True if request.POST.get('is_anonymous') else False
         comment = Comment.objects.create(
             post_id=post_pk,
             author=request.user,
-            content=request.POST.get('comment_content', ''),
+            content=request.POST.get('content', ''),
             is_anonymous=is_anonymous
         )
-
-        comments_queryset = Comment.objects.filter(post_id=post_pk, parent=None)
-        comments = list(comments_queryset.values('pk', 'content', 'created_at'))
-
-        for i, comment in enumerate(comments_queryset):
-            comments[i]['name'] = comment.name
-            comments[i]['comment_likes'] = comment.total_likes()
-
-        context = {
-            'comments': comments
-        }
-        return JsonResponse(context)
-    return redirect('core:board:post_detail', url_name, category_name, post_pk)
+        return redirect('core:board:post_detail', url_name, category_name, post_pk)
+    # if request.method == 'POST':
+    #     is_anonymous = True if request.POST.get('comment_is_anonymous', '') == 'true' else False
+    #     comment = Comment.objects.create(
+    #         post_id=post_pk,
+    #         author=request.user,
+    #         content=request.POST.get('comment_content', ''),
+    #         is_anonymous=is_anonymous
+    #     )
+    #
+    #     comments_queryset = Comment.objects.filter(post_id=post_pk, parent=None)
+    #     comments = list(comments_queryset.values('pk', 'content', 'created_at'))
+    #
+    #     for i, comment in enumerate(comments_queryset):
+    #         comments[i]['name'] = comment.name
+    #         comments[i]['comment_likes'] = comment.total_likes()
+    #
+    #     context = {
+    #         'comments': comments
+    #     }
+    #     return JsonResponse(context)
+    # return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
 
 @login_required
 def comment_nest_create(request, url_name, category_name, post_pk):
     if request.method == 'POST':
-        is_anonymous = True if request.POST.get('nested_comment_is_anonymous', '') == 'true' else False
+        is_anonymous = True if request.POST.get('nested_is_anonymous') else False
         comment = Comment.objects.create(
             post_id=post_pk,
             author=request.user,
-            content=request.POST.get('nested_comment_content', ''),
+            content=request.POST.get('nested_content', ''),
             is_anonymous=is_anonymous,
             parent_id=request.POST.get('parent_id')
         )
+        return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
-        comments_queryset = Comment.objects.filter(parent_id=request.POST.get('parent_id'))
-        comments = list(comments_queryset.values('pk', 'content', 'created_at'))
-
-        for i, comment in enumerate(comments_queryset):
-            comments[i]['name'] = comment.name
-            comments[i]['comment_likes'] = comment.total_likes()
-
-        context = {
-            'comments': comments
-        }
-        return JsonResponse(context)
-    return redirect('core:board:post_detail', url_name, category_name, post_pk)
+    # if request.method == 'POST':
+    #     is_anonymous = True if request.POST.get('nested_comment_is_anonymous', '') == 'true' else False
+    #     comment = Comment.objects.create(
+    #         post_id=post_pk,
+    #         author=request.user,
+    #         content=request.POST.get('nested_comment_content', ''),
+    #         is_anonymous=is_anonymous,
+    #         parent_id=request.POST.get('parent_id')
+    #     )
+    #
+    #     comments_queryset = Comment.objects.filter(parent_id=request.POST.get('parent_id'))
+    #     comments = list(comments_queryset.values('pk', 'content', 'created_at'))
+    #
+    #     for i, comment in enumerate(comments_queryset):
+    #         comments[i]['name'] = comment.name
+    #         comments[i]['comment_likes'] = comment.total_likes()
+    #
+    #     context = {
+    #         'comments': comments
+    #     }
+    #     return JsonResponse(context)
+    # return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
 
 def report_send(request, pk, content_type):
