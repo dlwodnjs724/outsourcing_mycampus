@@ -10,9 +10,13 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+
         ('core', '0001_initial'),
         ('contenttypes', '0002_remove_content_type_name'),
+
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('core', '0001_initial'),
+        ('contenttypes', '0002_remove_content_type_name'),
     ]
 
     operations = [
@@ -76,6 +80,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('image', models.ImageField(upload_to='board/post/images/')),
+
                 ('post', models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='board.Post')),
             ],
         ),

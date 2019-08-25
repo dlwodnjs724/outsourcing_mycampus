@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div class="base__header">
+    <div class="base__header pc__header">
         <div class="base__header__used-space container">
             <div class="base__logo"><object type="image/svg+xml" data="{% static "/svg/logo-uf.svg" %}"></object></div>
             {% block header %}
@@ -28,6 +28,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sendbird@3.0.105/SendBird.min.js"></script>
     <script src="{% static 'js/API.js' %}"></script>
+    <script src="{% static 'js/chatUtil.js' %}"></script>
     {% block javascript %}
     {% endblock %}
 </body>

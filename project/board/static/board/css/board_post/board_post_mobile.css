@@ -1,6 +1,11 @@
+.pc__board {
+    display: none!important;
+}
+
 .board__main {
     display: flex;
-    flex-direction: row;
+    flex-direction: column-reverse;
+    padding: 0!important;
 }
 
 .board__pannel__top {
@@ -11,7 +16,7 @@
 }
 
 .pannel__top__state {
-    width: 300px;
+    width: 180px;
 }
 
 .board__pannel__top a {
@@ -21,12 +26,12 @@
 }
 
 .board__pannel__top img {
-    width: 120px;
+    width: 80px;
 }
 
 .board__pannel__left {
     display: flex;
-    width: 80%;
+    width: 100%;
 }
 
 .board__pannel__left ul {
@@ -35,45 +40,25 @@
 
 .board__post__container {
     background-color: #ffffff;
-    height: 201px;
+    height: 180px;
     width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin: 20px 0;
-    border-radius: 12px;
-}
-
-
-.board__post__like {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #e8e8e8;
-    border-radius: 5px;
-    width: 7%;
-    height: 70px;
-    margin-left: 20px;
-    margin-right: 17px;
-}
-
-.board__post__like button {
-    border: none;
-    background-color: transparent;
-    margin-top: 4px;
+    margin: 5px 0;
 }
 
 .board__post__content {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 85%;
-    margin: 10px;
+    width: 100%;
+    height: 100%;
+    padding: 10px 0;
 }
 
 .post__text {
-    width: 70%;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -81,21 +66,20 @@
 .post__top {
     display: flex;
     flex-direction: row;
+    margin: 0 10px;
 }
 
 .post__mid {
     display: flex;
     flex-direction: row;
-}
+    margin: 0 10px;
 
-.post__bottom {
-    display: flex;
-    flex-direction: row;
 }
 
 .post__image {
-    width: 181px;
-    height: 181px;
+    display:none;
+    width: 30%;
+    height: 163px;
     margin-left: 10px;
 }
 
@@ -113,23 +97,28 @@
 }
 
 .post__top__category {
-    background-color: #eff2f4;
-    border-radius: 4px;
-    padding: 1px 40px 3px 40px;
+    border-radius: 10px;
+    border: solid #eff2f4 1px;
+    padding: 3px 20px 3px 20px;
     font-weight: normal;
     color: #5d5c5e;
     text-align: center;
-    font-size: 17px;
+    font-size: 13px;
+}
+
+.post__top__author {
+    font-size: 0.8rem
 }
 
 .post__mid {
     display: flex;
     flex-direction: column;
     margin-top: 5px;
+    height: 100%;
 }
 
 .post__mid__title {
-    font-size: 33px;
+    font-size: 1.2rem;
     font-weight: normal;
     font-style: normal;
     line-height: 1.21;
@@ -142,12 +131,12 @@
 
 .post__mid__title a {
     color: #302d2c;
-    width:100%;
+    /* width:100%; */
     text-decoration: none;
 }
 
 .post__mid__content {
-    font-size: 20px;
+    font-size: 0.8rem;
     font-weight: normal;
     font-style: normal;
     font-stretch: normal;
@@ -173,27 +162,59 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-direction: row;
+    margin: 0 10px;
 }
 
 .post__bottom__icon {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     width: 40%;
     justify-content: space-between;
+}
+
+.post__bottom__icon button {
+    border: none;
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    padding: 0;
 }
 
 .s_con {
     display: flex;
     align-items: center;
     width: 33%;
+    font-size: 0.8rem;
 }
 
 .s_con img {
-    height: 15px;
-    width: 30px;
+    height: 0.8rem;
+    width: 1.2rem;
     text-align: left;
-    margin-right: 10%;
+    margin-right: 0.6rem;
 }
+
+.post__bottom__right {
+    width: 100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between
+
+}
+
+.post__bottom__time{
+    text-align: center;
+    font-size: 0.8rem;
+    color:#a6a7a7;
+}
+
+.post__bottom__bookmark img{
+    height: 0.8rem;
+    width: 1.2rem;
+}
+
 
 .board__pannel__right a {
     text-decoration: none;
@@ -201,12 +222,12 @@
 }
 
 .pannel__right__create {
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     background-color: #ffffff;
-    height: 200px;
+    height: 180px;
     border-radius: 12px;
 
     margin-bottom: 20px;
@@ -214,11 +235,12 @@
 }
 
 .pannel__right__create img {
-    width: 71px;
+    width: 40%;
+    margin-bottom: 10px;
 }
 
 .pannel__right__create p {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: normal;
     font-style: normal;
     font-stretch: normal;
@@ -230,7 +252,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
     background-color: #ffffff;
     border-radius: 12px;
 }
@@ -238,7 +260,7 @@
 .pannel__right__category p {
     margin-top: 20px;
     margin-bottom: 20px;
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: normal;
     font-style: normal;
     font-stretch: normal;

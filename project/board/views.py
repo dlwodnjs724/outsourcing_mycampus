@@ -10,6 +10,8 @@ from board.models import Category, Post, Image, Comment, Report
 from core.models import Univ
 from core.utils.url_controll import redirect_with_next
 from .forms import ReportForm
+import arrow
+
 
 
 def make_posts_set(category, univ, state, term=""):
@@ -132,6 +134,7 @@ def category_board(request, url_name, category_name):
         [univ, state, term, selected_category] = can_use(request, url_name, ck_univ_url=True, ck_anon=True,
                                                          use_category=category_name)
 
+
         post_sets = make_posts_set(selected_category, univ, state, term)
 
         current_page = 1
@@ -142,7 +145,7 @@ def category_board(request, url_name, category_name):
         if request.is_ajax():  # 무한스크롤
             if not request.method == "POST":
                 raise Exception("Not allowed request method")
-
+                
             next_posts = post_paginator(current_page + 1)
             return JsonResponse({"next_posts": next_posts})
         else:
