@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from django.core.paginator import Paginator
 from django.db.models import Q, Count, Prefetch
 from django.http import JsonResponse, HttpResponseBadRequest, Http404
@@ -60,29 +61,31 @@ def can_use(request, url_name, ck_category=False, ck_anon=False, ck_univ_url=Fal
 
 def main(request, url_name):
     try:
+
         # term, category를 변경 했을 때 유저를 체크 해야 함
         [univ, state, term, selected_category] = can_use(request, url_name, True, True, True)
 
         post_sets = make_posts_set(None, univ, state, term)
 
-        current_page = 1
-
         post_paginator = Paginator(post_sets, 15).page
-        posts = post_paginator(current_page)
-
+        posts = post_paginator(1)
         if request.is_ajax():  # 무한스크롤
             if not request.method == "POST":
                 raise Exception("Not allowed request method")
 
-            next_posts = post_paginator(current_page + 1)
-            return JsonResponse({"next_posts": next_posts})
+            requested_page = request.POST.get('requestPage')
+            next_posts = post_paginator(requested_page)
+            object_list = serializers.serialize("json", next_posts.object_list)
+            has_next = next_posts.has_next()
+
+            return JsonResponse({"next_posts": object_list, "has_next": has_next})
 
         else:
             return render(request, 'board/main_board.html', {
                 'univ': univ,
+                "url_name": url_name,
                 'categories': univ.category.all(),
                 'posts': posts.object_list,
-                'have_more_posts': posts.has_next(),
                 'state': state
             })
     except Univ.DoesNotExist as e:

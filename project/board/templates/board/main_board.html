@@ -140,6 +140,7 @@
                         </li>
                     </div>
                 {% endfor %}
+                <div id="loading" class="spinner-box"><div class="spinner" /></div>
             </ul>
         </div>
 
@@ -172,8 +173,48 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
-
     <script>
+
+        var currentPage = 2;
+        var spinner = document.querySelector('#loading')
+        var contents = document.querySelector('.board__pannel__left ul')
+        var loading = false
+
+
+        window.onscroll = function () {
+            var condition = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1500;
+
+            if (condition && !loading) {
+                loading = true;
+                //ajax
+
+                const req = new XMLHttpRequest();
+                req.open("POST", "{% url "core:board:main_board" url_name %}");
+                req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                req.send(`requestPage=${currentPage++}&csrfmiddlewaretoken={{ csrf_token }}`)
+
+                req.onreadystatechange = function (e) {
+                    if (req.readyState !== XMLHttpRequest.DONE) return;
+
+                    if (req.status === 200) {
+                        loading = false;
+                        console.log(req);
+                    } else {
+                        loading = false;
+                        alert(req.responseText);
+                    }
+                };
+            }
+
+            if (loading) {
+                spinner.classList.add('spinner-on')
+            } else {
+                spinner.classList.remove('spinner-on')
+            }
+        }
+
+
         $('.like').click(function () {
             var pk = $(this).attr('name')
             var like_img = document.getElementById(`like_id_${pk}`);
