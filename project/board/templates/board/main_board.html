@@ -2,66 +2,98 @@
 {% load static %}
 {% load humanize %}
 
-{% block header %}
-    <link rel="stylesheet" href="{% static "board/css/board_header.css" %}" type="text/css">
-    <div class="board__header__search">
+{% block header%}
+    <link rel="stylesheet" media="(min-width:768px)" href="{% static "board/css/board_header/board_header_small.css" %}" type="text/css">
+    <link rel="stylesheet" media="(min-width:992px)" href="{% static "board/css/board_header/board_header_medium.css" %}" type="text/css">
+    <link rel="stylesheet" media="(min-width:1200px)" href="{% static "board/css/board_header/board_header_large.css" %}" type="text/css">
+    
+    <div class="board__header__search pc__header">
+        <form action="" method="get">
+            <button type="submit" value="term">
+                <img src="{% static "/svg/search.svg" %}">
+            </button>
+            <input type="hidden" name="state" value="{{ state }}">
+            <input type="text" placeholder="Search mycampus" name="term" value="{{ search }}">
+        </form>
+    </div>
+    <div class="board__header__right pc__header">
+        <ul class="board__buttons">
+            <li><img src="{% static "/svg/alarm.svg" %}"></li>
+            <li><img src="{% static "/svg/messege box.svg" %}"></li>
+            <li><img src="{% static "/svg/mypage.svg" %}"></li>
+            <a href="{% url 'core:board:post_create' univ.url_name %}">
+                <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
+            </a>
+        </ul>
+    </div>
+
+
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_header/board_header_mobile.css" %}" type="text/css">
+    <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_post/board_post_mobile.css" %}" type="text/css">
+    <link rel="stylesheet" media="(min-width:768px)" href="{% static "board/css/board_post/board_post_small.css" %}" type="text/css">
+    <link rel="stylesheet" media="(min-width:992px)" href="{% static "board/css/board_post/board_post_medium.css" %}" type="text/css">
+    <link rel="stylesheet" media="(min-width:1200px)" href="{% static "board/css/board_post/board_post_large.css" %}" type="text/css">
+    <link rel="stylesheet" href="{% static "components/spinner.css" %}">
+{% endblock %}
+
+{% block contents %}
+    <div class="base__header mobile__header">
+        <div class="base__header__used-space container">
+            <div class="base__logo"><object type="image/svg+xml" data="{% static "/svg/logo-uf.svg" %}"></object></div>
+            <div class="board__header__right">
+                <ul class="board__buttons">
+                    <li><img src="{% static "/svg/messege box.svg" %}"></li>
+                    <a href="{% url 'core:board:post_create' univ.url_name %}">
+                        <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
+                    </a>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} <div class="board__header__search mobile__header">
         <form action="" method="get">
             <button type="submit" value="search">
                 <img src="{% static "/svg/search.svg" %}">
             </button>
             <input type="text" placeholder="Search mycampus" name="search" value="{{ search }}">
         </form>
+    </div> {% endcomment %}
+
+
+
+
+    <div class="board__pannel__top container pc__board">
+        <div class="pannel__top__state">
+            <a href="{{ url }}?state=new">
+                {% if state == 'new' %}
+                    <img src="{% static "/svg/버튼2.svg" %}">
+                {% else %}
+                    <img src="{% static "/svg/버튼3.svg" %}">
+                {% endif %}
+            </a>
+            <a href="{{ url }}?state=hot">
+                {% if state == 'hot' %}
+                    <img src="{% static "/svg/버튼4.svg" %}">
+                {% else %}
+                    <img src="{% static "/svg/버튼1.svg" %}">
+                {% endif %}
+            </a>
+        </div>
     </div>
-    <div class="board__header__right">
-        <ul class="board__buttons">
-            <li><img src="{% static "/svg/alarm.svg" %}"></li>
-            <li><img src="{% static "/svg/messege box.svg" %}"></li>
-            <li><img src="{% static "/svg/mypage.svg" %}"></li>
-            <li><img id="h__post" src="{% static "/svg/post.svg" %}">
-            </li>
-        </ul>
-    </div>
-{% endblock %}
-
-{##}
-{#{{ univ.full_name }} <br>#}
-{#{{ univ.short_name }} <br>#}
-{#{% for category in categories %}#}
-{#  {{ category.name }}#}
-{#{% endfor %}#}
-
-{% block contents %}
-    <link rel="stylesheet" href="{% static "board/css/main_board.css" %}" type="text/css">
-    <div class="board__pannel__top container">
-      <a href="{% url 'core:board:main_board_new' univ.url_name %}">
-      {% if state == 'new' %}
-        <img src="{% static "/svg/버튼2.svg"%}">
-      {% else %}
-        <img src="{% static "/svg/버튼3.svg"%}">
-      {% endif %}
-      </a>
-      <a href="{% url 'core:board:main_board' univ.url_name %}">
-      {% if state == 'hot' %}
-        <img src="{% static "/svg/버튼4.svg"%}">
-      {% else %}
-        <img src="{% static "/svg/버튼1.svg"%}">
-      {% endif %}
-      </a>
-    </div>
-    
-
-    <div class="container board__main">
 
 
+    <div class="container board__main pc__board">
         <div class="board__pannel__left">
             <ul>
                 {% for post in posts %}
                     <div>
                         <li class="board__post__container">
-
                             <div class="board__post__like">
                                 <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
-
                                 <button type="button" class="like" name="{{ post.pk }}" value="Like">
                                   {% if user in post.likes.all %}
                                     <img id="like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
@@ -70,7 +102,6 @@
                                   {% endif %}
                                 </button>
                             </div>
-
                             <div class="board__post__content">
                                 <div class="post__text">
                                     <div class="post__top">
@@ -83,61 +114,179 @@
                                     </div>
                                     <div class="post__mid">
                                         <div class="post__mid__title">
-                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
+                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
                                         </div>
                                         <div class="post__mid__content">
-                                            {{ post.content }}
+                                            {{ post.content|truncatechars:110 }}
                                         </div>
                                     </div>
                                     <hr/>
                                     <div class="post__bottom">
                                         <div class="post__bottom__icon">
                                             <div class="s_con post__bottom__view">
-                                            {% if user in post.viewed_by.all %}
-                                                <img src="{% static "/svg/view-clicked.svg" %}"/>
-                                            {% else %}
-                                                <img src="{% static "/svg/view.svg" %}"/>
-                                            {% endif %}
-                                                <span>{{post.views}}</span>
+                                                {% if user in post.viewed_by.all %}
+                                                    <img src="{% static "/svg/view-clicked.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/view.svg" %}"/>
+                                                {% endif %}
+                                                <span>{{ post.views }}</span>
                                             </div>
                                             <div class="s_con post__bottom__comment">
-                                            {% if user.pk in post.comments_author %}
-                                                <img src="{% static "/svg/comment-clicked.svg" %}"/>
-                                            {% else %}
-                                                <img src="{% static "/svg/comment.svg" %}"/>
-                                            {% endif %}
+                                                {% if user.pk in post.comments_author %}
+                                                    <img src="{% static "/svg/comment-clicked.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/comment.svg" %}"/>
+                                                {% endif %}
                                                 <span>{{ post.comments.all.count }}</span>
                                             </div>
                                             <div class="s_con post__bottom__bookmark">
                                                 {% if user in post.saved.all %}
                                                     <img src="{% static "/svg/bookmark.svg" %}"/>
                                                 {% else %}
-                                                <img src="{% static "/svg/scrap.svg" %}"/>
+                                                    <img src="{% static "/svg/scrap.svg" %}"/>
                                                 {% endif %}
                                                 <span>{{ post.saved.all.count }}</span>
                                             </div>
                                         </div>
                                         <div class="post__bottom__time">
-                                            {{ post.created_at|naturaltime }}
+                                            {{ post.time_interval }}
                                         </div>
-                                        {##}
-                                        {##}
-                                        {#         {% if user in post.saved.all %}#}
-                                        {#                                            <input type="button" class="bookmark" name="{{ post.pk }}" value="O">#}
-                                        {#                                        {% else %}#}
-                                        {#                                            <input type="button" class="bookmark" name="{{ post.pk }}" value="X">#}
-                                        {#                                        {% endif %}#}
-
                                     </div>
                                 </div>
 
                                 <div class="post__image">
-
+                                    {% for image in post.images.all %}
+                                        <img src="{{ image.url }}" alt="">
+                                    {% endfor %}
                                 </div>
-
                             </div>
                         </li>
                     </div>
+                    
+                {% endfor %}
+                <div id="loading" class="spinner-box"><div class="spinner" /></div>
+            </ul>
+        </div>
+
+        <div class="board__pannel__right">
+            <a href="{% url 'core:board:post_create' univ.url_name %}">
+                <div class="pannel__right__create">
+                    <img src="{% static "svg/create post.svg/" %}" alt="">
+                    <p>Create Post</p>
+                </div>
+            </a>
+            <div class="pannel__right__category">
+                <p>Category</p>
+                <ul class="right__category__list">
+                      <li class="c_d">+</li>
+                    {% for category in categories %}
+                        <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
+                            <a id="category__a"
+                               href="{% url 'core:board:category_board' univ.url_name category.name %}">
+                                <span class="c_common">
+                                    {{ category.name }}
+                                </span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="board__pannel__top container mobile__board">
+        <div class="pannel__top__state">
+
+            <a href="{{ url }}?state=new">
+                {% if state == 'new' %}
+                    <img src="{% static "/svg/버튼2.svg" %}">
+                {% else %}
+                    <img src="{% static "/svg/버튼3.svg" %}">
+                {% endif %}
+            </a>
+            <a href=""{{ url }}?state=hot"">
+                {% if state == 'hot' %}
+                    <img src="{% static "/svg/버튼4.svg" %}">
+                {% else %}
+                    <img src="{% static "/svg/버튼1.svg" %}">
+                {% endif %}
+            </a>
+        </div>
+    </div>
+    <div class="container board__main mobile__board">
+        <div class="board__pannel__left">
+            <ul>
+                {% for post in posts %}
+                    <div>
+                        <li class="board__post__container">
+                            <div class="board__post__content">
+                                <div class="post__text">
+                                    <div class="post__top">
+                                        <div class="post__top__category">
+                                            {{ post.ctgy.name }}
+                                        </div>
+                                        <div class="post__top__author">
+                                            {{ post.name }}
+                                        </div>
+                                    </div>
+                                    <div class="post__mid">
+                                        <div class="post__mid__title">
+                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
+                                        </div>
+                                        <div class="post__mid__content">
+                                            {{ post.content|truncatechars:190 }}
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="post__bottom">
+                                        <div class="post__bottom__icon">
+                                            <div class="s_con post__bottom__view">
+                                                {% if user in post.viewed_by.all %}
+                                                    <img src="{% static "/svg/view-clicked.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/view.svg" %}"/>
+                                                {% endif %}
+                                                <span>{{ post.views }}</span>
+                                            </div>
+
+                                            <div class="s_con post__bottom__like">
+                                                <button type="button" class="like" name="{{ post.pk }}" value="Like">
+                                                    {% if user in post.likes.all %}
+                                                        <img id="m_like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
+                                                    {% else %}
+                                                        <img id="m_like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
+                                                    {% endif %}
+                                                </button>
+                                                <span id="m_post_{{ post.pk }}">{{ post.total_likes }}</span>
+                                            </div>
+
+                                            <div class="s_con post__bottom__comment">
+                                                {% if user.pk in post.comments_author %}
+                                                    <img src="{% static "/svg/comment-clicked.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/comment.svg" %}"/>
+                                                {% endif %}
+                                                <span>{{ post.comments.all.count }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="post__bottom__right">
+                                        <div class="post__bottom__time">
+                                            {{ post.time_interval }}
+                                        </div>
+                                        <div class="post__bottom__bookmark">
+                                            {% if user in post.saved.all %}
+                                                <img src="{% static "/svg/bookmark.svg" %}"/>
+                                            {% else %}
+                                                <img src="{% static "/svg/scrap.svg" %}"/>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+                    
                 {% endfor %}
             </ul>
         </div>
@@ -152,9 +301,11 @@
             <div class="pannel__right__category">
                 <p>Category</p>
                 <ul class="right__category__list">
+                      <li class="c_d">+</li>
                     {% for category in categories %}
                         <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
-                            <a id="category__a" href="{% url 'core:board:category_board' univ.url_name category.name %}">
+                            <a id="category__a"
+                               href="{% url 'core:board:category_board' univ.url_name category.name %}">
                                 <span class="c_common">
                                     {{ category.name }}
                                 </span>
@@ -171,15 +322,61 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
-
     <script>
+
+        var currentPage = 1;
+        var spinner = document.querySelector('#loading')
+        var contents = document.querySelector('.board__pannel__left ul')
+        var loading = false
+
+
+        window.onscroll = function () {
+            var condition = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1500;
+
+            if (condition && !loading) {
+                loading = true;
+                //ajax
+
+                const req = new XMLHttpRequest();
+                req.open("POST", "{{ url }}");
+                req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                req.send(`requestPage=${++currentPage}&csrfmiddlewaretoken={{ csrf_token }}`)
+
+                req.onreadystatechange = function (e) {
+                    if (req.readyState !== XMLHttpRequest.DONE) return;
+
+                    if (req.status === 200) {
+                        loading = false;
+                        console.log(req);
+                    } else {
+                        loading = false;
+                        alert(req.responseText);
+                    }
+                };
+            }
+
+            if (loading) {
+                spinner.classList.add('spinner-on')
+            } else {
+                spinner.classList.remove('spinner-on')
+            }
+        }
+      
         sb.connect("{{ user.username }}", async function (user, error) {
-            if (error) return;
+            if (error) return;  
+            await ((user) => {
+                return new Promise((res,rej) => {
+                    if (!user.metaData["anonKey"]) user.createMetaData({"anonKey": String(Date.now())}, (m, e) => {if (e) return})
+                })
+            })(user)
         });
 
         $('.like').click(function () {
             var pk = $(this).attr('name')
             var like_img = document.getElementById(`like_id_${pk}`);
+            var m_like_img = document.getElementById(`m_like_id_${pk}`);
+
             console.log(like_img.classList.contains('clicked'));
             if (!(like_img.classList.contains('clicked'))) {
               like_img.src = '{% static 'svg/like-clicked.svg' %}';
@@ -187,13 +384,18 @@
             } else {
               like_img.src = '{% static 'svg/like.svg' %}';
               like_img.removeAttribute('class','clicked');
+
+            if (!(m_like_img.classList.contains('clicked'))) {
+                m_like_img.src = "/static/svg/like-clicked.svg";
+                m_like_img.setAttribute('class', 'clicked');
+            } else {
+                m_like_img.src = "/static/svg/like.svg";
+                m_like_img.removeAttribute('class', 'clicked');
             }
 
 
-
-
             const univUrlName = "{{ univ.url_name }}";
-            const url = '{% url 'core:board:post_like' 0 %}'.replace('0', univUrlName);
+            const url = '{% url 'api:post_like' %}';
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -205,6 +407,7 @@
                 datatype: "json",
                 success: function (response) {
                     $(`#post_${response['pk']}`).text(response['likes_count']);
+                    $(`#m_post_${response['pk']}`).text(response['likes_count']);
                 },
                 error: function (request, status, error) {
                     alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
@@ -214,7 +417,7 @@
 
 
         $('.bookmark').click(function () {
-            const url = '{% url 'core:board:post_bookmark' 0 %}'.replace('0', "{{ univ.url_name }}");
+            const url = '{% url 'api:post_bookmark' %}';
             $.ajax({
                 type: 'POST',
                 url: url,

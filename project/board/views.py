@@ -1,149 +1,185 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Count
-from django.http import JsonResponse
+from django.core import serializers
+from django.core.paginator import Paginator
+from django.db.models import Q, Count, Prefetch
+from django.http import JsonResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 import datetime
+
+from django.urls import reverse
+
 from board.forms import PostForm, CommentForm
-from board.models import Category, Post, Image, Comment
+from board.models import Category, Post, Image, Comment, Report
 from core.models import Univ
+from core.utils.url_controll import redirect_with_next
 from .forms import ReportForm
+import arrow
 
 
-def main_board(request, url_name):
-    univ = get_object_or_404(Univ, url_name=url_name)
-    categories = get_list_or_404(Category, univ=univ)
-    state = "hot"
-    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments') \
-        .filter(ctgy__univ=univ) \
-        .annotate(num_likes=Count('likes')) \
-        .order_by('-num_likes', '-created_at')
 
-    search = request.GET.get('search', '')
-    if search:
-        if not request.user.is_authenticated:
-            return redirect('core:accounts:login', url_name)
-        posts = posts.filter(Q(title__icontains=search) | Q(content__icontains=search))
+def make_posts_set(category, univ, state, term=""):
+    if category:
+        ret = Post.objects.select_related('ctgy', 'author') \
+            .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments') \
+            .filter(ctgy__univ=univ, ctgy=category) \
+            .annotate(num_likes=Count('likes'))
 
-    return render(request, 'board/main_board.html', {
-        'univ': univ,
-        'categories': categories,
-        'posts': posts,
-        'state': state,
-    })
-
-
-@login_required
-def main_board_new(request, url_name):
-    univ = get_object_or_404(Univ, url_name=url_name)
-    categories = get_list_or_404(Category, univ=univ)
-    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments') \
-        .filter(ctgy__univ=univ)
-
-    search = request.GET.get('search', '')
-    if search:
-        posts = posts.filter(Q(title__icontains=search) | Q(content__icontains=search))
-    state = "new"
-
-    return render(request, 'board/main_board.html', {
-        'univ': univ,
-        'categories': categories,
-        'search': search,
-        'posts': posts,
-        'state': state,
-    })
-
-
-@login_required
-def post_like(request, url_name):
-    if request.method == 'POST':
-        user = request.user
-        post = Post.objects.get(pk=request.POST.get('pk', None))
-
-        if post.likes.filter(pk=user.pk).exists():
-            post.likes.remove(user)
-        else:
-            post.likes.add(user)
-        context = {
-            'pk': post.pk,
-            'likes_count': post.total_likes(),
-        }
-        return JsonResponse(context)
     else:
-        return redirect('core:board:main_board', request.user.univ.url_name)
+        ret = Post.objects.select_related('ctgy', 'author') \
+            .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments') \
+            .filter(ctgy__univ=univ) \
+            .annotate(num_likes=Count('likes'))
 
+    if term:
+        ret = ret.filter(Q(title__icontains=term) | Q(content__icontains=term))
 
-@login_required
-def post_bookmark(request, url_name):
-    if request.method == 'POST':
-        user = request.user
-        post = Post.objects.get(pk=request.POST.get('pk', None))
-
-        if post.saved.filter(pk=user.pk).exists():
-            post.saved.remove(user)
-        else:
-            post.saved.add(user)
-        context = {
-            'pk': post.pk,
-        }
-        return JsonResponse(context)
+    if state == "hot":
+        ret = ret.order_by('-num_likes', '-created_at')
     else:
-        return redirect('core:board:main_board', request.user.univ.url_name)
+        ret = ret.order_by('-created_at')
+
+    return ret
 
 
-@login_required
+def can_use(request, url_name, ck_category=False, ck_anon=False, ck_univ_url=False, use_category=""):
+    state = request.GET.get("state") or "hot"
+    term = request.GET.get("term")
+    must_check = bool(term)
+
+    univ = Univ.objects.prefetch_related('category').get(url_name=url_name)
+    selected_category = None
+
+    if use_category:
+        selected_category = univ.category.get(name=use_category)
+
+    if ck_category and not len(univ.category.all()):
+        raise Exception("There is no category in {}.".format(univ.full_name))
+
+    if ck_anon and must_check and request.user.is_anonymous:
+        raise Exception("anon")
+
+    if ck_univ_url and must_check and request.user.univ.url_name != url_name:
+        raise Exception('others')
+
+    return [univ, state, term, selected_category]
+
+
+def main(request, url_name):
+    try:
+
+        # term, category를 변경 했을 때 유저를 체크 해야 함
+        [univ, state, term, selected_category] = can_use(request, url_name, True, True, True)
+
+        post_sets = make_posts_set(None, univ, state, term)
+
+        post_paginator = Paginator(post_sets, 15).page
+        posts = post_paginator(1)
+        if request.is_ajax():  # 무한스크롤
+            if not request.method == "POST":
+                raise Exception("Not allowed request method")
+
+            requested_page = request.POST.get('requestPage')
+            next_posts = post_paginator(requested_page)
+            object_list = serializers.serialize("json", next_posts.object_list)
+            has_next = next_posts.has_next()
+
+            return JsonResponse({"next_posts": object_list, "has_next": has_next})
+
+        else:
+            url = reverse('core:board:main_board', args=[url_name])
+            return render(request, 'board/main_board.html', {
+                'univ': univ,
+                "url_name": url_name,
+                'categories': univ.category.all(),
+                'use_category': False,
+                'posts': posts.object_list,
+                'state': state,
+                'url': url
+            })
+    except Univ.DoesNotExist as e:
+        raise Http404(e)
+
+    except Exception as e:
+        if str(e) == 'anon':
+            return redirect_with_next("core:accounts:login", "core:board:main_board",
+                                      params={"to": [url_name], "next": [url_name]})
+
+        if str(e) == 'others':
+            return redirect("core:board:main_board", url_name=request.user.univ.url_name)
+
+        return HttpResponseBadRequest(content="Bad Request: " + str(e))
+
+
 def post_create(request, url_name):
-    form = PostForm(request.POST or None, request=request)
-    if request.method == 'POST':
-        if form.is_valid():
-            post = form.save()
-            for image in request.FILES.getlist('images'):
-                Image.objects.create(post=post, image=image)
-            return redirect('core:board:main_board_new', request.user.univ.url_name)
-    return render(request, 'board/post_new.html', {
-        'form': form,
-    })
+    try:
+        can_use(request, url_name, ck_univ_url=True, ck_anon=True)
+
+        form = PostForm(request.POST or None, request=request)
+        if request.method == 'POST':
+            if form.is_valid():
+                post = form.save()
+                for image in request.FILES.getlist('images'):
+                    Image.objects.create(post=post, image=image)
+                return redirect('core:board:main_board', url_name)
+        return render(request, 'board/post_new.html', {
+            'form': form,
+        })
+
+    except Exception as e:
+        if str(e) == 'anon':
+            return redirect_with_next("core:accounts:login", "core:board:main_board",
+                                      params={"to": [url_name], "next": [url_name]})
+        if str(e) == 'others':
+            return redirect("core:board:main_board", url_name=request.user.univ.url_name)
+
+        return HttpResponseBadRequest(content="Bad request: " + str(e))
 
 
-@login_required
 def category_board(request, url_name, category_name):
-    univ = get_object_or_404(Univ, url_name=url_name)
-    categories = get_list_or_404(Category, univ=univ)
-    selected_category = get_object_or_404(Category, univ=univ, name=category_name)
-    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments') \
-        .filter(ctgy=selected_category) \
-        .annotate(num_likes=Count('likes')) \
-        .order_by('-num_likes', '-created_at')
-
-    search = request.GET.get('search', '')
-    if search:
-        posts = posts.filter(Q(title__icontains=search) | Q(content__icontains=search))
-
-    return render(request, 'board/main_board.html', {
-        'univ': univ,
-        'categories': categories,
-        'selected_category': selected_category,
-        'posts': posts,
-    })
+    try:
+        [univ, state, term, selected_category] = can_use(request, url_name, ck_univ_url=True, ck_anon=True,
+                                                         use_category=category_name)
 
 
-@login_required
-def category_board_new(request, url_name, category_name):
-    univ = get_object_or_404(Univ, url_name=url_name)
-    categories = get_list_or_404(Category, univ=univ)
-    selected_category = get_object_or_404(Category, univ=univ, name=category_name)
-    posts = Post.objects.select_related('ctgy', 'author').prefetch_related('likes', 'saved', 'viewed_by', 'comments') \
-        .filter(ctgy=selected_category)
+        post_sets = make_posts_set(selected_category, univ, state, term)
 
-    search = request.GET.get('search', '')
-    if search:
-        posts = posts.filter(Q(title__icontains=search) | Q(content__icontains=search))
+        current_page = 1
 
-    return render(request, 'board/category_board.html', {
-        'univ': univ,
-        'categories': categories,
-        'selected_category': selected_category,
-        'posts': posts,
-    })
+        post_paginator = Paginator(post_sets, 15).page
+        posts = post_paginator(current_page)
+
+        if request.is_ajax():  # 무한스크롤
+            if not request.method == "POST":
+                raise Exception("Not allowed request method")
+
+            requested_page = request.POST.get('requestPage')
+            next_posts = post_paginator(requested_page)
+            object_list = serializers.serialize("json", next_posts.object_list)
+            has_next = next_posts.has_next()
+
+            return JsonResponse({"next_posts": object_list, "has_next": has_next})
+
+        else:
+            url = reverse("core:board:category_board", args=[url_name, category_name])
+
+            return render(request, 'board/main_board.html', {
+                'univ': univ,
+                'categories': univ.category.all(),
+                'selected_category': selected_category,
+                'use_category': False,
+                'state': state,
+                'posts': posts,
+                'url': url
+            })
+
+    except Exception as e:
+        if str(e) == 'anon':
+            return redirect_with_next("core:accounts:login", "core:board:main_board",
+                                      params={"to": [url_name], "next": [url_name]})
+        if str(e) == 'others':
+            return redirect("core:board:main_board", url_name=request.user.univ.url_name)
+
+        return HttpResponseBadRequest(content="Bad request: " + str(e))
 
 
 @login_required
@@ -180,13 +216,13 @@ def post_detail(request, url_name, category_name, post_pk):
         cookies = request.COOKIES.get(cookie_name)
         cookies_list = cookies.split('|')
         if str(post_pk) not in cookies_list:
-            response.set_cookie(cookie_name, cookies + f'|{post_pk}', expires =expires)
+            response.set_cookie(cookie_name, cookies + f'|{post_pk}', expires=expires)
             post.views += 1
             post.viewed_by.add(request.user)
             post.save()
             return response
     else:
-        response.set_cookie(cookie_name, post_pk, expires =expires)
+        response.set_cookie(cookie_name, post_pk, expires=expires)
         post.views += 1
         post.viewed_by.add(request.user)
         post.save()
@@ -269,25 +305,6 @@ def comment_nest_create(request, url_name, category_name, post_pk):
     #     }
     #     return JsonResponse(context)
     # return redirect('core:board:post_detail', url_name, category_name, post_pk)
-
-
-@login_required
-def comment_like(request, url_name, category_name, post_pk):
-    if request.method == 'POST':
-        user = request.user
-        comment = Comment.objects.get(pk=request.POST.get('pk', None))
-
-        if comment.comment_likes.filter(pk=user.pk).exists():
-            comment.comment_likes.remove(user)
-        else:
-            comment.comment_likes.add(user)
-        context = {
-            'pk': comment.pk,
-            'likes_count': comment.total_likes(),
-        }
-        return JsonResponse(context)
-    else:
-        return redirect('core:board:main_board', [request.user.univ.url_name])
 
 
 def report_send(request, pk, content_type):

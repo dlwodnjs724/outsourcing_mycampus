@@ -3,9 +3,9 @@
  * @param {message} message sb.~~.message? 
  */
 const strfy = (message, flag) => {
-    if (message._sender.userId == sb.currentUser.userId) return `you : ${message.message}<br>`
-    else if (flag == "anon") return `anon_${message._sender.metaData.anonKey} : ${message.message}<br>`
-    return `${message._sender.userId} : ${message.message}<br>`
+    if (message._sender.userId == sb.currentUser.userId) return `<div class="me">${message.message}</div>`
+    else if (flag == "anon") return `<div class="other">anon_${message._sender.metaData.anonKey} : ${message.message}</div>`
+    return `<div class="other">${message._sender.userId} : ${message.message}</div>`
 }
 /**
  * 채널의 채팅 로그 10개 불러와서 쿼리 리턴해주는 함수.
@@ -28,14 +28,15 @@ const loadLog = (url, length, to) => {
     })
 }
 
-const addChannelBtn = (channel, to, flag) => {
+const addChannelBtn = (channel, to, flag, rev) => {
     const _with = channel.members.filter(v => v.userId != sb.currentUser.userId)[0]
-    to.innerHTML += `<button class="url" url="${channel.url}" with="${flag=="anon" ? "anon" : _with.userId}" flag="${flag}" anonKey="${_with.metaData.anonKey}">with ${flag=="norm" ? _with.userId : `anon_${_with.metaData.anonKey}`}</button><br>`
+    if(rev) to.innerHTML = `<li><div class="url" url="${channel.url}" with="${flag=="anon" ? "anon" : _with.userId}" flag="${flag}" anonKey="${_with.metaData.anonKey}">${flag=="norm" ? _with.userId : `anon_${_with.metaData.anonKey}`}</div></li>` +to.innerHTML
+    else to.innerHTML += `<li><div class="url" url="${channel.url}" with="${flag=="anon" ? "anon" : _with.userId}" flag="${flag}" anonKey="${_with.metaData.anonKey}">${flag=="norm" ? _with.userId : `anon_${_with.metaData.anonKey}`}</div></li>`
 }
 
 const setChannelBtn = async (button, chat_header, chat_room) => {
     button.addEventListener('click', async e => {
-        chat_header.innerHTML = `chat with ${button.getAttribute('flag')=="norm" ? button.getAttribute('with') : button.getAttribute('flag')+'_'+button.getAttribute('anonKey') }`
+        chat_header.innerHTML = `<span>${button.getAttribute('flag')=="norm" ? button.getAttribute('with') : button.getAttribute('flag')+'_'+button.getAttribute('anonKey') }</span>`
         chat_room.setAttribute('url', button.getAttribute('url'))
         chat_room.setAttribute('with', `${button.getAttribute('flag')=="norm" ? button.getAttribute('with') : button.getAttribute('flag')}`)
         chat_room.setAttribute('flag', button.getAttribute('flag'))

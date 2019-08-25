@@ -5,6 +5,9 @@
 .media/
 .log/
 .static/
+./project/**/migrations/
+./project/.idea/
+db.sqlite3
 
 # Created by https://www.gitignore.io/api/linux,macos,python,django,pycharm
 
