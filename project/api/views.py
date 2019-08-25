@@ -57,7 +57,7 @@ def send_mail(request):
             email.send()
             return HttpResponse(status=200)
         else:
-            raise Exception
+            raise Exception("Not allowed method")
     except Exception as e:
         print(e)
         return HttpResponse(status=400, content="Failed")
@@ -82,5 +82,3 @@ def activate(request):
         return redirect(reverse("core:accounts:signup", args=[url_name]) + "?email=" + user_email)
     except Token.DoesNotExist:
         return HttpResponseBadRequest(content="Unauthorized token")
-
-

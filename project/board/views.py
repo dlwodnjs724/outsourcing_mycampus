@@ -9,6 +9,8 @@ from core.models import Univ
 from .forms import ReportForm
 
 
+
+
 def main_board(request, url_name):
     univ = get_object_or_404(Univ, url_name=url_name)
     categories = get_list_or_404(Category, univ=univ)
