@@ -9,7 +9,7 @@ ChannelHandler.onMessageReceived = function (channel, message) {
         if (chat_room.getAttribute('url') == channel.url) {
             chat_room.innerHTML += strfy(message, chat_room.getAttribute('flag'))
             chat_room.scrollTop = chat_room.scrollHeight;
-        } else alert(`got message from ${channel.custopm=='anon' ? "anon" : message._sender.userId}`)
+        } else alert(`got message from ${channel.customType=='anon' ? "anon" : message._sender.userId}`)
     } catch (e) {
         alert(`got message`)
     }
@@ -19,7 +19,7 @@ ChannelHandler.onUserReceivedInvitation = async function (groupChannel, inviter,
     try {
         if (sb.currentUser.userId != inviter.userId) {
             const buttons = document.getElementsByClassName('url')
-            addChannelBtn(groupChannel, chat_list)
+            addChannelBtn(groupChannel, chat_list, groupChannel.customType)
             setChannelBtn(buttons[buttons.length - 1], chat_header, chat_room)
         }
     } catch (e) {
