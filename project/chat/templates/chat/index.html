@@ -3,7 +3,12 @@
 
 {% block contents %}
 username : {{user.username}}<br>
-<input type="text" id="other"><input type="submit" id="submit">
+<input type="text" id="other">
+<select name="flag" id="flag">
+    <option value="norm">norm</option>
+    <option value="anon">anon</option>
+</select>
+<input type="submit" id="submit">
 <div id='chat_list'>
 </div>
 <div id="chat_box" to="none">
@@ -28,34 +33,41 @@ username : {{user.username}}<br>
     const chat_text = document.getElementById('message')
     const m_btn = document.getElementById('m_submit')
     const other = document.getElementById('other')
+    const flag = document.getElementById('flag')
     const submit = document.getElementById('submit')
 
 
     sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
         const channels = await loadChatList()
-        channels.forEach(cur => addChatBtn(cur, chat_list))
-        setBase(chat_list, chat_header, chat_room)
+        if (channels.length) {
+            channels.forEach(cur => addChannelBtn(cur, chat_list, cur.customType))
+            const buttons = [...chat_list.querySelectorAll('button')]
+            buttons.forEach(cur => {
+                setChannelBtn(cur, chat_header, chat_room)
+            })
+        }
     });
 
     submit.addEventListener('click', async (e) => {
         let channel, buttons
         try {
-            channel = await openChat(other.value)
+            channel = await openAChat(other.value, flag.value)
+            addChannelBtn(channel, chat_list, flag.value)
             buttons = document.getElementsByClassName('url')
-            addChatBtn(channel, chat_list)
             setChannelBtn(buttons[buttons.length - 1], chat_header, chat_room)
         } catch (e) {
-            alert(e)
+            console.log(e)
         }
     })
+
 
     m_btn.addEventListener('click', async (e) => {
         sb.GroupChannel.getChannel(chat_room.getAttribute('url'), (groupChannel, error) => {
             if (error) return
             groupChannel.sendUserMessage(chat_text.value, (message, error) => {
                 if (error) return
-                chat_room.innerHTML += strfy(message)
+                chat_room.innerHTML += strfy(message, groupChannel.customType)
                 chat_room.scrollTop = chat_room.scrollHeight;
             })
         })
