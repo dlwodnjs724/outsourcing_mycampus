@@ -3,55 +3,153 @@
 {% load child_comments %}
 {% load static %}
 
+{% block css %}
+  <link rel="stylesheet" href="{% static 'board/css/post_detail.css' %}">
+{% endblock %}
+
 {% block contents %}
   <div class="container">
-    {{ post.title }}
-
-    <div>
-      title : {{ post.title }}<br>
-      author : {{ post.name }}<br>
-      content : {{ post.content }}<br>
-      <br>
-
-      <input type="button" class="like" name="{{ post.pk }}" value="Like" onclick="likePost({{ post.pk }})">
-      <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
-
-      <br>
-      <h1>{{post.views}}</h1>
-      write comment: {{ comment_form.content }}
-      is_anonymous: {{ comment_form.is_anonymous }}
-      <button type="button" id="comment_write" onclick="writeComment()">comment</button>
-
-      <div class="comment_list">
-        {% for comment in comments %}
-          <input type="button" class="comment_like" name="{{ comment.pk }}" value="Like"
-                 onclick="likeComment({{ comment.pk }})">
-          <span id="comment_{{ comment.pk }}">{{ comment.total_likes }}</span>
-          {{ comment.content }} {{ comment.name }} / {{ comment.pk }}
-          <span style="font-size: 13px; color: grey;">{{ comment.created_at }}</span>
-          <button type="button" onclick="clickNestedComment({{ comment.pk }})">
-            대댓글
-          </button>
-          <div class="nested_comment">
-            <div class="nested_comment_form" id="nested_comment_form_{{ comment.pk }}"></div>
-            <div class="nested_comment_list" id="nested_comment_list_{{ comment.pk }}" style="margin-left: 50px;">
-              {% for nested_comment in comment|child_comments %}
-                <div>
-                  <input type="button" class="comment_like" name="{{ nested_comment.pk }}" value="Like"
-                         onclick="likeComment({{ nested_comment.pk }})">
-                  <span id="comment_{{ nested_comment.pk }}">{{ nested_comment.total_likes }}</span>
-                  {{ nested_comment.content }} {{ nested_comment.name }} / {{ nested_comment.pk }}
-                  <span style="font-size: 13px; color: grey;">{{ nested_comment.created_at }}</span>
-                </div>
-              {% endfor %}
+    <div class="detail__wrapper">
+      <div class="detail__post__header">
+        <a href="{% url 'core:board:main_board' univ.url_name %}">
+          <span style="color: #55b8bd;">&lt;</span> My Campus
+        </a>
+      </div>
+      <div class="detail__post__container">
+        <div class="post__container__row">
+          <div id="post__category">{{ selected_category.name }}</div>
+          <div class="post__function">
+            <div><img src="{% static 'svg/bookmark.svg' %}" alt="" id="post__bookmark"></div>
+            <div><img src="{% static 'svg/message.svg' %}" alt="" id="post__message"></div>
+            <div><img src="{% static 'svg/report.svg' %}" alt="" id="post__report"></div>
+          </div>
+        </div>
+        <div class="post__container__row">
+          <div id="post__title">
+            {{ post.title }}
+          </div>
+        </div>
+        <div class="post__container__row">
+          <div id="post__author">
+            <img src="{% static '/svg/Anon.svg' %}" alt="">
+            <div>{{ post.name }}</div>
+          </div>
+          <div id="post__when">
+            날짜!!
+          </div>
+        </div>
+        <div class="post__container__row">
+          <div id="post__content">
+            {{ post.content }}
+          </div>
+        </div>
+        <div class="post__container__row row__align-center">
+          <div id="post__info">
+            <div class="post__like">
+              <button type="button" class="like reset-button" name="{{ post.pk }}" value="Like"
+                      onclick="likePost({{ post.pk }})">
+                {% if user in post.likes.all %}
+                  <img id="like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
+                {% else %}
+                  <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
+                {% endif %}
+              </button>
+              <div id="post_{{ post.pk }}">
+                {{ post.total_likes }}
+              </div>
+            </div>
+            <div class="post__comment-count">
+              <img src="{% static "/svg/comment.svg" %}"/>
+              <div>{{ post.comments.all.count }}</div>
+            </div>
+            <div class="post__share">
+              <img src="{% static '/svg/share.svg' %}" alt="">
+              <div>Share</div>
             </div>
           </div>
-          <br>
-        {% endfor %}
+        </div>
+      </div>
+      <div class="detail__post__comment">
+        <form action="{% url 'core:board:comment_create' univ.url_name selected_category.name post.pk %}" method="post">
+          {% csrf_token %}
+          <textarea name="content" cols="40" rows="10"></textarea>
+          <input type="checkbox" name="is_anonymous" checked>
+          <button type="submit">comment</button>
+        </form>
+        <div class="comment_list">
+          {% for comment in comments %}
+            <div class="comment__row">
+              <div class="comment__top">
+                <div class="comment__top__left">
+                  <img src="{% static '/svg/Anon.svg' %}" alt="">
+                  <div class="comment__info">
+                    <div>{{ comment.name }}</div>
+                    <div class="comment__created_at">날짜</div>
+                  </div>
+                </div>
+                <div class="comment__top__right">
+                  <div class="comment__like">
+                    <button type="button" class="like reset-button" name="{{ comment.pk }}" value="Like"
+                            onclick="likeComment({{ comment.pk }})">
+                      {% if user in comment.likes.all %}
+                        <img id="like_id_{{ comment.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
+                      {% else %}
+                        <img id="like_id_{{ comment.pk }}" src="{% static "/svg/like.svg" %}"/>
+                      {% endif %}
+                    </button>
+                    <div id="comment_{{ comment.pk }}">
+                      {{ comment.total_likes }}
+                    </div>
+                  </div>
+                  <div class="comment__comment">
+                    <button type="button" class="like reset-button" name="{{ comment.pk }}" value="Like"
+                            onclick="clickNestedComment({{ comment.pk }})">
+                      <img src="{% static "/svg/comment.svg" %}"/>
+                      comment
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="comment__bottom">
+                {{ comment.content }}
+              </div>
+            </div>
+            <div class="nested_comment">
+              <div class="nested_comment_form" id="nested_comment_form_{{ comment.pk }}"></div>
+              <div class="nested_comment_list" id="nested_comment_list_{{ comment.pk }}">
+                {% for nested_comment in comment|child_comments %}
+                  <div class="comment__row nested_comment__row">
+                    <div class="comment__top">
+                      <div class="comment__top__left">
+                        <img src="{% static '/svg/Anon.svg' %}" alt="">
+                        <div class="comment__info">
+                          <div>{{ nested_comment.name }}</div>
+                          <div class="comment__created_at">날짜</div>
+                        </div>
+                      </div>
+                      <div class="comment__top__right" style="width: 80px;">
+                        <div class="comment__like">
+                          <button type="button" class="like reset-button" name="{{ comment.pk }}" value="Like"
+                                  onclick="likeComment({{ nested_comment.pk }})">
+                            <img id="like_id_{{ nested_comment.pk }}" src="{% static "/svg/like.svg" %}"/>
+                          </button>
+                          <div id="comment_{{ nested_comment.pk }}">
+                            {{ nested_comment.total_likes }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="comment__bottom">
+                      {{ nested_comment.content }}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
-
-    <a href="{% url 'core:board:main_board' univ.url_name %}">Go list</a>
   </div>
 {% endblock %}
 
@@ -63,6 +161,16 @@
   <script>
     // 게시글 좋아요
     function likePost(postPk) {
+      let like_img = document.getElementById(`like_id_${postPk}`);
+      console.log(like_img.classList.contains('clicked'));
+      if (!(like_img.classList.contains('clicked'))) {
+        like_img.src = '{% static 'svg/like-clicked.svg' %}';
+        like_img.setAttribute('class', 'clicked');
+      } else {
+        like_img.src = '{% static 'svg/like.svg' %}';
+        like_img.removeAttribute('class', 'clicked');
+      }
+
       const url = '{% url 'core:board:post_like' 0 %}'.replace('0', '{{ univ.url_name }}');
       $.ajax({
         type: 'POST',
@@ -105,6 +213,7 @@
 
 
     // 댓글 작성
+    /*
     function writeComment() {
       const url = '{% url 'core:board:comment_create' 'url_name' 'category' 0 %}'
           .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
@@ -146,7 +255,7 @@
         }
       })
     }
-
+    */
 
     // 대댓글 버튼 클릭
     function clickNestedComment(commentPk) {
@@ -155,15 +264,27 @@
       if (nestedCommentBox.innerHTML)
         commentForm = '';
       else
+        /*
         commentForm = `
           write comment: <textarea name="nested_comment_content" required id="nested_comment_write_${commentPk}"></textarea>
           is_anonymous: <input type="checkbox" name="nested_comment_content" id="nested_comment_is_anonymous_${commentPk}" checked>
           <button type="button" id="comment_write_${commentPk}" onclick="writeNestedComment(${commentPk})">comment</button>
         `;
+        */
+        commentForm = `
+        <form action="{% url 'core:board:comment_nest_create' univ.url_name selected_category.name post.pk %}" method="post">
+          {% csrf_token %}
+          <textarea name="nested_content" cols="40" rows="10"></textarea>
+          <input type="checkbox" name="nested_is_anonymous" checked>
+          <button type="submit">comment</button>
+          <input type="hidden" name="parent_id" value="${commentPk}">
+        </form>
+        `;
       nestedCommentBox.innerHTML = commentForm;
     }
 
 
+    /*
     // 대댓글 작성
     function writeNestedComment(commentPk) {
       const url = '{% url 'core:board:comment_nest_create' 'url_name' 'category' 0 %}'
@@ -198,5 +319,6 @@
         }
       })
     }
+    */
   </script>
 {% endblock %}

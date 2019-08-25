@@ -68,7 +68,6 @@
                                   {% else %}
                                     <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
                                   {% endif %}
-
                                 </button>
                             </div>
 
@@ -183,10 +182,10 @@
             var like_img = document.getElementById(`like_id_${pk}`);
             console.log(like_img.classList.contains('clicked'));
             if (!(like_img.classList.contains('clicked'))) {
-              like_img.src="/static/svg/like-clicked.svg";
+              like_img.src = '{% static 'svg/like-clicked.svg' %}';
               like_img.setAttribute('class','clicked');
             } else {
-              like_img.src="/static/svg/like.svg";
+              like_img.src = '{% static 'svg/like.svg' %}';
               like_img.removeAttribute('class','clicked');
             }
 
