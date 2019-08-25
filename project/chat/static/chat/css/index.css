@@ -1,39 +1,89 @@
-html,body{
+html, body{
     height: 100%;
 }
-#chat_container{
+body{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+hr{
+    margin : 15px 0px;
+    padding : 0px;
+    border: solid 1.5px #E3E3E3;
+}
+#chat-container{
     display : flex;
     flex-direction: row;
     justify-content: center;
+    height: auto;
 }
-#chat_container > div{
-    margin: 0px 20px;
+#chat-container > div{
+    margin: 0px 10px;
 }
-#chat_header {
-    display: flex;
+
+#chat-list-container{
+    background-color: #ffffff;
+    border-radius: 12px;
+    width : 20%;
     justify-content: center;
 }
-#chat_container{
-    height: 90%;
+
+#chat-list-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
 }
-#chat_left{
-    width : 30%;
+#chat-search{
+    width:100%;
+    margin-bottom: 20px;
 }
-#chat_list{
+
+#chat-list{
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
-#chat_right{
-    height: 100%;
+.ChannelBtn{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    padding: 10px 0px;
+    border-bottom: 1px solid #E3E3E3
+}
+.prof{
+    margin-left: 14.8px;
+    margin-right: 14.8px;
+}
+.prof img{
+    width: 40px;
+    height: 40px;
+}
+.two-line{
+    display: flex;
+    flex-direction: column;
+}
+.fst{
+    display: flex;
+    justify-content: space-between;
+}
+.sec{
+    display: flex;
+    justify-content: space-around;
+}
+#chat-main{
+    border-radius: 12px;
+    background-color: #ffffff!important;
     width: 40%;
 }
-#chat_room{
-    overflow: scroll;
-    height: 90%;
+#chat-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
 }
-#chat_input{
-    width: 100%;
+#chat-box{
+    overflow: scroll;
 }
 .other{
     display: flex;
@@ -46,6 +96,9 @@ html,body{
 #message{
     width: 80%;
 }
-#m_submit{
+#chat-text{
+    width: 100%;
+}
+#chat-text-btn{
     width:19%;
 }

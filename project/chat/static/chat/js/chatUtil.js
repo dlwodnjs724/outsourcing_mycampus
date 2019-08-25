@@ -3,9 +3,9 @@
  * @param {message} message sb.~~.message? 
  */
 const strfy = (message, flag) => {
-    if (message._sender.userId == sb.currentUser.userId) return `<div class="me">${message.message}</div>`
-    else if (flag == "anon") return `<div class="other">anon_${message._sender.metaData.anonKey} : ${message.message}</div>`
-    return `<div class="other">${message._sender.userId} : ${message.message}</div>`
+    const time = new Date(message.createdAt).toISOString()
+    if (message._sender.userId == sb.currentUser.userId) return `<div class="me"> <div class="time"> ${time.substr(5,5)} ${time.substr(11, 5)}</div> ${message.message}</div>`
+    return `<div class="other"> ${message.message} <div class="time"> ${time.substr(5,5)} ${time.substr(11, 5)} </div></div>`
 }
 /**
  * 채널의 채팅 로그 10개 불러와서 쿼리 리턴해주는 함수.
@@ -28,20 +28,68 @@ const loadLog = (url, length, to) => {
     })
 }
 
-const addChannelBtn = (channel, to, flag, rev) => {
-    const _with = channel.members.filter(v => v.userId != sb.currentUser.userId)[0]
-    if(rev) to.innerHTML = `<li><div class="url" url="${channel.url}" with="${flag=="anon" ? "anon" : _with.userId}" flag="${flag}" anonKey="${_with.metaData.anonKey}">${flag=="norm" ? _with.userId : `anon_${_with.metaData.anonKey}`}</div></li>` +to.innerHTML
-    else to.innerHTML += `<li><div class="url" url="${channel.url}" with="${flag=="anon" ? "anon" : _with.userId}" flag="${flag}" anonKey="${_with.metaData.anonKey}">${flag=="norm" ? _with.userId : `anon_${_with.metaData.anonKey}`}</div></li>`
+const getTimePassed = (ms) =>{
+    const mSec = (Date.now() - new Date(ms))/1000
+    if (mSec<60) return `${Math.floor(mSec)}s` 
+    else if (mSec<3600) return `${Math.floor(mSec/60)}m`
+    else if (mSec<86400) return `${Math.floor(mSec/3600)}h`
+    else if (mSec<604800) return `${Math.floor(mSec/86400)}d`
+    else return `${Math.floor(mSec/604800)}w`
 }
 
-const setChannelBtn = async (button, chat_header, chat_room) => {
+const addChannelBtn = (channel, to, flag, rev) => {
+    console.log(channel)
+    const _with = channel.members.filter(v => v.userId != sb.currentUser.userId)[0]
+    if(rev) to.innerHTML = `<li><div class="url ChannelBtn" url="${channel.url}" with="${flag=="anon" ? "anon" : _with.userId}" flag="${flag}" anonKey="${_with.metaData.anonKey}">
+    <div class="prof">
+    ${flag=="anon"? '<img src="{% static "svg/Anon.svg" %}" >' :"<img src="+_with.profileUrl+">"}
+    </div>
+    <div class="two-line">
+    <div class="fst">
+    <div class="partner">
+    ${flag=="anon" ? "anon" : _with.userId}
+    </div>
+    <div class="last-time">
+    ${channel.lastMessage==null ? "" : getTimePassed(channel.lastMessage.createdAt)}
+    </div>
+    </div>
+    <div class="sec">
+    <div class="last-msg">
+    ${channel.lastMessage==null ? "" : channel.lastMessage.message}
+    </div>
+    </div>
+    </div>
+    </div></li>` +to.innerHTML
+    else to.innerHTML += `<li><div class="url ChannelBtn" url="${channel.url}" with="${flag=="anon" ? "anon" : _with.userId}" flag="${flag}" anonKey="${_with.metaData.anonKey}">
+    <div class="prof">
+    ${flag=="anon"? "<img src='% static 'svg/Anon.svg' %}'>" :"<img src="+_with.profileUrl+">"}
+    </div>
+    <div class="two-line">
+    <div class="fst">
+    <div class="partner">
+    ${flag=="anon" ? "anon" : _with.userId}
+    </div>
+    <div class="last-time">
+    ${channel.lastMessage==null ? "" : getTimePassed(channel.lastMessage.createdAt)}
+    </div>
+    </div>
+    <div class="sec">
+    <div class="last-msg">
+    ${channel.lastMessage==null ? "" : channel.lastMessage.message}
+    </div>
+    </div>
+    </div>
+    </div></li>`
+}
+
+const setChannelBtn = async (button, chat_header, chat_box) => {
     button.addEventListener('click', async e => {
         chat_header.innerHTML = `<span>${button.getAttribute('flag')=="norm" ? button.getAttribute('with') : button.getAttribute('flag')+'_'+button.getAttribute('anonKey') }</span>`
-        chat_room.setAttribute('url', button.getAttribute('url'))
-        chat_room.setAttribute('with', `${button.getAttribute('flag')=="norm" ? button.getAttribute('with') : button.getAttribute('flag')}`)
-        chat_room.setAttribute('flag', button.getAttribute('flag'))
-        chat_room.innerHTML = await loadLog(button.getAttribute('url'), 10)
-        chat_room.scrollTop = chat_room.scrollHeight;
+        chat_box.setAttribute('url', button.getAttribute('url'))
+        chat_box.setAttribute('with', `${button.getAttribute('flag')=="norm" ? button.getAttribute('with') : button.getAttribute('flag')}`)
+        chat_box.setAttribute('flag', button.getAttribute('flag'))
+        chat_box.innerHTML = await loadLog(button.getAttribute('url'), 10)
+        chat_box.scrollTop = chat_box.scrollHeight;
     })
 }
 
