@@ -1,0 +1,51 @@
+html,body{
+    height: 100%;
+}
+#chat_container{
+    display : flex;
+    flex-direction: row;
+    justify-content: center;
+}
+#chat_container > div{
+    margin: 0px 20px;
+}
+#chat_header {
+    display: flex;
+    justify-content: center;
+}
+#chat_container{
+    height: 90%;
+}
+#chat_left{
+    width : 30%;
+}
+#chat_list{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#chat_right{
+    height: 100%;
+    width: 40%;
+}
+#chat_room{
+    overflow: scroll;
+    height: 90%;
+}
+#chat_input{
+    width: 100%;
+}
+.other{
+    display: flex;
+    justify-content: flex-start;
+}
+.me{
+    display: flex;
+    justify-content: flex-end;
+}
+#message{
+    width: 80%;
+}
+#m_submit{
+    width:19%;
+}
