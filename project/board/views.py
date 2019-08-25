@@ -20,7 +20,7 @@ def make_posts_set(category, univ, state, term=""):
         ret = Post.objects.select_related('ctgy', 'author') \
             .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments') \
             .filter(ctgy__univ=univ, ctgy=category) \
-            .annotate(num_likes=Count('likes'))
+            .annotate(num_likes=Count('likes')) \
 
     else:
         ret = Post.objects.select_related('ctgy', 'author') \
@@ -92,7 +92,8 @@ def main(request, url_name):
                 'use_category': False,
                 'posts': posts.object_list,
                 'state': state,
-                'url': url
+                'url': url,
+                'has_next': posts.has_next()
             })
     except Univ.DoesNotExist as e:
         raise Http404(e)
@@ -166,8 +167,9 @@ def category_board(request, url_name, category_name):
                 'selected_category': selected_category,
                 'use_category': False,
                 'state': state,
-                'posts': posts,
-                'url': url
+                'posts': posts.object_list,
+                'url': url,
+                'has_next': posts.has_next()
             })
 
     except Exception as e:
