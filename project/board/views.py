@@ -5,6 +5,9 @@ from django.db.models import Q, Count, Prefetch
 from django.http import JsonResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 import datetime
+
+from django.urls import reverse
+
 from board.forms import PostForm, CommentForm
 from board.models import Category, Post, Image, Comment, Report
 from core.models import Univ
@@ -83,12 +86,15 @@ def main(request, url_name):
             return JsonResponse({"next_posts": object_list, "has_next": has_next})
 
         else:
+            url = reverse('core:board:main_board', args=[url_name])
             return render(request, 'board/main_board.html', {
                 'univ': univ,
                 "url_name": url_name,
                 'categories': univ.category.all(),
+                'use_category': False,
                 'posts': posts.object_list,
-                'state': state
+                'state': state,
+                'url': url
             })
     except Univ.DoesNotExist as e:
         raise Http404(e)
@@ -145,16 +151,25 @@ def category_board(request, url_name, category_name):
         if request.is_ajax():  # 무한스크롤
             if not request.method == "POST":
                 raise Exception("Not allowed request method")
-                
-            next_posts = post_paginator(current_page + 1)
-            return JsonResponse({"next_posts": next_posts})
+
+            requested_page = request.POST.get('requestPage')
+            next_posts = post_paginator(requested_page)
+            object_list = serializers.serialize("json", next_posts.object_list)
+            has_next = next_posts.has_next()
+
+            return JsonResponse({"next_posts": object_list, "has_next": has_next})
+
         else:
+            url = reverse("core:board:category_board", args=[url_name, category_name])
+
             return render(request, 'board/main_board.html', {
                 'univ': univ,
                 'categories': univ.category.all(),
                 'selected_category': selected_category,
+                'use_category': False,
                 'state': state,
                 'posts': posts,
+                'url': url
             })
 
     except Exception as e:

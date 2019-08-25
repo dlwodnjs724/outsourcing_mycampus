@@ -68,14 +68,14 @@
 
     <div class="board__pannel__top container pc__board">
         <div class="pannel__top__state">
-            <a href="{% url 'core:board:main_board' univ.url_name %}?state=new">
+            <a href="{{ url }}?state=new">
                 {% if state == 'new' %}
                     <img src="{% static "/svg/버튼2.svg" %}">
                 {% else %}
                     <img src="{% static "/svg/버튼3.svg" %}">
                 {% endif %}
             </a>
-            <a href="{% url 'core:board:main_board' univ.url_name %}?state=hot">
+            <a href="{{ url }}?state=hot">
                 {% if state == 'hot' %}
                     <img src="{% static "/svg/버튼4.svg" %}">
                 {% else %}
@@ -197,14 +197,14 @@
     <div class="board__pannel__top container mobile__board">
         <div class="pannel__top__state">
 
-            <a href="{% url 'core:board:main_board_new' univ.url_name %}">
+            <a href="{{ url }}?state=new">
                 {% if state == 'new' %}
                     <img src="{% static "/svg/버튼2.svg" %}">
                 {% else %}
                     <img src="{% static "/svg/버튼3.svg" %}">
                 {% endif %}
             </a>
-            <a href="{% url 'core:board:main_board' univ.url_name %}">
+            <a href=""{{ url }}?state=hot"">
                 {% if state == 'hot' %}
                     <img src="{% static "/svg/버튼4.svg" %}">
                 {% else %}
@@ -324,7 +324,7 @@
             crossorigin="anonymous"></script>
     <script>
 
-        var currentPage = 2;
+        var currentPage = 1;
         var spinner = document.querySelector('#loading')
         var contents = document.querySelector('.board__pannel__left ul')
         var loading = false
@@ -338,10 +338,10 @@
                 //ajax
 
                 const req = new XMLHttpRequest();
-                req.open("POST", "{% url "core:board:main_board" url_name %}");
+                req.open("POST", "{{ url }}");
                 req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                req.send(`requestPage=${currentPage++}&csrfmiddlewaretoken={{ csrf_token }}`)
+                req.send(`requestPage=${++currentPage}&csrfmiddlewaretoken={{ csrf_token }}`)
 
                 req.onreadystatechange = function (e) {
                     if (req.readyState !== XMLHttpRequest.DONE) return;
