@@ -30,7 +30,8 @@ const loadLog = (url, length, to) => {
 
 const getTimePassed = (ms) =>{
     const mSec = (Date.now() - new Date(ms))/1000
-    if (mSec<60) return `${Math.floor(mSec)}s` 
+    if (mSec<0) return '0s'
+    else if (mSec<60) return `${Math.floor(mSec)}s` 
     else if (mSec<3600) return `${Math.floor(mSec/60)}m`
     else if (mSec<86400) return `${Math.floor(mSec/3600)}h`
     else if (mSec<604800) return `${Math.floor(mSec/86400)}d`
@@ -38,7 +39,6 @@ const getTimePassed = (ms) =>{
 }
 
 const addChannelBtn = (channel, to, flag, rev) => {
-    console.log(channel)
     const _with = channel.members.filter(v => v.userId != sb.currentUser.userId)[0]
     if(rev) to.innerHTML = `<li><div class="url ChannelBtn" url="${channel.url}" with="${flag=="anon" ? "anon" : _with.userId}" flag="${flag}" anonKey="${_with.metaData.anonKey}">
     <div class="prof">
@@ -47,7 +47,7 @@ const addChannelBtn = (channel, to, flag, rev) => {
     <div class="two-line">
     <div class="fst">
     <div class="partner">
-    ${flag=="anon" ? "anon" : _with.userId}
+    ${flag=="anon" ? `anon${_with.metaData.anonKey}` : _with.userId}
     </div>
     <div class="last-time">
     ${channel.lastMessage==null ? "" : getTimePassed(channel.lastMessage.createdAt)}
@@ -67,7 +67,7 @@ const addChannelBtn = (channel, to, flag, rev) => {
     <div class="two-line">
     <div class="fst">
     <div class="partner">
-    ${flag=="anon" ? "anon" : _with.userId}
+    ${flag=="anon" ? `anon${_with.metaData.anonKey}` : _with.userId}
     </div>
     <div class="last-time">
     ${channel.lastMessage==null ? "" : getTimePassed(channel.lastMessage.createdAt)}

@@ -11,7 +11,7 @@ ChannelHandler.onMessageReceived = async function (channel, message) {
             chat_box.scrollTop = chat_box.scrollHeight;
         } else {
             const channels = await loadChatList()
-            chat_list.innerHTML=""
+            chat_list.innerHTML = ""
             channels.forEach(cur => addChannelBtn(cur, chat_list, cur.customType))
             const buttons = [...chat_list.querySelectorAll('.url')]
             buttons.forEach(cur => {
@@ -25,17 +25,13 @@ ChannelHandler.onMessageReceived = async function (channel, message) {
 
 ChannelHandler.onUserReceivedInvitation = async function (groupChannel, inviter, invitees) {
     try {
-        if(chat_box){
-            if (sb.currentUser.userId != inviter.userId) {
-                const buttons = document.getElementsByClassName('url')
-                addChannelBtn(groupChannel, chat_list, groupChannel.customType, rev)
-                setChannelBtn(buttons[buttons.length - 1], chat_header, chat_box)
-            }
-            else{
-                console.log('sibal')
-            }
+        if (chat_box && sb.currentUser.userId != inviter.userId) {
+            const buttons = document.getElementsByClassName('url')
+            addChannelBtn(groupChannel, chat_list, groupChannel.customType, true)
+            setChannelBtn(buttons[buttons.length - 1], chat_header, chat_box)
         }
     } catch (e) {
+        console.log(e)
         alert(`${groupChannel.customType =="anon" ? "anon" : inviter.userId} invited you to chat.`)
     }
 

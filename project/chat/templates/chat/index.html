@@ -26,7 +26,7 @@
         <hr width=100%>
         <div id="chat-input">
             <input type="text" id="chat-text">
-            <input type="submit"  id="chat-text-btn">
+            <input type="submit" id="chat-text-btn">
         </div>
     </div>
 </div>
@@ -40,7 +40,7 @@
     const chat_text = document.getElementById('chat-text')
     const chat_search = document.getElementById('chat-search')
     const chat_text_btn = document.getElementById('chat-text-btn')
-    const flag = 'anon'
+    let flag = 'norm'
 
 
     sb.connect("{{ user.username }}", async function (user, error) {
@@ -59,25 +59,49 @@
     chat_search.addEventListener('keypress', async (e) => {
         if (e.key == "Enter" && chat_search.value != "") {
             let channel, buttons
+            flag = 'norm'
             try {
-                channel = await openAChat(chat_search.value,'anon')
-                addChannelBtn(channel, chat_list, 'anon')
+                channel = await openAChat(chat_search.value, flag)
+                addChannelBtn(channel, chat_list, flag)
                 buttons = document.getElementsByClassName('url')
                 setChannelBtn(buttons[buttons.length - 1], chat_header, chat_box)
             } catch (e) {
+                console.log(e)
+                alert('check username')
+            }
+        }
+    })
+    chat_search.addEventListener('click', async (e) => {
+        if (chat_search.value != "") {
+            flag = 'anon'
+            let channel, buttons
+            try {
+                channel = await openAChat(chat_search.value, flag)
+                addChannelBtn(channel, chat_list, flag)
+                buttons = document.getElementsByClassName('url')
+                setChannelBtn(buttons[buttons.length - 1], chat_header, chat_box)
+            } catch (e) {
+                console.log(e)
                 alert('check username')
             }
         }
     })
     chat_text.addEventListener('keypress', async (e) => {
         if (e.key == 'Enter' && chat_box.getAttribute('url') != 'none' && chat_text.value != "") {
-            sb.GroupChannel.getChannel(chat_box.getAttribute('url'), (groupChannel, error) => {
+            sb.GroupChannel.getChannel(chat_box.getAttribute('url'), async (groupChannel, error) => {
                 if (error) return
-                groupChannel.sendUserMessage(chat_text.value, (message, error) => {
+                groupChannel.sendUserMessage(chat_text.value, async (message, error) => {
                     if (error) return
                     chat_box.innerHTML += strfy(message, groupChannel.customType)
                     chat_box.scrollTop = chat_box.scrollHeight;
                     chat_text.value = ""
+                    const channels = await loadChatList()
+                    chat_list.innerHTML = ""
+                    channels.forEach(cur => addChannelBtn(cur, chat_list, cur.customType))
+                    const buttons = [...chat_list.querySelectorAll('.url')]
+                    buttons.forEach(cur => {
+                        setChannelBtn(cur, chat_header, chat_box)
+                    })
                 })
             })
         }
@@ -85,13 +109,20 @@
 
     chat_text_btn.addEventListener('click', async (e) => {
         if (chat_text.value != "") {
-            sb.GroupChannel.getChannel(chat_box.getAttribute('url'), (groupChannel, error) => {
+            sb.GroupChannel.getChannel(chat_box.getAttribute('url'), async (groupChannel, error) => {
                 if (error) return
-                groupChannel.sendUserMessage(chat_text.value, (message, error) => {
+                groupChannel.sendUserMessage(chat_text.value, async (message, error) => {
                     if (error) return
                     chat_box.innerHTML += strfy(message, groupChannel.customType)
                     chat_box.scrollTop = chat_box.scrollHeight;
                     chat_text.value = ""
+                    const channels = await loadChatList()
+                    chat_list.innerHTML = ""
+                    channels.forEach(cur => addChannelBtn(cur, chat_list, cur.customType))
+                    const buttons = [...chat_list.querySelectorAll('.url')]
+                    buttons.forEach(cur => {
+                        setChannelBtn(cur, chat_header, chat_box)
+                    })
                 })
             })
         }
