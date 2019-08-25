@@ -13,8 +13,6 @@ from board.models import Category, Post, Image, Comment, Report
 from core.models import Univ
 from core.utils.url_controll import redirect_with_next
 from .forms import ReportForm
-import arrow
-
 
 
 def make_posts_set(category, univ, state, term=""):
