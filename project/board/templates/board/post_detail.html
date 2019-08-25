@@ -63,7 +63,7 @@
   <script>
     // 게시글 좋아요
     function likePost(postPk) {
-      const url = '{% url 'core:board:post_like' 0 %}'.replace('0', '{{ univ.url_name }}');
+      const url = '{% url 'api:post_like' %}';
       $.ajax({
         type: 'POST',
         url: url,
@@ -84,8 +84,8 @@
 
     // 댓글 좋아요
     function likeComment(commentPk) {
-      const url = '{% url 'core:board:comment_like' 'url_name' 'category' 0 %}'
-          .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
+      const url = '{% url 'api:comment_like' %}'
+
       $.ajax({
         type: 'POST',
         url: url,

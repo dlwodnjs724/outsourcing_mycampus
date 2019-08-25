@@ -11,5 +11,6 @@ def redirect_with_next(to, next, params):
     {to: [string], next: [string]}
     :return:
     """
+
     url = reverse(to, args=[*params['to']]) + "?next=" + reverse(next, args=[*params['next']])
     return redirect(url)

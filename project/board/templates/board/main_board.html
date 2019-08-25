@@ -6,10 +6,11 @@
     <link rel="stylesheet" href="{% static "board/css/board_header.css" %}" type="text/css">
     <div class="board__header__search">
         <form action="" method="get">
-            <button type="submit" value="search">
+            <button type="submit" value="term">
                 <img src="{% static "/svg/search.svg" %}">
             </button>
-            <input type="text" placeholder="Search mycampus" name="search" value="{{ search }}">
+            <input type="hidden" name="state" value="{{ state }}">
+            <input type="text" placeholder="Search mycampus" name="term" value="{{ search }}">
         </form>
     </div>
     <div class="board__header__right">
@@ -30,17 +31,20 @@
 {#  {{ category.name }}#}
 {#{% endfor %}#}
 
-{% block contents %}
+{% block css %}
     <link rel="stylesheet" href="{% static "board/css/main_board.css" %}" type="text/css">
+    <link rel="stylesheet" href="{% static "components/spinner.css" %}">
+{% endblock %}
+{% block contents %}
     <div class="board__pannel__top container">
-      <a href="{% url 'core:board:main_board_new' univ.url_name %}">
+      <a href="{% url 'core:board:main_board' univ.url_name %}?state=new">
       {% if state == 'new' %}
         <img src="{% static "/svg/버튼2.svg"%}">
       {% else %}
         <img src="{% static "/svg/버튼3.svg"%}">
       {% endif %}
       </a>
-      <a href="{% url 'core:board:main_board' univ.url_name %}">
+      <a href="{% url 'core:board:main_board' univ.url_name %}?state=hot">
       {% if state == 'hot' %}
         <img src="{% static "/svg/버튼4.svg"%}">
       {% else %}
@@ -51,8 +55,6 @@
     
 
     <div class="container board__main">
-
-
         <div class="board__pannel__left">
             <ul>
                 {% for post in posts %}
@@ -61,14 +63,12 @@
 
                             <div class="board__post__like">
                                 <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
-
                                 <button type="button" class="like" name="{{ post.pk }}" value="Like">
                                   {% if user in post.likes.all %}
                                     <img id="like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
                                   {% else %}
                                     <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
                                   {% endif %}
-
                                 </button>
                             </div>
 
@@ -190,7 +190,7 @@
 
 
             const univUrlName = "{{ univ.url_name }}";
-            const url = '{% url 'core:board:post_like' 0 %}'.replace('0', univUrlName);
+            const url = '{% url 'api:post_like' %}';
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -211,7 +211,7 @@
 
 
         $('.bookmark').click(function () {
-            const url = '{% url 'core:board:post_bookmark' 0 %}'.replace('0', "{{ univ.url_name }}");
+            const url = '{% url 'api:post_bookmark' %}';
             $.ajax({
                 type: 'POST',
                 url: url,

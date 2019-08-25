@@ -2,7 +2,7 @@
 
 # reqeust, User 모델 인스턴스, 보낼 이메일 주소
 from django.core.mail import EmailMessage
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 import arrow
@@ -10,6 +10,7 @@ import random
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
+from board.models import Post, Comment
 from core.models import Univ
 from .models import Token
 
@@ -82,3 +83,85 @@ def activate(request):
         return redirect(reverse("core:accounts:signup", args=[url_name]) + "?email=" + user_email)
     except Token.DoesNotExist:
         return HttpResponseBadRequest(content="Unauthorized token")
+
+
+def post_bookmark(request):
+    try:
+        if not request.user.is_authenticated:
+            raise Exception("User is not authenticated")
+
+        if request.user.is_anonymous:
+            raise Exception("User is anonymous")
+
+        if not request.method == 'POST':
+            raise Exception("Not allowed request method")
+
+        user = request.user
+        post = Post.objects.get(pk=request.POST.get('pk', None))
+
+        if post.saved.filter(pk=user.pk).exists():
+            post.saved.remove(user)
+        else:
+            post.saved.add(user)
+        context = {
+            'pk': post.pk,
+        }
+        return JsonResponse(context)
+
+    except Exception as e:
+        return HttpResponseBadRequest(content="Bad request: " + str(e))
+
+
+def post_like(request):
+    try:
+        if not request.user.is_authenticated:
+            raise Exception("User is not authenticated")
+
+        if request.user.is_anonymous:
+            raise Exception("User is anonymous")
+
+        if not request.method == 'POST':
+            raise Exception("Not allowed request method")
+
+        user = request.user
+        post = Post.objects.get(pk=request.POST.get('pk', None))
+
+        if post.likes.filter(pk=user.pk).exists():
+            post.likes.remove(user)
+        else:
+            post.likes.add(user)
+        context = {
+            'pk': post.pk,
+            'likes_count': post.total_likes(),
+        }
+        return JsonResponse(context)
+    except Exception as e:
+        return HttpResponseBadRequest(content="Bad request:" + str(e))
+
+
+def comment_like(request, url_name, category_name, post_pk):
+    try:
+        if not request.user.is_authenticated:
+            raise Exception("User is not authenticated")
+
+        if request.user.is_anonymous:
+            raise Exception("User is anonymous")
+
+        if not request.method == 'POST':
+            raise Exception("Not allowed request method")
+
+        user = request.user
+        comment = Comment.objects.get(pk=request.POST.get('pk', None))
+
+        if comment.comment_likes.filter(pk=user.pk).exists():
+            comment.comment_likes.remove(user)
+        else:
+            comment.comment_likes.add(user)
+        context = {
+            'pk': comment.pk,
+            'likes_count': comment.total_likes(),
+        }
+        return JsonResponse(context)
+
+    except Exception as e:
+        return HttpResponseBadRequest(content="Bad request: " + str(e))
