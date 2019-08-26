@@ -9,7 +9,8 @@ import datetime
 from django.urls import reverse
 
 from board.forms import PostForm, CommentForm
-from board.models import Category, Post, Image, Comment, Report
+from board.models import Category, Post, Image, Comment, Report, Noti
+from django.contrib.contenttypes.models import ContentType
 from core.models import Univ
 from core.utils.url_controll import redirect_with_next
 from .forms import ReportForm
@@ -248,6 +249,7 @@ def comment_create(request, url_name, category_name, post_pk):
             content=request.POST.get('content', ''),
             is_anonymous=is_anonymous
         )
+        Noti.objects.create(_from=request.user, _to=Post.objects.get(pk=post_pk).author, object_id=post_pk, content_type=ContentType.objects.get(app_label='board', model='post'))
         return redirect('core:board:post_detail', url_name, category_name, post_pk)
     # if request.method == 'POST':
     #     is_anonymous = True if request.POST.get('comment_is_anonymous', '') == 'true' else False
@@ -283,6 +285,8 @@ def comment_nest_create(request, url_name, category_name, post_pk):
             is_anonymous=is_anonymous,
             parent_id=request.POST.get('parent_id')
         )
+        Noti.objects.create(_from=request.user, _to=Comment.objects.get(pk=request.POST.get('parent_id')).author, object_id=request.POST.get('parent_id'), content_type=ContentType.objects.get(app_label='board', model='comment'))
+
         return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
     # if request.method == 'POST':
