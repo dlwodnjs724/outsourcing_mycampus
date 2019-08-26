@@ -188,6 +188,57 @@
           crossorigin="anonymous"></script>
 
   <script>
+      sb.connect("{{ user.username }}", async function (user, error) {
+        if (error) return;
+    });
+    const author = document.getElementById('post__author')
+    const msg_btn = document.getElementById('post__message')
+    const comment_profs = [...document.getElementsByClassName('comment__top__left')]
+    const comment_authors = []
+    {% for comment in comments %}
+    comment_authors.push("{{comment.author}}")
+    {% for child in comment|child_comments %}
+    comment_authors.push("{{child.author}}")
+    {% endfor %}
+    {% endfor %}
+    author.addEventListener('click', async e => {
+      const flag = author.querySelector('div').innerText=="anon" ? 'anon' : "norm"
+      const result = confirm(`wanna send message to ${author.querySelector('div').innerText}?`)
+      if(result){
+        try{
+            await openAChat("{{ post.author.username }}", flag)
+            window.location.href = `${window.location. origin}/${window.location.pathname.split("/")[1]}/chat`          
+        }
+        catch (e) {
+          alert(e)
+        }
+      }
+    })
+    msg_btn.addEventListener('click', e => {
+      author.click()
+    })
+    
+    for (c in comment_profs) {
+      (async (btn ,id) => {
+        btn.addEventListener('click', async e=> {
+          let flag = 'anon'
+          if (btn.querySelector('.comment__author').innerText == id) flag = 'norm'
+          const result = confirm(`wanna send message to ${flag=="anon" ? 'anon' : id }`)
+          if(result){
+            try{
+                await openAChat(id, flag)
+                window.location.href = `${window.location. origin}/${window.location.pathname.split("/")[1]}/chat`          
+            }
+            catch (e) {
+              alert(e)
+            }
+          }
+        })
+      })(comment_profs[c],comment_authors[c])
+    }
+
+
+
     // 북마크
     function bookmark(postPk) {
       let bookmark_img = document.getElementById(`saved_id_${postPk}`);
