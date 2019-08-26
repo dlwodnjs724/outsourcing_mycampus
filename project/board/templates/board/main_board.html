@@ -47,9 +47,11 @@
     </div>
 
     <div class="header__dropdown mobile__header" id="h_h" style="display: none;">
+     <a href="{% url 'core:accounts:mypage' univ.url_name %}">
         <div class="header__drop__mypage">
             <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page
         </div>
+        </a>
         <div class="header__drop__notification">
             <img src="{% static "/svg/알림.svg" %}" alt="">Notification
         </div>
