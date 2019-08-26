@@ -17,7 +17,7 @@
 <body>
     <div class="base__header pc__header">
         <div class="base__header__used-space container">
-            <div class="base__logo"><object type="image/svg+xml" data="{% static "/svg/logo-uf.svg" %}"></object></div>
+            <div class="base__logo"><img src="{{ univ.logo.url }}"></div>
             {% block header %}
             {% endblock %}
         </div>

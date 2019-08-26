@@ -8,6 +8,7 @@
     background-color: var(--main-color);
     margin-bottom: 1rem;
     position: sticky;
+    z-index: 2;
     top: 0px;
 }
 
