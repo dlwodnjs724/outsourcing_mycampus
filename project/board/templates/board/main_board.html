@@ -21,8 +21,10 @@
                         <img src="{% static "/svg/햄버거.svg" %}" alt="">
                     </div>
                     <div class="header__logo">
+                        <a href="{% url 'core:board:main_board' univ.url_name %}">
                         <img src="{% static "/svg/box logo.svg" %}">
-                        <img src="{% static "/svg/UF.svg" %}">
+                        <img src="{{ univ.logo_mobile.url }}">
+                        </a>
                     </div>
                     <div class="board__header__right">
                         <ul class="board__buttons">
@@ -37,7 +39,7 @@
         </div>
     </div>
     
-    <div class="header__dropdown"  id="h_h"  style="display: none;">
+    <div class="header__dropdown mobile__header"  id="h_h"  style="display: none;">
         <div class="header__drop__mypage">
             <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page</div>
         <div class="header__drop__notification">
@@ -104,7 +106,7 @@
                                             <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
                                         </div>
                                         <div class="post__mid__content">
-                                            {{ post.content|truncatechars:110 }}
+                                            {{ post.content|truncatechars:60 }}
                                         </div>
                                     </div>
                                     <hr/>
@@ -142,8 +144,8 @@
                                 </div>
 
                                 <div class="post__image">
-                                    {% for image in post.images.all %}
-                                        <img src="{{ image.url }}" alt="">
+                                    {% for img in post.images.all %}
+                                        <img src="{{ img.image_thumbnail.url }}" alt="">
                                     {% endfor %}
                                 </div>
                             </div>
@@ -200,10 +202,29 @@
             </a>
         </div>
         
-        <div class="pannel__top__category">
+        <div class="pannel__top__category" id="show_drop_category">
             <img src="{% static "/svg/category.svg" %}" id="m_category" alt="">
-            <div class="top__category__face">category</div>
-            <img src="{% static "/svg/cancel.svg" %}" id="m_drop"alt="">
+            <div class="top__category__face">
+                {% if selected_category %}
+                    {{ selected_category }}
+                {% else %}
+                    Category
+                {% endif %}
+            </div>
+            <img src="{% static "/svg/회색.svg" %}" id="m_drop"alt="">
+        </div>
+        <div class="pannel__top__category_drop" id="hide_drop_category" style="display:none;" >
+                <img src="{% static "/svg/category.svg" %}" id="m_category_drop" alt="">
+                <div class="category__face__drop">
+                {% for category in categories %}
+                    <div class="top__category__face__drop {% cycle "c_a" "c_b" "c_c" "c_d" %}">
+                        <a href="{% url 'core:board:category_board' univ.url_name category.name %}">
+                            {{ category.name }}
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <img src="{% static "/svg/회색.svg" %}" id="m_drop_drop"alt="">
         </div>
 
         {% comment %} <div class="board__pannel__right">
@@ -252,7 +273,7 @@
                                             <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
                                         </div>
                                         <div class="post__mid__content">
-                                            {{ post.content|truncatechars:190 }}
+                                            {{ post.content|truncatechars:140 }}
                                         </div>
                                     </div>
                                     <hr/>
@@ -366,10 +387,23 @@
             })
         })(user)
     });
+    const hide_category = document.getElementById('hide_drop_category');
+    const show_category = document.getElementById('show_drop_category');
     
+    document.getElementById('m_drop').onclick = () => {
+        if(hide_category.style.display == 'none') {
+            hide_category.style.display = 'flex';
+            show_category.style.display = 'none';
+        }
+    }
+    document.getElementById('m_drop_drop').onclick = () => {
+        if(show_category.style.display == 'none') {
+            show_category.style.display = 'flex';
+            hide_category.style.display = 'none';
+        }
+    }
 
     document.getElementById('h_click').onclick = () =>{
-        console.log("helllo");
         var drop = document.getElementById("h_h");
         if(drop.style.display == 'none'){
             drop.style.display = 'flex';

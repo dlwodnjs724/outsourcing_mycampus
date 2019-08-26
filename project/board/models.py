@@ -38,7 +38,7 @@ class Category(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'Category (PK: {self.pk}, Name: {self.name}, Univ: {self.univ.full_name})'
+        return f'{self.name}'
 
 
 class Suggested(models.Model):

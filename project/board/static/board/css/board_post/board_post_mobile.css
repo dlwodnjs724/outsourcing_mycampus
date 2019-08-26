@@ -12,7 +12,7 @@
 .board__pannel__top {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     margin-top: 0.3rem;
     padding: 0 0.3rem!important;
@@ -192,6 +192,7 @@
     font-style: normal;
     font-stretch: normal;
     line-height: 1.2;
+    font-family: YDIYGO320;
     text-align: left;
     color: #a6a7a7;
     height: 60px;
@@ -393,4 +394,67 @@
 
 .header__drop__search input::placeholder {
     color:#4fbcbd;
+}
+
+.header__logo a {
+    text-decoration: none;
+}
+
+
+
+.pannel__top__category_drop {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    background-color: white;
+    width: 62%;
+    height: auto;
+    border-radius: 5px;
+    z-index: 1;
+    box-shadow: 0 0 10px 10px rgba(166, 167, 167, 0.4)
+}
+
+.category__face__drop {
+    /* margin-left: auto;
+    margin-right: auto; */
+    height: 100%;
+    width: 75%;
+}
+
+.top__category__face__drop {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    height: 1.5rem;
+    border-radius: 3px;
+    margin: 5px 0;
+}
+
+.top__category__face__drop a{
+    text-decoration: none;
+    color: white;
+}
+
+#m_category_drop {
+    margin-top:1%;
+    height: 20px;
+    width: 20px;
+    margin-left:auto;
+    margin-right:auto;
+    margin-bottom:auto;
+    margin-top: 6px;
+
+}
+
+#m_drop_drop {
+    height: 20px;
+    transform: rotate(180deg);
+    width: 20px;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top: 6px;
+    margin-bottom:auto;
+
+
 }

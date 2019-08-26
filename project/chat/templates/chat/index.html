@@ -36,7 +36,7 @@
 </div>
 
 <div class="container chat-container mobile_chat">
-    <img src="{% static "/svg/share.svg" %}" alt="" id="chat_back">
+    <img src="{% static "/svg/흰색.svg" %}" alt="" id="chat_back">
         <div id="chat-list-container_m">
             <div id="chat-list-header_m">
                 Messenger
@@ -169,75 +169,6 @@
         }
     })
 
-        sb.connect("{{ user.username }}", async function (user, error) {
-        if (error) return;
-        const channels = await loadChatList()
-        const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
-        if(first_btn) first_btn.click()
-    });
-
-    chat_search.addEventListener('keypress', async (e) => {
-        if (e.key == "Enter" && chat_search.value != "") {
-            flag = 'norm'
-            try {
-                await openAChat(chat_search.value, flag)
-                const channels = await loadChatList()
-                const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
-                first_btn.click()
-            } catch (e) {
-                console.log(e)
-                alert('check username')
-            }
-        }
-    })
-    chat_search.addEventListener('click', async (e) => {
-        if (chat_search.value != "") {
-            flag = 'anon'
-            try {
-                await openAChat(chat_search.value, flag)
-                const channels = await loadChatList()
-                const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
-                first_btn.click()
-            } catch (e) {
-                console.log(e)
-                alert('check username')
-            }
-        }
-    })
-    chat_text.addEventListener('keypress', async (e) => {
-        if (e.key == 'Enter' && chat_box.getAttribute('url') != 'none' && chat_text.value != "") {
-            sb.GroupChannel.getChannel(chat_box.getAttribute('url'), async (groupChannel, error) => {
-                if (error) return
-                groupChannel.sendUserMessage(chat_text.value, async (message, error) => {
-                    if (error) return
-                    chat_box.innerHTML += strfy(message, groupChannel.customType)
-                    chat_box.scrollTop = chat_box.scrollHeight;
-                    chat_text.value = ""
-                    const channels = await loadChatList()
-                    await renderChatList(channels, chat_list,
-                        chat_header, chat_box)
-                })
-            })
-        }
-    })
-
-    chat_text_btn.addEventListener('click', async (e) => {
-        if (chat_text.value != "") {
-            sb.GroupChannel.getChannel(chat_box.getAttribute('url'), async (groupChannel, error) => {
-                if (error) return
-                groupChannel.sendUserMessage(chat_text.value, async (message, error) => {
-                    if (error) return
-                    chat_box.innerHTML += strfy(message, groupChannel.customType)
-                    chat_box.scrollTop = chat_box.scrollHeight;
-                    chat_text.value = ""
-                    const channels = await loadChatList()
-                    await renderChatList(channels, chat_list,
-                        chat_header, chat_box)
-                })
-            })
-        }
-    })
-
     <!-- mobile -->
     
     sb.connect("{{ user.username }}", async function (user, error) {
@@ -247,7 +178,7 @@
         if(first_btn_m) first_btn_m.click()
     });
 
-    chat_search.addEventListener('keypress', async (e) => {
+    chat_search_m.addEventListener('keypress', async (e) => {
         if (e.key == "Enter" && chat_search_m.value != "") {
             flag = 'norm'
             try {
@@ -261,7 +192,7 @@
             }
         }
     })
-    chat_search.addEventListener('click', async (e) => {
+    chat_search_m.addEventListener('click', async (e) => {
         if (chat_search_m.value != "") {
             flag = 'anon'
             try {

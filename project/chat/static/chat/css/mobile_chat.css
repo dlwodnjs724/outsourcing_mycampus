@@ -128,8 +128,8 @@ hr{
 
 #chat_back {
     position: absolute;
-    top: 5px;
-    left: 5px;
+    top: 0.8rem;
+    left: 1rem;
 }
 
 #hide {
