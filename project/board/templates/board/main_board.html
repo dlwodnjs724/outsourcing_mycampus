@@ -45,11 +45,11 @@
             <div class="header__wrap">
                 <div class="header__main">
                     <div class="header__ham" id="h_click">
-                        三
+                        <img src="{% static "/svg/햄버거.svg" %}" alt="">
                     </div>
                     <div class="header__logo">
                         <img src="{% static "/svg/box logo.svg" %}">
-                        UF
+                        <img src="{% static "/svg/UF.svg" %}">
                     </div>
                     <div class="board__header__right">
                         <ul class="board__buttons">
@@ -65,12 +65,14 @@
     </div>
     
     <div class="header__dropdown"  id="h_h"  style="display: none;">
-        <div class="header__drop__mypage">my page</div>
-        <div class="header__drop__notification">notification</div>
+        <div class="header__drop__mypage">
+            <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page</div>
+        <div class="header__drop__notification">
+            <img src="{% static "/svg/알림.svg" %}" alt="">Notification</div>
         <div class="header__drop__search">
             <form action="" method="get">
                 <button type="submit" value="search">
-                    <img src="{% static "/svg/search.svg" %}">
+                    <img src="{% static "/svg/검색.svg" %}">
                 </button>
                 <input type="text" placeholder="Search" name="search" value="{{ search }}">
             </form>
