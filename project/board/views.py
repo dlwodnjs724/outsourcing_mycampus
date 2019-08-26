@@ -7,9 +7,14 @@ from django.shortcuts import render, get_object_or_404, get_list_or_404, redirec
 import datetime
 
 from django.urls import reverse
+from rest_framework import status
+from rest_framework.decorators import renderer_classes, api_view
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.response import Response
 
 from board.forms import PostForm, CommentForm
 from board.models import Category, Post, Image, Comment, Report
+from board.serializers import PostSerializer
 from core.models import Univ
 from core.utils.url_controll import redirect_with_next
 from .forms import ReportForm
@@ -18,15 +23,16 @@ from .forms import ReportForm
 def make_posts_set(category, univ, state, term=""):
     if category:
         ret = Post.objects.select_related('ctgy', 'author') \
-            .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments') \
+            .prefetch_related('comments__author','ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments') \
             .filter(ctgy__univ=univ, ctgy=category) \
-            .annotate(num_likes=Count('likes')) \
+            .annotate(num_likes=Count('likes'))
 
     else:
         ret = Post.objects.select_related('ctgy', 'author') \
-            .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments') \
+            .prefetch_related('comments__author', 'ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments') \
             .filter(ctgy__univ=univ) \
-            .annotate(num_likes=Count('likes'))
+            .annotate(num_likes=Count('likes')) \
+
 
     if term:
         ret = ret.filter(Q(title__icontains=term) | Q(content__icontains=term))
@@ -42,7 +48,7 @@ def make_posts_set(category, univ, state, term=""):
 def can_use(request, url_name, ck_category=False, ck_anon=False, ck_univ_url=False, use_category=""):
     state = request.GET.get("state") or "hot"
     term = request.GET.get("term")
-    must_check = bool(term)
+    must_check = bool(term or (state == 'new'))
 
     univ = Univ.objects.prefetch_related('category').get(url_name=url_name)
     selected_category = None
@@ -50,7 +56,7 @@ def can_use(request, url_name, ck_category=False, ck_anon=False, ck_univ_url=Fal
     if use_category:
         selected_category = univ.category.get(name=use_category)
 
-    if ck_category and not len(univ.category.all()):
+    if ck_category and not univ.category.count():
         raise Exception("There is no category in {}.".format(univ.full_name))
 
     if ck_anon and must_check and request.user.is_anonymous:
@@ -61,27 +67,28 @@ def can_use(request, url_name, ck_category=False, ck_anon=False, ck_univ_url=Fal
 
     return [univ, state, term, selected_category]
 
-
+@api_view(('POST', 'GET'))
+@renderer_classes((JSONRenderer, TemplateHTMLRenderer))
 def main(request, url_name):
     try:
-
-        # term, category를 변경 했을 때 유저를 체크 해야 함
+        # term, state 변경 했을 때 유저를 체크 해야 함
         [univ, state, term, selected_category] = can_use(request, url_name, True, True, True)
 
         post_sets = make_posts_set(None, univ, state, term)
 
         post_paginator = Paginator(post_sets, 15).page
         posts = post_paginator(1)
+
         if request.is_ajax():  # 무한스크롤
             if not request.method == "POST":
                 raise Exception("Not allowed request method")
 
             requested_page = request.POST.get('requestPage')
             next_posts = post_paginator(requested_page)
-            object_list = serializers.serialize("json", next_posts.object_list)
-            has_next = next_posts.has_next()
+            serializer = PostSerializer(next_posts.object_list, many=True)
 
-            return JsonResponse({"next_posts": object_list, "has_next": has_next})
+            has_next = next_posts.has_next()
+            return Response(status=status.HTTP_200_OK, data={"next_posts": serializer.data, "has_next": has_next})
 
         else:
             url = reverse('core:board:main_board', args=[url_name])
@@ -106,6 +113,8 @@ def main(request, url_name):
         if str(e) == 'others':
             return redirect("core:board:main_board", url_name=request.user.univ.url_name)
 
+
+        raise e;
         return HttpResponseBadRequest(content="Bad Request: " + str(e))
 
 
@@ -153,10 +162,11 @@ def category_board(request, url_name, category_name):
 
             requested_page = request.POST.get('requestPage')
             next_posts = post_paginator(requested_page)
-            object_list = serializers.serialize("json", next_posts.object_list)
+            serializer = PostSerializer(next_posts.object_list, many=True)
+
             has_next = next_posts.has_next()
 
-            return JsonResponse({"next_posts": object_list, "has_next": has_next})
+            return JsonResponse({"next_posts": serializer.data, "has_next": has_next})
 
         else:
             url = reverse("core:board:category_board", args=[url_name, category_name])

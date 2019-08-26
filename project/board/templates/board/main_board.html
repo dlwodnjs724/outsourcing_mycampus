@@ -175,10 +175,11 @@
                     </div>
 
                 {% endfor %}
-                <div id="loading" class="spinner-box">
-                    <div class="spinner"/>
-                </div>
+
             </ul>
+            <div id="loading" class="spinner-box">
+                <div class="spinner"/>
+            </div>
         </div>
 
         <div class="board__pannel__right">
@@ -304,6 +305,9 @@
 
                 {% endfor %}
             </ul>
+            <div id="loading" class="spinner-box">
+                <div class="spinner"/>
+            </div>
         </div>
 
         <div class="board__pannel__right">
@@ -328,6 +332,7 @@
                         </li>
                     {% endfor %}
                 </ul>
+
             </div>
         </div>
     </div>
@@ -337,93 +342,142 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
+    <script src="{% static "board/js/scroll.js" %}"></script>
     <script>
-        var True = true;
-        var False = false;
+        window.onload = function () {
+            var USER = {{ request.user.pk }};
+            var tempToJs = {
+                True: true,
+                False: false
+            };
 
-        var status = {
-            currentPage: 1,
-            loading: false,
-            has_next: {{ has_next }}
-        };
+            var spinner = document.querySelector('#loading')
+            var contents = document.querySelector('.board__pannel__left ul')
 
-        var url = {
-            baseUrl: {% url "core:board:main_board" univ.url_name %},
-            univUrlName: {{ univ.url_name }},
-            staticViewed: {
-              click: {% static "/svg/view-clicked.svg" %},
-              unClicked: {% static "/svg/view.svg" %}
-            },
-            staticLikes: {
-                click: {% static "/svg/like-clicked.svg" %},
-                unClicked: {% static "/svg/like.svg" %}
-            },
-            staticComment: {
-                clicked: {% static "/svg/comment-clicked.svg" %},
-                unClicked: {% static "/svg/like&comment.svg" %}
-            },
-            staticBookmark: {
-                bookmark: {% static "/svg/bookmark.svg" %},
-                scrap: {% static "/svg/scrap.svg" %}
-            }
-        };
-
-        function makeComponents(next_posts) {
-            var components = Promise.all(next_posts.map(post => new Promise(resolve, reject) => {
-                [
-                    post.ctgy.name,
-                    post.name,
-                    url.baseUrl + url.univUrlName + '/' + post.ctgy.name + '/' + post.pk + '/',
-                    post.title.substring(0, 30) + "…",
-                    post.content.substring(0, 190) + "…",
-                    post.viewed_by.all
-                ]
-                cpnt = makeComponent()
-            }));
-        }
-
-        var spinner = document.querySelector('#loading')
-        var contents = document.querySelector('.board__pannel__left ul')
-
-
-        window.onscroll = function () {
-            var condition = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1500;
-
-            if (condition && !status.loading && status.has_next) {
-                status.loading = true;
-                //ajax
-
-                const req = new XMLHttpRequest();
-                req.open("POST", "{{ url }}");
-                req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                req.send(`requestPage=${++status.currentPage}&csrfmiddlewaretoken={{ csrf_token }}`)
-
-                req.onreadystatechange = function (e) {
-                    if (req.readyState !== XMLHttpRequest.DONE) return;
-
-                    if (req.status === 200) {
-                        loading = false;
-                        var json = JSON.parse(req.response);
-                        var next_posts = json.next_posts;
-                        has_next = json.has_next;
-
-
-                        console.log(json);
-
+            var currentPage = 1;
+            var loading = {
+                _isLoading: false,
+                set isLoading(bool) {
+                    if (bool) {
+                        spinner.classList.add('spinner-on')
                     } else {
-                        loading = false;
-                        alert(req.responseText);
+                        spinner.classList.remove('spinner-on')
                     }
-                };
-            }
+                    this._isLoading = bool
+                },
+                get isLoading() {
+                    return this._isLoading
+                }
+            };
 
-            if (loading) {
-                spinner.classList.add('spinner-on')
-            } else {
-                spinner.classList.remove('spinner-on')
-            }
-        }
+            var has_next = tempToJs["{{ has_next }}"];
+
+            var url = {
+                baseUrl: "{% url "core:board:main_board" univ.url_name %}",
+                univUrlName: "{{ univ.url_name }}",
+                staticViewed: {
+                    clicked: "{% static "/svg/view-clicked.svg" %}",
+                    unClicked: "{% static "/svg/view.svg" %}"
+                },
+                staticLikes: {
+                    clicked: "{% static "/svg/like-clicked.svg" %}",
+                    unClicked: "{% static "/svg/like.svg" %}"
+                },
+                staticComment: {
+                    clickeded: "{% static "/svg/comment-clicked.svg" %}",
+                    unClicked: "{% static "/svg/like.svg" %}"
+                },
+                staticBookmark: {
+                    bookmark: "{% static "/svg/bookmark.svg" %}",
+                    scrap: "{% static "/svg/scrap.svg" %}"
+                }
+            };
+
+            window.onscroll = function () {
+                function makeComponents(next_posts, userPk) {
+                    return Promise.all(next_posts.map(post => new Promise((resolve, reject) => {
+                        postFields = post;
+                        postPk = post.id;
+
+
+                        console.log(postFields, userPk)
+                        var user_liked_this = userPk in postFields.likes;
+                        var user_saw_this = userPk in postFields.viewed_by;
+                        var user_saved_this = userPk in postFields.saved;
+
+                        var like_icon_will_use = user_liked_this ? url.staticLikes.clicked : url.staticLikes.unClicked;
+                        var view_icon_will_use = user_saw_this ? url.staticViewed.clicked : url.staticViewed.unClicked;
+                        var save_icon_will_use = user_saved_this ? url.staticBookmark.bookmark : url.staticBookmark.scrap;
+                        var comment_icon_will_use = url.staticComment.unClicked;
+                        var isClicked = user_liked_this ? "clicked" : "";
+
+                        postTitle = (postFields.title.length > 30 ? postFields.title.substring(0, 30) + "…" : postFields.title);
+                        postContent = (postFields.content.length > 110 ? postFields.content.substring(0, 110) + "…" : postFields.content);
+
+                        var content = [
+                            postPk,
+                            postFields.likes.length,
+                            postPk,
+                            postPk,
+                            isClicked,
+                            like_icon_will_use,
+                            postFields.ctgy.name,
+                            postFields.author.username,
+                            url.baseUrl + postFields.ctgy.name + '/' + postPk + '/',
+                            postTitle,
+                            postContent,
+                            view_icon_will_use,
+                            postFields.views,
+                            comment_icon_will_use,
+                            postFields.comments.length,
+                            save_icon_will_use,
+                            postFields.saved.length,
+                            postFields.time_interval
+                        ];
+                        cmpStr = componentTemplate.format(...content);
+                        var htmlObject = document.createElement('div');
+                        htmlObject.innerHTML = cmpStr;
+
+                        resolve(htmlObject);
+                    })));
+                }
+
+
+                var condition = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1500;
+
+                if (condition && !loading.isLoading && has_next) {
+                    loading.isLoading = true;
+                    //ajax
+
+                    const req = new XMLHttpRequest();
+                    req.open("POST", "{{ url }}");
+                    req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    req.send(`requestPage=${currentPage}&csrfmiddlewaretoken={{ csrf_token }}`)
+
+                    req.onreadystatechange = function (e) {
+                        if (req.readyState !== XMLHttpRequest.DONE) return;
+
+                        if (req.status === 200) {
+                            var json = JSON.parse(req.response);
+                            var next_posts = json.next_posts;
+                            has_next = json.has_next;
+
+                            makeComponents(next_posts, USER).then(value => value.map(el => {
+                                contents.appendChild(el);
+                            })).then(result => {
+                                loading.isLoading = false
+                            });
+                        } else {
+                            loading.isLoading = false;
+
+                            alert(req.responseText);
+                        }
+                    };
+                }
+            };
+        };
+
 
         sb.connect("{{ user.username }}", async function (user, error) {
             if (error) return;

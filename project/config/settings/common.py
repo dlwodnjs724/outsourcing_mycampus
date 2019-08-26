@@ -56,7 +56,10 @@ LOCAL_APPS = [
     'chat',
 ]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    'rest_framework',
+    'imagekit'
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -66,7 +69,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'imagekit',
+
 ] + LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
@@ -159,7 +162,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')
 AUTH_USER_MODEL = 'accounts.User'
 
 LOGOUT_REDIRECT_URL = '/'
-
 
 # activation email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
