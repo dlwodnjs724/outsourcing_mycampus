@@ -19,7 +19,18 @@
         <div class="post__container__row">
           <div id="post__category">{{ selected_category.name }}</div>
           <div class="post__function">
-            <div><img src="{% static 'svg/bookmark.svg' %}" alt="" id="post__bookmark"></div>
+            <div>
+              <button type="button" class="reset-button"
+                      onclick="bookmark({{ post.pk }})">
+               {% if user in post.saved.all %}
+                  <img id="saved_id_{{ post.pk }}" src="{% static 'svg/bookmark.svg' %}" alt=""
+                       class="post__bookmark bookmark_clicked">
+                {% else %}
+                  <img id="saved_id_{{ post.pk }}" src="{% static 'svg/scrap.svg' %}" alt=""
+                       class="post__bookmark">
+                {% endif %}
+              </button>
+            </div>
             <div><img src="{% static 'svg/message.svg' %}" alt="" id="post__message"></div>
             <div><img src="{% static 'svg/report.svg' %}" alt="" id="post__report"></div>
           </div>
@@ -70,12 +81,29 @@
         </div>
       </div>
       <div class="detail__post__comment">
-        <form action="{% url 'core:board:comment_create' univ.url_name selected_category.name post.pk %}" method="post">
-          {% csrf_token %}
-          <textarea name="content" cols="40" rows="10"></textarea>
-          <input type="checkbox" name="is_anonymous" checked>
-          <button type="submit">comment</button>
-        </form>
+        <div class="comment__form__row">
+          <form action="{% url 'core:board:comment_create' univ.url_name selected_category.name post.pk %}"
+                method="post" class="comment__form">
+            {% csrf_token %}
+            <div class="comment__form__top">
+              <textarea name="content" cols="40" rows="10"
+                        placeholder="Please leave a comment."></textarea>
+            </div>
+            <div class="comment__form__bottom">
+              <div class="comment__checkbox__wrapper">
+                anon
+                <input type="checkbox" name="is_anonymous" class="comment__checkbox"
+                       id="comment__is_anonymous" checked>
+                <label for="comment__is_anonymous">
+                </label>
+              </div>
+              <button type="submit" class="reset-button comment__write">
+                <img src="{% static "/svg/comment.svg" %}"/>
+                comment
+              </button>
+            </div>
+          </form>
+        </div>
         <div class="comment_list">
           {% for comment in comments %}
             <div class="comment__row">
@@ -102,7 +130,7 @@
                     </div>
                   </div>
                   <div class="comment__comment">
-                    <button type="button" class="like reset-button" name="{{ comment.pk }}" value="Like"
+                    <button type="button" class="reset-button" name="{{ comment.pk }}"
                             onclick="clickNestedComment({{ comment.pk }})">
                       <img src="{% static "/svg/comment.svg" %}"/>
                       comment
@@ -159,10 +187,37 @@
           crossorigin="anonymous"></script>
 
   <script>
+    // 북마크
+    function bookmark(postPk) {
+      let bookmark_img = document.getElementById(`saved_id_${postPk}`);
+      if (!(bookmark_img.classList.contains('bookmark_clicked'))) {
+        bookmark_img.src = '{% static 'svg/bookmark.svg' %}';
+        bookmark_img.classList.add('bookmark_clicked', 'post__bookmark');
+      } else {
+        bookmark_img.src = '{% static 'svg/scrap.svg' %}';
+        bookmark_img.classList.remove('bookmark_clicked');
+      }
+      const url = '{% url 'api:post_bookmark' %}';
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          'pk': postPk,
+          'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        datatype: "json",
+        success: function (response) {
+        },
+        error: function (request, status, error) {
+          alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+        }
+      })
+    }
+
     // 게시글 좋아요
     function likePost(postPk) {
       let like_img = document.getElementById(`like_id_${postPk}`);
-      console.log(like_img.classList.contains('clicked'));
+      // console.log(like_img.classList.contains('clicked'));
       if (!(like_img.classList.contains('clicked'))) {
         like_img.src = '{% static 'svg/like-clicked.svg' %}';
         like_img.setAttribute('class', 'clicked');
@@ -191,7 +246,7 @@
 
     // 댓글 좋아요
     function likeComment(commentPk) {
-      const url = '{% url 'api:comment_like' %}'
+      const url = '{% url 'api:comment_like' %}';
 
       $.ajax({
         type: 'POST',
@@ -263,21 +318,31 @@
       if (nestedCommentBox.innerHTML)
         commentForm = '';
       else
-        /*
         commentForm = `
-          write comment: <textarea name="nested_comment_content" required id="nested_comment_write_${commentPk}"></textarea>
-          is_anonymous: <input type="checkbox" name="nested_comment_content" id="nested_comment_is_anonymous_${commentPk}" checked>
-          <button type="button" id="comment_write_${commentPk}" onclick="writeNestedComment(${commentPk})">comment</button>
-        `;
-        */
-        commentForm = `
-        <form action="{% url 'core:board:comment_nest_create' univ.url_name selected_category.name post.pk %}" method="post">
-          {% csrf_token %}
-          <textarea name="nested_content" cols="40" rows="10"></textarea>
-          <input type="checkbox" name="nested_is_anonymous" checked>
-          <button type="submit">comment</button>
-          <input type="hidden" name="parent_id" value="${commentPk}">
-        </form>
+        <div class="comment__form__row">
+          <form action="{% url 'core:board:comment_nest_create' univ.url_name selected_category.name post.pk %}"
+                method="post" class="comment__form">
+            {% csrf_token %}
+            <div class="comment__form__top">
+              <textarea name="nested_content" cols="40" rows="10"
+                        placeholder="Please leave a comment."></textarea>
+            </div>
+            <div class="comment__form__bottom">
+              <div class="comment__checkbox__wrapper">
+                anon
+                <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
+                       id="comment__is_anonymous_${commentPk}" checked>
+                <label for="comment__is_anonymous_${commentPk}">
+                </label>
+              </div>
+              <button type="submit" class="reset-button comment__write" id="comment_write_${commentPk}">
+                <img src="{% static "/svg/comment.svg" %}"/>
+                comment
+              </button>
+            </div>
+            <input type="hidden" name="parent_id" value="${commentPk}">
+          </form>
+        </div>
         `;
       nestedCommentBox.innerHTML = commentForm;
     }

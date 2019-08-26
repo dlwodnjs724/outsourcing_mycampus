@@ -18,13 +18,13 @@ from .forms import ReportForm
 def make_posts_set(category, univ, state, term=""):
     if category:
         ret = Post.objects.select_related('ctgy', 'author') \
-            .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments') \
+            .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
             .filter(ctgy__univ=univ, ctgy=category) \
             .annotate(num_likes=Count('likes'))
 
     else:
         ret = Post.objects.select_related('ctgy', 'author') \
-            .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments') \
+            .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
             .filter(ctgy__univ=univ) \
             .annotate(num_likes=Count('likes'))
 
@@ -184,7 +184,7 @@ def category_board(request, url_name, category_name):
 def post_detail(request, url_name, category_name, post_pk):
     univ = get_object_or_404(Univ, url_name=url_name)
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
-    post = get_object_or_404(Post.objects.prefetch_related('likes'), ctgy=selected_category, pk=post_pk)
+    post = get_object_or_404(Post.objects.prefetch_related('likes', 'saved', 'comments'), ctgy=selected_category, pk=post_pk)
     comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
         .select_related('author', 'parent', 'post')\
         .filter(post=post, parent=None)
