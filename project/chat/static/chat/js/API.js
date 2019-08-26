@@ -6,21 +6,21 @@ const ChannelHandler = new sb.ChannelHandler();
 
 ChannelHandler.onMessageReceived = async function (channel, message) {
     try {
-        if (chat_box.getAttribute('url') == channel.url && chat_box.getAttribute('anon') == (channel.customType=="anon")) {
+        if ((chat_box.getAttribute('url') == channel.url) && ((chat_box.getAttribute('anon') == 'true') == (channel.customType=="anon"))) {
             chat_box.innerHTML += strfy(message)
             chat_box.scrollTop = chat_box.scrollHeight;
-        } else {
-            const channels = await loadChatList()
-            await renderChatList(channels, chat_list, chat_header, chat_box)
         }
+        const channels = await loadChatList()
+        await renderChatList(channels, chat_list, chat_header, chat_box)
     } catch (e) {
         alert(`got new message`)
     }
 };
 
 ChannelHandler.onUserReceivedInvitation = async function (groupChannel, inviter, invitees) {
+    if(sb.currentUser.userId == inviter.userId) return
     try {
-        if (chat_box && sb.currentUser.userId != inviter.userId) {
+        if (chat_box) {
             const channels = await loadChatList()
             await renderChatList(channels, chat_list, chat_header, chat_box)
         }
