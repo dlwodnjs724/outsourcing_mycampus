@@ -120,7 +120,7 @@ def main(request, url_name):
 def post_create(request, url_name):
     try:
         can_use(request, url_name, ck_univ_url=True, ck_anon=True)
-
+        univ = get_object_or_404(Univ, url_name=url_name)
         form = PostForm(request.POST or None, request=request)
         if request.method == 'POST':
             if form.is_valid():
@@ -130,6 +130,7 @@ def post_create(request, url_name):
                 return redirect(reverse('core:board:main_board', args=[url_name]) + '?state=new')
         return render(request, 'board/post_new.html', {
             'form': form,
+            'univ': univ,
             'url_name': url_name,
         })
 
@@ -173,6 +174,7 @@ def category_board(request, url_name, category_name):
 
             return render(request, 'board/main_board.html', {
                 'univ': univ,
+                'url_name':url_name,
                 'categories': univ.category.all(),
                 'selected_category': selected_category,
                 'use_category': False,
@@ -214,6 +216,7 @@ def post_detail(request, url_name, category_name, post_pk):
 
     ctx = {
         'univ': univ,
+        'url_name':url_name,
         'post': post,
         'selected_category': selected_category,
         'comments': comments,
