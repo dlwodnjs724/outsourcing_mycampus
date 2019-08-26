@@ -30,6 +30,7 @@ class PostForm(forms.ModelForm):
         self.request = kwargs.pop('request')
         super().__init__(*args, **kwargs)
         self.fields['ctgy'].queryset = Category.objects.filter(univ=self.request.user.univ)
+        self.fields['ctgy'].empty_label = 'Choose the category.'
         self.fields['title'].widget.attrs.update({
             'placeholder': 'Please enter the title.',
         })

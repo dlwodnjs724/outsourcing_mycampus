@@ -119,9 +119,10 @@ def post_create(request, url_name):
                 post = form.save()
                 for image in request.FILES.getlist('images'):
                     Image.objects.create(post=post, image=image)
-                return redirect('core:board:main_board', url_name)
+                return redirect(reverse('core:board:main_board', args=[url_name]) + '?state=new')
         return render(request, 'board/post_new.html', {
             'form': form,
+            'url_name': url_name,
         })
 
     except Exception as e:

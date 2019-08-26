@@ -230,7 +230,7 @@
 }
 
 .comment__checkbox + label {
-  margin-left: 5px;
+  margin-right: 5px;
   border: 1px solid #4fbcbd;
   height: 16px;
   width: 16px;
