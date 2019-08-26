@@ -116,10 +116,26 @@
   color: #a6a7a7;
 }
 
+.post__main__row {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 #post__content {
   font-family: YDIYGO320;
   color: #101010;
   word-break: break-word;
+  margin-bottom: 20px;
+}
+
+.post__image_list {
+  width: 100%;
+}
+
+.post__image img {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
 }
 
 #post__info {
