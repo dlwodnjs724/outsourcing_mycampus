@@ -25,7 +25,9 @@
                     </div>
                     <div class="board__header__right">
                         <ul class="board__buttons">
-                            <li><img src="{% static "/svg/messege box.svg" %}"></li>
+                            <a href="{% url 'core:chat:index' univ.url_name %}">
+                                <li><img src="{% static "/svg/messege box.svg" %}"></li>
+                            </a>
                             <a href="{% url 'core:board:post_create' univ.url_name %}">
                                 <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
                             </a>
@@ -59,6 +61,13 @@
         </a>
       </div>
       <div class="detail__post__container">
+      <div id="myModal" class="modal" other="none" type="">
+              <div class="modal-content">
+                <p></p>
+                <button class="modal-button" id="yes">yes</button>
+                <button class="modal-button" id="no">no</button>
+                </div>
+            </div>
         <div class="post__container__row">
           <div id="post__category">{{ selected_category.name }}</div>
           <div class="post__function">
@@ -242,48 +251,56 @@
     });
     const author = document.getElementById('post__author')
     const msg_btn = document.getElementById('post__message')
+    const modal = document.getElementById('myModal');
+    const yes_btn = document.getElementById("yes")                                          
+    const no_btn = document.getElementById("no")                                          
     const comment_profs = [...document.getElementsByClassName('comment__top__left')]
     const comment_authors = []
+
     {% for comment in comments %}
     comment_authors.push("{{comment.author}}")
     {% for child in comment|child_comments %}
     comment_authors.push("{{child.author}}")
     {% endfor %}
     {% endfor %}
-    author.addEventListener('click', async e => {
-      const flag = author.querySelector('div').innerText=="anon" ? 'anon' : "norm"
-      const result = confirm(`wanna send message to ${author.querySelector('div').innerText}?`)
-      if(result){
-        try{
-            await openAChat("{{ post.author.username }}", flag)
-            window.location.href = `${window.location. origin}/${window.location.pathname.split("/")[1]}/chat`          
-        }
-        catch (e) {
-          alert(e)
-        }
-      }
+
+
+    author.addEventListener('click', e => {
+      modal.setAttribute('type', "{{post.is_anonymous}}" == "True" ? "anon" : "norm" )
+      modal.setAttribute('other',  "{{post.author.username}}")
+      modal.querySelector('p').innerText = `wanna chat {{ post.name }}`
+      modal.style.display = "block";
     })
-    msg_btn.addEventListener('click', e => {
+    yes_btn.addEventListener('click', async e=>{
+      modal.style.display='none';
+      await openAChat(modal.getAttribute('other'),modal.getAttribute('type') )
+      e.stopPropagation()
+      window.location.href = "{% url 'core:chat:index' univ.url_name %}"
+    })
+    no_btn.addEventListener('click', e=>{
+      modal.style.display='none';
+      e.stopPropagation()
+    })
+    msg_btn.addEventListener('click', () => {
       author.click()
     })
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
     
     for (c in comment_profs) {
-      (async (btn ,id) => {
-        btn.addEventListener('click', async e=> {
-          let flag = 'anon'
-          if (btn.querySelector('.comment__author').innerText == id) flag = 'norm'
-          const result = confirm(`wanna send message to ${flag=="anon" ? 'anon' : id }`)
-          if(result){
-            try{
-                await openAChat(id, flag)
-                window.location.href = `${window.location. origin}/${window.location.pathname.split("/")[1]}/chat`          
-            }
-            catch (e) {
-              alert(e)
-            }
-          }
+      ( (btn, id) => {
+        btn.addEventListener('click', e=>{
+          modal.setAttribute('type', btn.querySelector('.comment__author').innerText
+ == id ? "norm" : "anon" )
+          modal.setAttribute('other', id)
+          modal.querySelector('p').innerText = `wanna chat with ${btn.querySelector('.comment__author').innerText
+ == id ? id : "anon"}`
+          modal.style.display = "block";
         })
-      })(comment_profs[c],comment_authors[c])
+      })(comment_profs[c], comment_authors[c])
     }
 
 
