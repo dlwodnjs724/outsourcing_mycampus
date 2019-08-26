@@ -7,14 +7,15 @@
     height: 3.2rem;
 }
 
-.container {
+.base__header__used-space {
     padding-right: 5px;
+    padding-left: 15px;
 }
 
 .board__header__right {
     display: flex;
     align-items: center;
-    width: 25%;
+    
 }
 
 .board__header__right li {
@@ -111,4 +112,16 @@
 
 #h_h {
     transition: height 1s, width 1s, padding 1s, visibility 1s, opacity 0.5s ease-out;
+}
+
+.header__ham {
+    width: 25%;
+}
+
+.header__logo {
+    width: 40%;
+}
+
+.board__header__right {
+    width: 25%;
 }

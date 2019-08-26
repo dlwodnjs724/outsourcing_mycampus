@@ -1,3 +1,4 @@
+
 .reset-button {
   border: none;
   margin: 0;
@@ -23,6 +24,7 @@
 }
 
 .detail__wrapper {
+  margin-top: 2.5rem;
   margin-bottom: 100px;
   border-radius: 10px;
   border: 1px solid #e3e3e3;
@@ -456,4 +458,8 @@
   .comment__bottom {
     margin-top: 5px;
   }
+}
+
+.pd__drop {
+  margin-top: 1rem;
 }
