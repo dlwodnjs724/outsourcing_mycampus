@@ -10,6 +10,12 @@ import math
 from imagekit.models import ImageSpecField
 from imagekit.processors import Thumbnail
 
+class Noti(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
+    object_id = models.PositiveIntegerField(db_column='object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
+    _from = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="_from")
+    _to = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="_to")
 
 class Report(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
@@ -60,6 +66,7 @@ class Post(models.Model):
 
     saved = models.ManyToManyField(User, related_name='saved', blank=True)
     report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
+    noti = GenericRelation(Noti, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
 
 
     class Meta:
@@ -117,6 +124,7 @@ class Comment(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
 
     report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='comments')
+    noti = GenericRelation(Noti, object_id_field='object_id', content_type_field='content_type', related_query_name='comments')
 
     class Meta:
         ordering = ['-created_at']
