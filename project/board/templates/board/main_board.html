@@ -6,16 +6,11 @@
 
 
 {% block css %}
-    <link rel="stylesheet" media="(max-width:768px)"
-          href="{% static "board/css/board_header/board_header_mobile.css" %}" type="text/css">
-    <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_post/board_post_mobile.css" %}"
-          type="text/css">
-    <link rel="stylesheet" media="(min-width:768px)" href="{% static "board/css/board_post/board_post_small.css" %}"
-          type="text/css">
-    <link rel="stylesheet" media="(min-width:992px)" href="{% static "board/css/board_post/board_post_medium.css" %}"
-          type="text/css">
-    <link rel="stylesheet" media="(min-width:1200px)" href="{% static "board/css/board_post/board_post_large.css" %}"
-          type="text/css">
+    <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_header/board_header_mobile.css" %}" type="text/css">
+    <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_post/board_post_mobile.css" %}" type="text/css">
+    <link rel="stylesheet" media="(min-width:768px)" href="{% static "board/css/board_post/board_post_small.css" %}" type="text/css">
+    <link rel="stylesheet" media="(min-width:992px)" href="{% static "board/css/board_post/board_post_medium.css" %}" type="text/css">
+    <link rel="stylesheet" media="(min-width:1200px)" href="{% static "board/css/board_post/board_post_large.css" %}" type="text/css">
     <link rel="stylesheet" href="{% static "components/spinner.css" %}">
 {% endblock %}
 
@@ -29,8 +24,8 @@
                     </div>
                     <div class="header__logo">
                         <a href="{% url 'core:board:main_board' univ.url_name %}">
-                            <img src="{% static "/svg/box logo.svg" %}">
-                            <img src="{{ univ.logo_mobile.url }}">
+                        <img src="{% static "/svg/box logo.svg" %}">
+                        <img src="{{ univ.logo_mobile.url }}">
                         </a>
                     </div>
                     <div class="board__header__right">
@@ -45,14 +40,12 @@
             </div>
         </div>
     </div>
-
-    <div class="header__dropdown mobile__header" id="h_h" style="display: none;">
+    
+    <div class="header__dropdown mobile__header"  id="h_h"  style="display: none;">
         <div class="header__drop__mypage">
-            <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page
-        </div>
+            <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page</div>
         <div class="header__drop__notification">
-            <img src="{% static "/svg/알림.svg" %}" alt="">Notification
-        </div>
+            <img src="{% static "/svg/알림.svg" %}" alt="">Notification</div>
         <div class="header__drop__search">
             <form action="" method="get">
                 <button type="submit" value="search">
@@ -93,12 +86,11 @@
                             <div class="board__post__like">
                                 <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
                                 <button type="button" class="like" name="{{ post.pk }}" value="Like">
-                                    {% if user in post.likes.all %}
-                                        <img id="like_id_{{ post.pk }}" class='clicked'
-                                             src="{% static "/svg/like-clicked.svg" %}"/>
-                                    {% else %}
-                                        <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
-                                    {% endif %}
+                                  {% if user in post.likes.all %}
+                                    <img id="like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
+                                  {% else %}
+                                    <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
+                                  {% endif %}
                                 </button>
                             </div>
                             <div class="board__post__content">
@@ -161,13 +153,10 @@
                             </div>
                         </li>
                     </div>
-
+                    
                 {% endfor %}
-
+                <div id="loading" class="spinner-box"><div class="spinner" /></div>
             </ul>
-            <div id="loading" class="spinner-box">
-                <div class="spinner"/>
-            </div>
         </div>
 
         <div class="board__pannel__right">
@@ -180,7 +169,7 @@
             <div class="pannel__right__category">
                 <p>Category</p>
                 <ul class="right__category__list">
-                    <li class="c_d">+</li>
+                      <li class="c_d">+</li>
                     {% for category in categories %}
                         <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
                             <a id="category__a"
@@ -206,7 +195,7 @@
                     <img src="{% static "/svg/버튼3.svg" %}">
                 {% endif %}
             </a>
-            <a href="" {{ url }}?state=hot"">
+            <a href=""{{ url }}?state=hot"">
                 {% if state == 'hot' %}
                     <img src="{% static "/svg/버튼4.svg" %}">
                 {% else %}
@@ -214,7 +203,7 @@
                 {% endif %}
             </a>
         </div>
-
+        
         <div class="pannel__top__category" id="show_drop_category">
             <img src="{% static "/svg/category.svg" %}" id="m_category" alt="">
             <div class="top__category__face">
@@ -224,20 +213,20 @@
                     Category
                 {% endif %}
             </div>
-            <img src="{% static "/svg/회색.svg" %}" id="m_drop" alt="">
+            <img src="{% static "/svg/회색.svg" %}" id="m_drop"alt="">
         </div>
-        <div class="pannel__top__category_drop" id="hide_drop_category" style="display:none;">
-            <img src="{% static "/svg/category.svg" %}" id="m_category_drop" alt="">
-            <div class="category__face__drop">
+        <div class="pannel__top__category_drop" id="hide_drop_category" style="display:none;" >
+                <img src="{% static "/svg/category.svg" %}" id="m_category_drop" alt="">
+                <div class="category__face__drop">
                 {% for category in categories %}
                     <div class="top__category__face__drop {% cycle "c_a" "c_b" "c_c" "c_d" %}">
                         <a href="{% url 'core:board:category_board' univ.url_name category.name %}">
                             {{ category.name }}
                         </a>
                     </div>
-                {% endfor %}
-            </div>
-            <img src="{% static "/svg/회색.svg" %}" id="m_drop_drop" alt="">
+                    {% endfor %}
+                </div>
+                <img src="{% static "/svg/회색.svg" %}" id="m_drop_drop"alt="">
         </div>
 
         {% comment %} <div class="board__pannel__right">
@@ -304,11 +293,9 @@
                                             <div class="s_con post__bottom__like">
                                                 <button type="button" class="like" name="{{ post.pk }}" value="Like">
                                                     {% if user in post.likes.all %}
-                                                        <img id="m_like_id_{{ post.pk }}" class='clicked'
-                                                             src="{% static "/svg/like-clicked.svg" %}"/>
+                                                        <img id="m_like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
                                                     {% else %}
-                                                        <img id="m_like_id_{{ post.pk }}"
-                                                             src="{% static "/svg/like.svg" %}"/>
+                                                        <img id="m_like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
                                                     {% endif %}
                                                 </button>
                                                 <span id="m_post_{{ post.pk }}">{{ post.total_likes }}</span>
@@ -324,25 +311,25 @@
                                             </div>
                                         </div>
                                         <div class="post__bottom__right">
-                                            <div class="post__bottom__time">
-                                                {{ post.time_interval }}
-                                            </div>
-                                            <div class="post__bottom__bookmark">
-                                                {% if user in post.saved.all %}
-                                                    <img src="{% static "/svg/bookmark.svg" %}"/>
-                                                {% else %}
-                                                    <img src="{% static "/svg/scrap.svg" %}"/>
-                                                {% endif %}
-                                            </div>
+                                        <div class="post__bottom__time">
+                                            {{ post.time_interval }}
                                         </div>
+                                        <div class="post__bottom__bookmark">
+                                            {% if user in post.saved.all %}
+                                                <img src="{% static "/svg/bookmark.svg" %}"/>
+                                            {% else %}
+                                                <img src="{% static "/svg/scrap.svg" %}"/>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
                         </li>
                     </div>
-
+                    
                 {% endfor %}
-            </ul>
+            </ul>            
             <div id="loading" class="spinner-box">
                 <div class="spinner"/>
             </div>
