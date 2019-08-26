@@ -345,131 +345,133 @@
 {% endblock %}
 
 {% block javascript %}
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous"></script>
-    <script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+<script>
 
-        var currentPage = 1;
-        var spinner = document.querySelector('#loading')
-        var contents = document.querySelector('.board__pannel__left ul')
-        var loading = false
-
-
-        window.onscroll = function () {
-            var condition = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1500;
-
-            if (condition && !loading) {
-                loading = true;
-                //ajax
-
-                const req = new XMLHttpRequest();
-                req.open("POST", "{{ url }}");
-                req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                req.send(`requestPage=${++currentPage}&csrfmiddlewaretoken={{ csrf_token }}`)
-
-                req.onreadystatechange = function (e) {
-                    if (req.readyState !== XMLHttpRequest.DONE) return;
-
-                    if (req.status === 200) {
-                        loading = false;
-                        console.log(req);
-                    } else {
-                        loading = false;
-                        alert(req.responseText);
-                    }
-                };
-            }
-
-            if (loading) {
-                spinner.classList.add('spinner-on')
-            } else {
-                spinner.classList.remove('spinner-on')
-            }
-        }
-      
-        sb.connect("{{ user.username }}", async function (user, error) {
-            if (error) return;  
-            await ((user) => {
-                return new Promise((res,rej) => {
-                    if (!user.metaData["anonKey"]) user.createMetaData({"anonKey": String(Date.now())}, (m, e) => {if (e) return})
-                })
-            })(user)
-        });
+    var currentPage = 1;
+    var spinner = document.querySelector('#loading')
+    var contents = document.querySelector('.board__pannel__left ul')
+    var loading = false
 
 
-        document.getElementById('h_click').onclick = () => {
-            var drop = document.getElementById("h_h");
-            if(drop.style.display == 'none'){
-                drop.style.display = 'flex';
-            } else {
-                drop.style.display = 'none';
-            }
+    window.onscroll = function () {
+        var condition = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1500;
+
+        if (condition && !loading) {
+            loading = true;
+            //ajax
+
+            const req = new XMLHttpRequest();
+            req.open("POST", "{{ url }}");
+            req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            req.send(`requestPage=${++currentPage}&csrfmiddlewaretoken={{ csrf_token }}`)
+
+            req.onreadystatechange = function (e) {
+                if (req.readyState !== XMLHttpRequest.DONE) return;
+
+                if (req.status === 200) {
+                    loading = false;
+                    console.log(req);
+                } else {
+                    loading = false;
+                    alert(req.responseText);
+                }
+            };
         }
 
-        $('.like').click(function () {
-            var pk = $(this).attr('name')
-            var like_img = document.getElementById(`like_id_${pk}`);
-            var m_like_img = document.getElementById(`m_like_id_${pk}`);
-
-            console.log(like_img.classList.contains('clicked'));
-            if (!(like_img.classList.contains('clicked'))) {
-              like_img.src = '{% static 'svg/like-clicked.svg' %}';
-              like_img.setAttribute('class','clicked');
-            } else {
-              like_img.src = '{% static 'svg/like.svg' %}';
-              like_img.removeAttribute('class','clicked');
-            }
-            if (!(m_like_img.classList.contains('clicked'))) {
-                m_like_img.src = "/static/svg/like-clicked.svg";
-                m_like_img.setAttribute('class', 'clicked');
-            } else {
-                m_like_img.src = "/static/svg/like.svg";
-                m_like_img.removeAttribute('class', 'clicked');
-            }
-
-
-            const univUrlName = "{{ univ.url_name }}";
-            const url = '{% url 'api:post_like' %}';
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {
-                    'pk': $(this).attr('name'),
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                    url_name: univUrlName
-                },
-                datatype: "json",
-                success: function (response) {
-                    $(`#post_${response['pk']}`).text(response['likes_count']);
-                    $(`#m_post_${response['pk']}`).text(response['likes_count']);
-                },
-                error: function (request, status, error) {
-                    alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-                }
+        if (loading) {
+            spinner.classList.add('spinner-on')
+        } else {
+            spinner.classList.remove('spinner-on')
+        }
+    }
+    
+    sb.connect("{{ user.username }}", async function (user, error) {
+        if (error) return;  
+        await ((user) => {
+            return new Promise((res,rej) => {
+                if (!user.metaData["anonKey"]) user.createMetaData({"anonKey": String(Date.now())}, (m, e) => {if (e) return})
             })
-        });
+        })(user)
+    });
+    
+
+    document.getElementById('h_click').onclick = () =>{
+        console.log("helllo");
+        var drop = document.getElementById("h_h");
+        if(drop.style.display == 'none'){
+            drop.style.display = 'flex';
+        } else {
+            drop.style.display = 'none';
+        }
+    };
+
+    $('.like').click(function () {
+        var pk = $(this).attr('name')
+        var like_img = document.getElementById(`like_id_${pk}`);
+        var m_like_img = document.getElementById(`m_like_id_${pk}`);
+
+        console.log(like_img.classList.contains('clicked'));
+        if (!(like_img.classList.contains('clicked'))) {
+            like_img.src = '{% static 'svg/like-clicked.svg' %}';
+            like_img.setAttribute('class','clicked');
+        } else {
+            like_img.src = '{% static 'svg/like.svg' %}';
+            like_img.removeAttribute('class','clicked');
+        }
+        if (!(m_like_img.classList.contains('clicked'))) {
+            m_like_img.src = "/static/svg/like-clicked.svg";
+            m_like_img.setAttribute('class', 'clicked');
+        } else {
+            m_like_img.src = "/static/svg/like.svg";
+            m_like_img.removeAttribute('class', 'clicked');
+        }
 
 
-        $('.bookmark').click(function () {
-            const url = '{% url 'api:post_bookmark' %}';
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {
-                    'pk': $(this).attr('name'),
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                    url_name: url,
-                },
-                datatype: "json",
-                success: function (response) {
-                    console.log(200)
-                },
-                error: function (request, status, error) {
-                    alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-                }
-            })
-        });
-    </script>
+
+        const univUrlName = "{{ univ.url_name }}";
+        const url = '{% url 'api:post_like' %}';
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                'pk': $(this).attr('name'),
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                url_name: univUrlName
+            },
+            datatype: "json",
+            success: function (response) {
+                $(`#post_${response['pk']}`).text(response['likes_count']);
+                $(`#m_post_${response['pk']}`).text(response['likes_count']);
+            },
+            error: function (request, status, error) {
+                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        })
+    });
+
+
+    $('.bookmark').click(function () {
+        const url = '{% url 'api:post_bookmark' %}';
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                'pk': $(this).attr('name'),
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                url_name: url,
+            },
+            datatype: "json",
+            success: function (response) {
+                console.log(200)
+            },
+            error: function (request, status, error) {
+                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        })
+    });
+</script>
 {% endblock %}
