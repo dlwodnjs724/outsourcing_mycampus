@@ -25,7 +25,7 @@ class Report(models.Model):
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     what = models.TextField(max_length=500, blank=False)
-    
+
 
 class Category(models.Model):
     univ = models.ForeignKey(Univ, on_delete=models.CASCADE, related_name='category', blank=False)
@@ -65,9 +65,9 @@ class Post(models.Model):
     is_anonymous = models.BooleanField(default=False)
 
     saved = models.ManyToManyField(User, related_name='saved', blank=True)
+
     report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
     noti = GenericRelation(Noti, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
-
 
     class Meta:
         ordering = ['-created_at']
@@ -76,13 +76,12 @@ class Post(models.Model):
         now = arrow.now().timestamp
         # now = utc.localize(datetime.datetime.utcnow())
         create = self.created_at.timestamp()
-        ti = math.floor(int(now- create) / 60)
+        ti = math.floor(int(now - create) / 60)
 
-
-        if ti < 60 :
+        if ti < 60:
             t = f'{ti} minutes ago'
         elif 60 <= ti < (24 * 60):
-            t = f'{math.floor(ti/60)} hours ago'
+            t = f'{math.floor(ti / 60)} hours ago'
         else:
             t = f'{math.floor(ti / (24 * 60))} days ago'
         return t
@@ -99,13 +98,13 @@ class Post(models.Model):
 
 
 class Image(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, blank=False, related_name="images")        
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, blank=False, related_name="images")
     image = models.ImageField(upload_to='board/post/images/')
     image_thumbnail = ImageSpecField(
-		source = 'image', 		   # 원본 ImageField 명
-		processors = [Thumbnail(200, 200)], # 처리할 작업목록
-		format = 'JPEG',		   # 최종 저장 포맷
-		options = {'quality': 60})
+        source='image',  # 원본 ImageField 명
+        processors=[Thumbnail(200, 200)],  # 처리할 작업목록
+        format='JPEG',  # 최종 저장 포맷
+        options={'quality': 60})
 
     def __str__(self):
         return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.author.username})'
@@ -129,6 +128,20 @@ class Comment(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+    def time_interval(self):
+        now = arrow.now().timestamp
+        # now = utc.localize(datetime.datetime.utcnow())
+        create = self.created_at.timestamp()
+        ti = math.floor(int(now - create) / 60)
+
+        if ti < 60:
+            t = f'{ti} minutes ago'
+        elif 60 <= ti < (24 * 60):
+            t = f'{math.floor(ti / 60)} hours ago'
+        else:
+            t = f'{math.floor(ti / (24 * 60))} days ago'
+        return t
+
     def total_likes(self):
         return self.comment_likes.count()
 
@@ -137,8 +150,12 @@ class Comment(models.Model):
 
     @property
     def name(self):
-        return 'anon' if self.is_anonymous else self.author.username
+        if self.is_anonymous:
+            if self.author == self.post.author:
+                return 'anon(writer)'
+            return 'anon'
+        return self.author.username
+        # if self.is_anonymous else self.author.username
 
     # def __str__(self):
     #     return f'Comment (PK: {self.pk}, Author: {self.author.username} Parent: {self.parent})'
-
