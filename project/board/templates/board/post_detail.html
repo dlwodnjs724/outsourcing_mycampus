@@ -49,9 +49,16 @@
             {{ post.time_interval }}
           </div>
         </div>
-        <div class="post__container__row">
+        <div class="post__container__row post__main__row">
           <div id="post__content">
             {{ post.content }}
+          </div>
+          <div class="post__image_list">
+            {% for image in post.images.all %}
+              <div class="post__image">
+                <img src="{{ image.image.url }}" alt="">
+              </div>
+            {% endfor %}
           </div>
         </div>
         <div class="post__container__row row__align-center">
