@@ -9,8 +9,10 @@ import arrow
 import random
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.contenttypes.models import ContentType
 
-from board.models import Post, Comment
+
+from board.models import Post, Comment, Noti
 from core.models import Univ
 from .models import Token
 
@@ -137,6 +139,8 @@ def post_like(request):
             post.likes.remove(user)
         else:
             post.likes.add(user)
+            Noti.objects.create(_from=request.user, _to=post.author, object_id=post.pk, content_type=ContentType.objects.get(app_label='board', model='post'))
+            
         context = {
             'pk': post.pk,
             'likes_count': post.total_likes(),
@@ -164,6 +168,8 @@ def comment_like(request):
             comment.comment_likes.remove(user)
         else:
             comment.comment_likes.add(user)
+            Noti.objects.create(_from=request.user, _to=comment.author, object_id=comment.pk, content_type=ContentType.objects.get(app_label='board', model='comment'))
+
         context = {
             'pk': comment.pk,
             'likes_count': comment.total_likes(),
