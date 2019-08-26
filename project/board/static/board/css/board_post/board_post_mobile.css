@@ -34,7 +34,6 @@
     margin-left: auto;
     margin-right: auto;
     border-radius: 5px;
-    z-index: 1;
 }
 
 .top__category__face {
@@ -62,6 +61,12 @@
     margin-left:auto;
     margin-right:auto;
 
+}
+
+.header__dropdown {
+    color:#4fbcbd;
+    font-family: YDIYGO320;
+    font-size: 0.9rem;
 }
 
 .board__pannel__top a {
@@ -362,4 +367,30 @@
 
 .c_d {
     background-color: #bfdec3;
+}
+
+.header__dropdown img {
+    height: 1rem;
+    margin-right: 1rem;
+    margin-left: 0.5rem;
+}
+
+.header__drop__search button {
+    background-color: transparent;
+    border:none;
+    padding: 0;
+}
+
+.header__drop__search button img{
+    margin-right: 0.8rem;
+}
+
+.header__drop__search input {
+    border: none;
+    color:#4fbcbd;
+    font-family: YDIYGO340;
+}
+
+.header__drop__search input::placeholder {
+    color:#4fbcbd;
 }
