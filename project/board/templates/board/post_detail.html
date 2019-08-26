@@ -76,7 +76,6 @@
             <div class="post__share" id="current_url">
               <img src="{% static '/svg/share.svg' %}" alt="">
               <div>Share</div>
-{#              <input type="hidden" id="current_url">#}
             </div>
           </div>
         </div>
@@ -92,11 +91,11 @@
             </div>
             <div class="comment__form__bottom">
               <div class="comment__checkbox__wrapper">
-                anon
                 <input type="checkbox" name="is_anonymous" class="comment__checkbox"
                        id="comment__is_anonymous" checked>
                 <label for="comment__is_anonymous">
                 </label>
+                anon
               </div>
               <button type="submit" class="reset-button comment__write">
                 <img src="{% static "/svg/comment.svg" %}"/>
@@ -330,11 +329,11 @@
             </div>
             <div class="comment__form__bottom">
               <div class="comment__checkbox__wrapper">
-                anon
                 <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
                        id="comment__is_anonymous_${commentPk}" checked>
                 <label for="comment__is_anonymous_${commentPk}">
                 </label>
+                anon
               </div>
               <button type="submit" class="reset-button comment__write" id="comment_write_${commentPk}">
                 <img src="{% static "/svg/comment.svg" %}"/>
