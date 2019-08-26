@@ -13,7 +13,7 @@ const strfy = (message) => {
  * @param {channel} channel sb.GroupChannel 인스턴스?
  * @return {String} 포매팅 된 10개의 채팅 로그
  */
-const loadLog = (url, length, to) => {
+const loadLog = (url, length) => {
     return new Promise((res, rej) => {
         sb.GroupChannel.getChannel(url, (groupChannel, error) => {
             if (error) return
