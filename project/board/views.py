@@ -24,14 +24,12 @@ def make_posts_set(category, univ, state, term=""):
     if category:
         ret = Post.objects.select_related('ctgy', 'author') \
             .prefetch_related('comments__author','ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
-            .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
             .filter(ctgy__univ=univ, ctgy=category) \
             .annotate(num_likes=Count('likes'))
 
     else:
         ret = Post.objects.select_related('ctgy', 'author') \
             .prefetch_related('comments__author', 'ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
-            .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
             .filter(ctgy__univ=univ) \
             .annotate(num_likes=Count('likes')) \
 
@@ -148,7 +146,6 @@ def category_board(request, url_name, category_name):
         [univ, state, term, selected_category] = can_use(request, url_name, ck_univ_url=True, ck_anon=True,
                                                          use_category=category_name)
 
-
         post_sets = make_posts_set(selected_category, univ, state, term)
 
         current_page = 1
@@ -166,7 +163,7 @@ def category_board(request, url_name, category_name):
 
             has_next = next_posts.has_next()
 
-            return JsonResponse({"next_posts": serializer.data, "has_next": has_next})
+            return Response({"next_posts": serializer.data, "has_next": has_next})
 
         else:
             url = reverse("core:board:category_board", args=[url_name, category_name])
