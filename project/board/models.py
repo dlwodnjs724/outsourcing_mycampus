@@ -132,6 +132,7 @@ class Comment(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+    @property
     def time_interval(self):
         now = arrow.now().timestamp
         # now = utc.localize(datetime.datetime.utcnow())

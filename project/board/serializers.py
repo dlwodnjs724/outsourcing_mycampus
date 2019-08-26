@@ -1,7 +1,7 @@
 from rest_framework import serializers, generics, pagination
 
 from accounts.models import User
-from board.models import Post, Category, Comment
+from board.models import Post, Category, Comment, Image
 from core.models import Univ
 
 
@@ -24,11 +24,19 @@ class NestedCategorySerializer(serializers.ModelSerializer):
         fields = ('univ', 'name')
 
 
+class NestedImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Image
+        fields = ('image',)
+
+
 class PostSerializer(serializers.ModelSerializer):
     ctgy = NestedCategorySerializer()
     comments = NestedCommentsSerializer(many=True)
     author = NestedUserSerializer()
     time_interval = serializers.ReadOnlyField()
+    images = NestedImageSerializer(many=True)
 
     class Meta:
         model = Post
