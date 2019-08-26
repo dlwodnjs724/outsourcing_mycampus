@@ -61,10 +61,10 @@ class Post(models.Model):
     saved = models.ManyToManyField(User, related_name='saved', blank=True)
     report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
 
-
     class Meta:
         ordering = ['-created_at']
 
+    @property
     def time_interval(self):
         now = arrow.now().timestamp
         # now = utc.localize(datetime.datetime.utcnow())

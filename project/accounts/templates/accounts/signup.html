@@ -19,7 +19,7 @@
                         <div class="info-error accounts__login-info__error">
                             <span>{{ form.username.errors }}</span>
                             <span>{{ form.passoword1.errors }}</span>
-                            <span>{{ form.username.errors }}</span>
+                            <span>{{ form.password2.errors }}</span>
                         </div>
                     </div>
                     <div class="accounts__form__box accounts__sub-info">
@@ -47,7 +47,7 @@
                             <span id="accounts__sub-info-class-of-span" class="info__title">Class of</span>
                             {{ form.class_of }}
                             <div class="info-error accounts__login-info__error">
-                                {{ form.class_of.errors }}
+                                <span>{{ form.class_of.errors }}</span>
                             </div>
                         </div>
                     </div>
