@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'login_base.html' %}
 {% load static %}
 
 {% block css %}
@@ -36,29 +36,28 @@
 </div>
 
 <div class="container chat-container mobile_chat">
-        <div id="chat-list-container_m" style="display: none;">
-            <div id="chat-list-header">
+    <img src="{% static "/svg/share.svg" %}" alt="" id="chat_back">
+        <div id="chat-list-container_m">
+            <div id="chat-list-header_m">
                 Messenger
             </div>
             <hr width=100%>
-            <input id="chat-search" type="text" placeholder="Search Messenger">
-            <ul id='chat-list'>
+            <input id="chat-search_m" type="text" placeholder="Search Messenger">
+            <ul id='chat-list_m'>
             </ul>
         </div>
-        <div id="chat-main_m">
-            <div id='chat-header'>
-                <img src="{% static "/svg/share.svg" %}" alt="" id="chat_back">
+        <div id="chat-main_m" style="display: none;">
+            <div id='chat-header_m'>
                 none
-                <img src="{% static "/svg/share.svg" %}" alt="" id="hide">
             </div>
             <hr width=100%>
-            <ul id='chat-box' url='none' with='none'>
+            <ul id='chat-box_m' url='none' with='none'>
     
             </ul>
             <hr width=100%>
             <div id="chat-input">
-                <input type="text" id="chat-text" placeholder="Please enter a message">
-                <button type="submit" id="chat-text-btn">
+                <input type="text" id="chat-text_m" placeholder="Please enter a message">
+                <button type="submit" id="chat-text-btn_m">
                     <img src="{% static "/svg/send message.svg"%}" alt="">
                 </button>
             </div>
@@ -75,17 +74,28 @@
     const chat_text = document.getElementById('chat-text')
     const chat_search = document.getElementById('chat-search')
     const chat_text_btn = document.getElementById('chat-text-btn')
+
+    const chat_list_m = document.getElementById('chat-list_m')
+    const chat_header_m = document.getElementById('chat-header_m')
+    const chat_box_m = document.getElementById('chat-box_m')
+    const chat_text_m = document.getElementById('chat-text_m')
+    const chat_search_m = document.getElementById('chat-search_m')
+    const chat_text_btn_m = document.getElementById('chat-text-btn_m')
+
+    const chat_a = document.getElementById('chat-list-container_m');
+    const chat_m = document.getElementById('chat-main_m');
+    const chat_back = document.getElementById('chat_back');
+
     let flag = 'norm'
 
-    document.getElementById('chat_back').onclick = () => {
-        var chat_a = document.getElementById('chat-list-container_m');
-        var chat_m = document.getElementById('chat-main_m');
-        console.log(chat_a);
+    chat_back.onclick = () => {
         if (chat_a.style.display == 'none'){
             chat_a.style.display = 'block';
             chat_m.style.display = 'none';
-            console.log("hello");
-
+            chat_back.style.display = 'none';
+        } else {
+            chat_a.style.display = 'none';
+            chat_m.style.display = 'flex';
         }
     };
 
@@ -154,6 +164,146 @@
                     const channels = await loadChatList()
                     await renderChatList(channels, chat_list,
                         chat_header, chat_box)
+                })
+            })
+        }
+    })
+
+        sb.connect("{{ user.username }}", async function (user, error) {
+        if (error) return;
+        const channels = await loadChatList()
+        const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
+        if(first_btn) first_btn.click()
+    });
+
+    chat_search.addEventListener('keypress', async (e) => {
+        if (e.key == "Enter" && chat_search.value != "") {
+            flag = 'norm'
+            try {
+                await openAChat(chat_search.value, flag)
+                const channels = await loadChatList()
+                const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
+                first_btn.click()
+            } catch (e) {
+                console.log(e)
+                alert('check username')
+            }
+        }
+    })
+    chat_search.addEventListener('click', async (e) => {
+        if (chat_search.value != "") {
+            flag = 'anon'
+            try {
+                await openAChat(chat_search.value, flag)
+                const channels = await loadChatList()
+                const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
+                first_btn.click()
+            } catch (e) {
+                console.log(e)
+                alert('check username')
+            }
+        }
+    })
+    chat_text.addEventListener('keypress', async (e) => {
+        if (e.key == 'Enter' && chat_box.getAttribute('url') != 'none' && chat_text.value != "") {
+            sb.GroupChannel.getChannel(chat_box.getAttribute('url'), async (groupChannel, error) => {
+                if (error) return
+                groupChannel.sendUserMessage(chat_text.value, async (message, error) => {
+                    if (error) return
+                    chat_box.innerHTML += strfy(message, groupChannel.customType)
+                    chat_box.scrollTop = chat_box.scrollHeight;
+                    chat_text.value = ""
+                    const channels = await loadChatList()
+                    await renderChatList(channels, chat_list,
+                        chat_header, chat_box)
+                })
+            })
+        }
+    })
+
+    chat_text_btn.addEventListener('click', async (e) => {
+        if (chat_text.value != "") {
+            sb.GroupChannel.getChannel(chat_box.getAttribute('url'), async (groupChannel, error) => {
+                if (error) return
+                groupChannel.sendUserMessage(chat_text.value, async (message, error) => {
+                    if (error) return
+                    chat_box.innerHTML += strfy(message, groupChannel.customType)
+                    chat_box.scrollTop = chat_box.scrollHeight;
+                    chat_text.value = ""
+                    const channels = await loadChatList()
+                    await renderChatList(channels, chat_list,
+                        chat_header, chat_box)
+                })
+            })
+        }
+    })
+
+    <!-- mobile -->
+    
+    sb.connect("{{ user.username }}", async function (user, error) {
+        if (error) return;
+        const channels = await loadChatList()
+        const first_btn_m = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
+        if(first_btn_m) first_btn_m.click()
+    });
+
+    chat_search.addEventListener('keypress', async (e) => {
+        if (e.key == "Enter" && chat_search_m.value != "") {
+            flag = 'norm'
+            try {
+                await openAChat(chat_search_m.value, flag)
+                const channels = await loadChatList()
+                const first_btn_m = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
+                first_btn_m.click()
+            } catch (e) {
+                console.log(e)
+                alert('check username')
+            }
+        }
+    })
+    chat_search.addEventListener('click', async (e) => {
+        if (chat_search_m.value != "") {
+            flag = 'anon'
+            try {
+                await openAChat(chat_search_m.value, flag)
+                const channels = await loadChatList()
+                const first_btn = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
+                first_btn_m.click()
+            } catch (e) {
+                console.log(e)
+                alert('check username')
+            }
+        }
+    })
+    chat_text_m.addEventListener('keypress', async (e) => {
+        if (e.key == 'Enter' && chat_box.getAttribute('url') != 'none' && chat_text_m.value != "") {
+            sb.GroupChannel.getChannel(chat_box_m.getAttribute('url'), async (groupChannel, error) => {
+                if (error) return
+                groupChannel.sendUserMessage(chat_text_m.value, async (message, error) => {
+                    if (error) return
+                    chat_box_m.innerHTML += strfy(message, groupChannel.customType)
+                    chat_box_m.scrollTop = chat_box_m.scrollHeight;
+                    chat_text_m.value = ""
+                    const channels = await loadChatList()
+                    await renderChatList(channels, chat_list_m,
+                        chat_header_m, chat_box_m)
+                })
+            })
+        }
+    })
+
+    chat_text_btn_m.addEventListener('click', async (e) => {
+        if (chat_text_m.value != "") {
+            sb.GroupChannel.getChannel(chat_box_m.getAttribute('url'), async (groupChannel, error) => {
+                if (error) return
+                groupChannel.sendUserMessage(chat_text_m.value, async (message, error) => {
+                    if (error) return
+                    chat_box_m.innerHTML += strfy(message, groupChannel.customType)
+                    chat_box_m.scrollTop = chat_box_m.scrollHeight;
+                    chat_text_m.value = ""
+                    const channels = await loadChatList()
+                    await renderChatList(channels, chat_list_m,
+                        chat_header_m, chat_box_m)
                 })
             })
         }

@@ -4,7 +4,7 @@ from accounts.models import User
 # Create your views here.
 
 def index(request, url_name):
-    return render(request, 'chat/index.html', {'users':User.objects.all()})
+    return render(request, 'chat/index.html', {'users':User.objects.all(), 'univ':request.user.univ})
 
 def chat(request, url_name, username):
     user = User.objects.get(username=username)
