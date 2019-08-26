@@ -159,7 +159,7 @@
     text-align: left;
     color: #a6a7a7;
     height: 60px;
-
+    font-family: YDIYGO320;
     word-break: break-all;
 }
 
@@ -298,4 +298,13 @@
 
 .c_d {
     background-color: #bfdec3;
+}
+
+.post__image {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    object-fit: cover;
+    overflow: hidden;
 }

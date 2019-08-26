@@ -1,9 +1,8 @@
 from django.contrib.auth.decorators import login_required
-from django.core import serializers
 from django.core.paginator import Paginator
-from django.db.models import Q, Count, Prefetch
+from django.db.models import Q, Count
 from django.http import JsonResponse, HttpResponseBadRequest, Http404
-from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 import datetime
 
 from django.urls import reverse
@@ -12,9 +11,10 @@ from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 
-from board.forms import PostForm, CommentForm
-from board.models import Category, Post, Image, Comment, Report
+from board.forms import PostForm
 from board.serializers import PostSerializer
+from board.models import Category, Post, Image, Comment, Report, Noti
+from django.contrib.contenttypes.models import ContentType
 from core.models import Univ
 from core.utils.url_controll import redirect_with_next
 from .forms import ReportForm
@@ -23,13 +23,15 @@ from .forms import ReportForm
 def make_posts_set(category, univ, state, term=""):
     if category:
         ret = Post.objects.select_related('ctgy', 'author') \
-            .prefetch_related('comments__author','ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments') \
+            .prefetch_related('comments__author','ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
+            .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
             .filter(ctgy__univ=univ, ctgy=category) \
             .annotate(num_likes=Count('likes'))
 
     else:
         ret = Post.objects.select_related('ctgy', 'author') \
-            .prefetch_related('comments__author', 'ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments') \
+            .prefetch_related('comments__author', 'ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
+            .prefetch_related('ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
             .filter(ctgy__univ=univ) \
             .annotate(num_likes=Count('likes')) \
 
@@ -112,9 +114,6 @@ def main(request, url_name):
 
         if str(e) == 'others':
             return redirect("core:board:main_board", url_name=request.user.univ.url_name)
-
-
-        raise e;
         return HttpResponseBadRequest(content="Bad Request: " + str(e))
 
 
@@ -128,9 +127,10 @@ def post_create(request, url_name):
                 post = form.save()
                 for image in request.FILES.getlist('images'):
                     Image.objects.create(post=post, image=image)
-                return redirect('core:board:main_board', url_name)
+                return redirect(reverse('core:board:main_board', args=[url_name]) + '?state=new')
         return render(request, 'board/post_new.html', {
             'form': form,
+            'url_name': url_name,
         })
 
     except Exception as e:
@@ -196,9 +196,13 @@ def category_board(request, url_name, category_name):
 def post_detail(request, url_name, category_name, post_pk):
     univ = get_object_or_404(Univ, url_name=url_name)
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
-    post = get_object_or_404(Post, ctgy=selected_category, pk=post_pk)
-    comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author') \
-        .select_related('author', 'parent', 'post') \
+    post = get_object_or_404(
+        Post.objects.select_related('author')
+            .prefetch_related('likes', 'saved', 'comments'),
+        ctgy=selected_category, pk=post_pk
+    )
+    comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
+        .select_related('author', 'parent', 'post', 'post__author')\
         .filter(post=post, parent=None)
 
     # post.viewed_by.add(request.user)
@@ -213,7 +217,7 @@ def post_detail(request, url_name, category_name, post_pk):
         'post': post,
         'selected_category': selected_category,
         'comments': comments,
-        'comment_form': CommentForm(request=request),
+        # 'comment_form': CommentForm(request=request),
     }
 
     response = render(request, 'board/post_detail.html', ctx)
@@ -249,52 +253,75 @@ def post_edit(request):
 @login_required
 def comment_create(request, url_name, category_name, post_pk):
     if request.method == 'POST':
-        is_anonymous = True if request.POST.get('comment_is_anonymous', '') == 'true' else False
+        is_anonymous = True if request.POST.get('is_anonymous') else False
         comment = Comment.objects.create(
             post_id=post_pk,
             author=request.user,
-            content=request.POST.get('comment_content', ''),
+            content=request.POST.get('content', ''),
             is_anonymous=is_anonymous
         )
-
-        comments_queryset = Comment.objects.filter(post_id=post_pk, parent=None)
-        comments = list(comments_queryset.values('pk', 'content', 'created_at'))
-
-        for i, comment in enumerate(comments_queryset):
-            comments[i]['name'] = comment.name
-            comments[i]['comment_likes'] = comment.total_likes()
-
-        context = {
-            'comments': comments
-        }
-        return JsonResponse(context)
-    return redirect('core:board:post_detail', url_name, category_name, post_pk)
+        Noti.objects.create(_from=request.user, _to=Post.objects.get(pk=post_pk).author, object_id=post_pk, content_type=ContentType.objects.get(app_label='board', model='post'))
+        return redirect('core:board:post_detail', url_name, category_name, post_pk)
+    # if request.method == 'POST':
+    #     is_anonymous = True if request.POST.get('comment_is_anonymous', '') == 'true' else False
+    #     comment = Comment.objects.create(
+    #         post_id=post_pk,
+    #         author=request.user,
+    #         content=request.POST.get('comment_content', ''),
+    #         is_anonymous=is_anonymous
+    #     )
+    #
+    #     comments_queryset = Comment.objects.filter(post_id=post_pk, parent=None)
+    #     comments = list(comments_queryset.values('pk', 'content', 'created_at'))
+    #
+    #     for i, comment in enumerate(comments_queryset):
+    #         comments[i]['name'] = comment.name
+    #         comments[i]['comment_likes'] = comment.total_likes()
+    #
+    #     context = {
+    #         'comments': comments
+    #     }
+    #     return JsonResponse(context)
+    # return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
 
 @login_required
 def comment_nest_create(request, url_name, category_name, post_pk):
     if request.method == 'POST':
-        is_anonymous = True if request.POST.get('nested_comment_is_anonymous', '') == 'true' else False
+        is_anonymous = True if request.POST.get('nested_is_anonymous') else False
         comment = Comment.objects.create(
             post_id=post_pk,
             author=request.user,
-            content=request.POST.get('nested_comment_content', ''),
+            content=request.POST.get('nested_content', ''),
             is_anonymous=is_anonymous,
             parent_id=request.POST.get('parent_id')
         )
+        Noti.objects.create(_from=request.user, _to=Comment.objects.get(pk=request.POST.get('parent_id')).author, object_id=request.POST.get('parent_id'), content_type=ContentType.objects.get(app_label='board', model='comment'))
 
-        comments_queryset = Comment.objects.filter(parent_id=request.POST.get('parent_id'))
-        comments = list(comments_queryset.values('pk', 'content', 'created_at'))
+        return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
-        for i, comment in enumerate(comments_queryset):
-            comments[i]['name'] = comment.name
-            comments[i]['comment_likes'] = comment.total_likes()
-
-        context = {
-            'comments': comments
-        }
-        return JsonResponse(context)
-    return redirect('core:board:post_detail', url_name, category_name, post_pk)
+    # if request.method == 'POST':
+    #     is_anonymous = True if request.POST.get('nested_comment_is_anonymous', '') == 'true' else False
+    #     comment = Comment.objects.create(
+    #         post_id=post_pk,
+    #         author=request.user,
+    #         content=request.POST.get('nested_comment_content', ''),
+    #         is_anonymous=is_anonymous,
+    #         parent_id=request.POST.get('parent_id')
+    #     )
+    #
+    #     comments_queryset = Comment.objects.filter(parent_id=request.POST.get('parent_id'))
+    #     comments = list(comments_queryset.values('pk', 'content', 'created_at'))
+    #
+    #     for i, comment in enumerate(comments_queryset):
+    #         comments[i]['name'] = comment.name
+    #         comments[i]['comment_likes'] = comment.total_likes()
+    #
+    #     context = {
+    #         'comments': comments
+    #     }
+    #     return JsonResponse(context)
+    # return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
 
 def report_send(request, pk, content_type):

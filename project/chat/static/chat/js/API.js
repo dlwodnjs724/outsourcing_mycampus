@@ -6,29 +6,23 @@ const ChannelHandler = new sb.ChannelHandler();
 
 ChannelHandler.onMessageReceived = async function (channel, message) {
     try {
-        if (chat_room.getAttribute('url') == channel.url) {
-            chat_room.innerHTML += strfy(message, chat_room.getAttribute('flag'))
-            chat_room.scrollTop = chat_room.scrollHeight;
-        } else {
-            const channels = await loadChatList()
-            chat_list.innerHTML=""
-            channels.forEach(cur => addChannelBtn(cur, chat_list, cur.customType))
-            const buttons = [...chat_list.querySelectorAll('.url')]
-            buttons.forEach(cur => {
-                setChannelBtn(cur, chat_header, chat_room)
-            })
+        if ((chat_box.getAttribute('url') == channel.url) && ((chat_box.getAttribute('anon') == 'true') == (channel.customType=="anon"))) {
+            chat_box.innerHTML += strfy(message)
+            chat_box.scrollTop = chat_box.scrollHeight;
         }
+        const channels = await loadChatList()
+        await renderChatList(channels, chat_list, chat_header, chat_box)
     } catch (e) {
-        alert(`got message`)
+        alert(`got new message`)
     }
 };
 
 ChannelHandler.onUserReceivedInvitation = async function (groupChannel, inviter, invitees) {
+    if(sb.currentUser.userId == inviter.userId) return
     try {
-        if (sb.currentUser.userId != inviter.userId) {
-            const buttons = document.getElementsByClassName('url')
-            addChannelBtn(groupChannel, chat_list, groupChannel.customType, rev)
-            setChannelBtn(buttons[buttons.length - 1], chat_header, chat_room)
+        if (chat_box) {
+            const channels = await loadChatList()
+            await renderChatList(channels, chat_list, chat_header, chat_box)
         }
     } catch (e) {
         alert(`${groupChannel.customType =="anon" ? "anon" : inviter.userId} invited you to chat.`)

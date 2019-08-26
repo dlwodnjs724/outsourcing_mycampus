@@ -1,37 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'login_base.html' %}
 {% load static %}
 {% load humanize %}
 
-{% block header %}
-    <link rel="stylesheet" media="(min-width:768px)" href="{% static "board/css/board_header/board_header_small.css" %}"
-          type="text/css">
-    <link rel="stylesheet" media="(min-width:992px)"
-          href="{% static "board/css/board_header/board_header_medium.css" %}" type="text/css">
-    <link rel="stylesheet" media="(min-width:1200px)"
-          href="{% static "board/css/board_header/board_header_large.css" %}" type="text/css">
-
-    <div class="board__header__search pc__header">
-        <form action="" method="get">
-            <button type="submit" value="term">
-                <img src="{% static "/svg/search.svg" %}">
-            </button>
-            <input type="hidden" name="state" value="{{ state }}">
-            <input type="text" placeholder="Search mycampus" name="term" value="{{ search }}">
-        </form>
-    </div>
-    <div class="board__header__right pc__header">
-        <ul class="board__buttons">
-            <li><img src="{% static "/svg/alarm.svg" %}"></li>
-            <li><img src="{% static "/svg/messege box.svg" %}"></li>
-            <li><img src="{% static "/svg/mypage.svg" %}"></li>
-            <a href="{% url 'core:board:post_create' univ.url_name %}">
-                <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
-            </a>
-        </ul>
-    </div>
 
 
-{% endblock %}
 
 {% block css %}
     <link rel="stylesheet" media="(max-width:768px)"
@@ -50,30 +22,46 @@
 {% block contents %}
     <div class="base__header mobile__header">
         <div class="base__header__used-space container">
-            <div class="base__logo">
-                <object type="image/svg+xml" data="{% static "/svg/logo-uf.svg" %}"></object>
-            </div>
-            <div class="board__header__right">
-                <ul class="board__buttons">
-                    <li><img src="{% static "/svg/messege box.svg" %}"></li>
-                    <a href="{% url 'core:board:post_create' univ.url_name %}">
-                        <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
-                    </a>
-                </ul>
+            <div class="header__wrap">
+                <div class="header__main">
+                    <div class="header__ham" id="h_click">
+                        <img src="{% static "/svg/햄버거.svg" %}" alt="">
+                    </div>
+                    <div class="header__logo">
+                        <a href="{% url 'core:board:main_board' univ.url_name %}">
+                            <img src="{% static "/svg/box logo.svg" %}">
+                            <img src="{{ univ.logo_mobile.url }}">
+                        </a>
+                    </div>
+                    <div class="board__header__right">
+                        <ul class="board__buttons">
+                            <li><img src="{% static "/svg/messege box.svg" %}"></li>
+                            <a href="{% url 'core:board:post_create' univ.url_name %}">
+                                <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
+                            </a>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    {% comment %} <div class="board__header__search mobile__header">
-        <form action="" method="get">
-            <button type="submit" value="search">
-                <img src="{% static "/svg/search.svg" %}">
-            </button>
-            <input type="text" placeholder="Search mycampus" name="search" value="{{ search }}">
-        </form>
-    </div> {% endcomment %}
-
-
+    <div class="header__dropdown mobile__header" id="h_h" style="display: none;">
+        <div class="header__drop__mypage">
+            <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page
+        </div>
+        <div class="header__drop__notification">
+            <img src="{% static "/svg/알림.svg" %}" alt="">Notification
+        </div>
+        <div class="header__drop__search">
+            <form action="" method="get">
+                <button type="submit" value="search">
+                    <img src="{% static "/svg/검색.svg" %}">
+                </button>
+                <input type="text" placeholder="Search" name="search" value="{{ search }}">
+            </form>
+        </div>
+    </div>
 
 
     <div class="board__pannel__top container pc__board">
@@ -128,7 +116,7 @@
                                             <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
                                         </div>
                                         <div class="post__mid__content">
-                                            {{ post.content|truncatechars:110 }}
+                                            {{ post.content|truncatechars:60 }}
                                         </div>
                                     </div>
                                     <hr/>
@@ -166,8 +154,8 @@
                                 </div>
 
                                 <div class="post__image">
-                                    {% for image in post.images.all %}
-                                        <img src="{{ image.url }}" alt="">
+                                    {% for img in post.images.all %}
+                                        <img src="{{ img.image_thumbnail.url }}" alt="">
                                     {% endfor %}
                                 </div>
                             </div>
@@ -226,6 +214,56 @@
                 {% endif %}
             </a>
         </div>
+
+        <div class="pannel__top__category" id="show_drop_category">
+            <img src="{% static "/svg/category.svg" %}" id="m_category" alt="">
+            <div class="top__category__face">
+                {% if selected_category %}
+                    {{ selected_category }}
+                {% else %}
+                    Category
+                {% endif %}
+            </div>
+            <img src="{% static "/svg/회색.svg" %}" id="m_drop" alt="">
+        </div>
+        <div class="pannel__top__category_drop" id="hide_drop_category" style="display:none;">
+            <img src="{% static "/svg/category.svg" %}" id="m_category_drop" alt="">
+            <div class="category__face__drop">
+                {% for category in categories %}
+                    <div class="top__category__face__drop {% cycle "c_a" "c_b" "c_c" "c_d" %}">
+                        <a href="{% url 'core:board:category_board' univ.url_name category.name %}">
+                            {{ category.name }}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+            <img src="{% static "/svg/회색.svg" %}" id="m_drop_drop" alt="">
+        </div>
+
+        {% comment %} <div class="board__pannel__right">
+            <a href="{% url 'core:board:post_create' univ.url_name %}">
+                <div class="pannel__right__create">
+                    <img src="{% static "svg/create post.svg/" %}" alt="">
+                    <p>Create Post</p>
+                </div>
+            </a>
+            <div class="pannel__right__category">
+                <p>Category</p>
+                <ul class="right__category__list">
+                      <li class="c_d">+</li>
+                    {% for category in categories %}
+                        <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
+                            <a id="category__a"
+                               href="{% url 'core:board:category_board' univ.url_name category.name %}">
+                                <span class="c_common">
+                                    {{ category.name }}
+                                </span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div> {% endcomment %}
     </div>
     <div class="container board__main mobile__board">
         <div class="board__pannel__left">
@@ -248,7 +286,7 @@
                                             <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
                                         </div>
                                         <div class="post__mid__content">
-                                            {{ post.content|truncatechars:190 }}
+                                            {{ post.content|truncatechars:140 }}
                                         </div>
                                     </div>
                                     <hr/>
@@ -307,32 +345,6 @@
             </ul>
             <div id="loading" class="spinner-box">
                 <div class="spinner"/>
-            </div>
-        </div>
-
-        <div class="board__pannel__right">
-            <a href="{% url 'core:board:post_create' univ.url_name %}">
-                <div class="pannel__right__create">
-                    <img src="{% static "svg/create post.svg/" %}" alt="">
-                    <p>Create Post</p>
-                </div>
-            </a>
-            <div class="pannel__right__category">
-                <p>Category</p>
-                <ul class="right__category__list">
-                    <li class="c_d">+</li>
-                    {% for category in categories %}
-                        <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
-                            <a id="category__a"
-                               href="{% url 'core:board:category_board' univ.url_name category.name %}">
-                                <span class="c_common">
-                                    {{ category.name }}
-                                </span>
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-
             </div>
         </div>
     </div>
@@ -553,5 +565,33 @@
                 }
             })
         });
+
+
+        const hide_category = document.getElementById('hide_drop_category');
+        const show_category = document.getElementById('show_drop_category');
+
+        document.getElementById('m_drop').onclick = () => {
+            if (hide_category.style.display == 'none') {
+                hide_category.style.display = 'flex';
+                show_category.style.display = 'none';
+            }
+        };
+
+        document.getElementById('m_drop_drop').onclick = () => {
+            if (show_category.style.display == 'none') {
+                show_category.style.display = 'flex';
+                hide_category.style.display = 'none';
+            }
+        };
+
+        document.getElementById('h_click').onclick = () => {
+            var drop = document.getElementById("h_h");
+            if (drop.style.display == 'none') {
+                drop.style.display = 'flex';
+            } else {
+                drop.style.display = 'none';
+            }
+        };
+
     </script>
 {% endblock %}

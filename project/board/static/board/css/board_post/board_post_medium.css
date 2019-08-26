@@ -159,6 +159,7 @@
     font-stretch: normal;
     line-height: 1.2;
     text-align: left;
+    font-family: YDIYGO320;
     color: #a6a7a7;
     height: 60px;
 
@@ -301,4 +302,13 @@
 
 .c_d {
     background-color: #bfdec3;
+}
+
+.post__image {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    object-fit: cover;
+    overflow: hidden;
 }

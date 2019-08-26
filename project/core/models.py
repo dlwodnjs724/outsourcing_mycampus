@@ -6,7 +6,8 @@ class Univ(models.Model):
     domain = models.CharField(max_length=20)        # univ email address(@ 뒤에)
     url_name = models.CharField(max_length=10)      # url parameter name
     short_name = models.CharField(max_length=10)    # 대학 약자(header 에 표기)
-    logo = models.ImageField(upload_to="univ/logo/", blank=True, null=True)
+    logo = models.FileField(upload_to="univ/logo/", blank=True, null=True)
+    logo_mobile = models.FileField(upload_to="univ/logo/", blank=True, null=True)
     address = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):

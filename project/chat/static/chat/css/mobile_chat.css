@@ -1,9 +1,18 @@
-.mobile_chat {
+.pc_chat {
     display:none!important;
 }
 
+.pc__header {
+    display:none!important;
+}
+
+
+.container {
+    padding: 0!important;
+}
+
 html {
-    height: calc(100% - 3rem);
+    height: 100%;
 }
 
 body{
@@ -18,26 +27,31 @@ hr{
     display : flex;
     flex-direction: row;
     justify-content: space-between;
-    height: calc(100% - 2rem);
+    height: 100%;
 }
-#chat-container > div{
+#chat-container_m > div{
     margin: 0px 10px;
 }
 
-#chat-list-container{
+#chat-list-container_m{
+    display: block;
     background-color: #ffffff;
     border-radius: 12px 12px 0 0;
-    width : 40%;
+    width : 100%;
     justify-content: center;
 }
 
-#chat-list-header {
+#chat-list-header_m {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 2rem;
+    height: 3rem;
+    background-color:#4fbcbd;
+    color: white;
+    font-size: 1.4rem;
 }
-#chat-search{
+
+#chat-search_m{
     background-color: #f5f6f7;
     width: 95%;
     border: none;
@@ -49,7 +63,7 @@ hr{
     text-align: center;
 }
 
-#chat-list{
+#chat-list_m{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -95,21 +109,34 @@ hr{
 }
 
 
-#chat-main{
+#chat-main_m{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    border-radius: 12px 12px 0 0;
     background-color: #ffffff!important;
-    width: 59%;
+    width: 100%;
 }
-#chat-header {
+#chat-header_m {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 2rem;
+    height: 3rem;
+    background-color:#4fbcbd;
+    color: white;
+    font-size: 1.4rem;
 }
-#chat-box{
+
+#chat_back {
+    position: absolute;
+    top: 0.8rem;
+    left: 1rem;
+}
+
+#hide {
+    fill: transparent;
+}
+
+#chat-box_m{
     overflow: scroll;
     overflow-x: hidden;
     height: calc(100% - 5rem);
@@ -129,14 +156,14 @@ hr{
 #message{
     width: 80%;
 }
-#chat-text{
-    width: 92%;
+#chat-text_m{
+    width: 90%;
     border: none;
     height: 100%;
     padding-left: 1rem;
 
 }
-#chat-text-btn{
+#chat-text-btn_m{
     border: none;
     background-color: transparent;
     padding: 0;
@@ -146,7 +173,7 @@ hr{
 #chat-input {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     height: 2rem;
     margin-bottom: 5px;
     margin-top: 5px;
@@ -217,20 +244,20 @@ hr{
 
 
 
-#chat-box::-webkit-scrollbar {
+#chat-box_m::-webkit-scrollbar {
     width: 9px; /* 세로축 스크롤바 길이 */
 }
-#chat-box::-webkit-scrollbar-track {
+#chat-box_m::-webkit-scrollbar-track {
     background-color: rgba(0, 0, 0, 0);
 }
-#chat-box::-webkit-scrollbar-track-piece {
+#chat-box_m::-webkit-scrollbar-track-piece {
     background-color: rgba(0, 0, 0, 0);
 }
-#chat-box::-webkit-scrollbar-thumb {
-    background-color: #f5f6f7;
+#chat-box_m::-webkit-scrollbar-thumb {
+    background-color: #383838;
     height: 200px;
 }
-#chat-box::-webkit-scrollbar-button {
+#chat-box_m::-webkit-scrollbar-button {
     background-color: rgba(0, 0, 0, 0);
     width: 0;
     height: 0;

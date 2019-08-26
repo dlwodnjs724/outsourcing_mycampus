@@ -1,0 +1,177 @@
+.reset-button {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+
+  background: transparent;
+
+  /* inherit font & color from ancestor */
+  color: inherit;
+  font: inherit;
+
+  /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+  line-height: normal;
+
+  /* Corrects font smoothing for webkit */
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+
+  /* Corrects inability to style clickable `input` types in iOS */
+  -webkit-appearance: none;
+}
+
+.new__post__container {
+  background-color: white;
+  border-radius: 13px;
+}
+
+.new__post__main {
+  /*padding: 70px;*/
+}
+
+.post__form__top {
+  display: flex;
+  align-items: center;
+  padding: 13px;
+}
+
+.post__form__top img {
+  width: 16px;
+}
+
+.post__form {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.form__category {
+  border-top: 1px solid #cecece;
+  border-bottom: 1px solid #cecece;
+  margin-bottom: 5px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  background-color: #f0f0f0;
+}
+
+.form__category > img {
+  width: 30px;
+}
+
+#id_ctgy {
+  border: unset;
+  width: 100%;
+  background-color: #f0f0f0;
+  margin-left: 5px;
+  padding: 5px 0;
+}
+
+#id_title, #id_content {
+  border: unset;
+  font-family: YDIYGO320;
+  margin: 0 25px;
+  padding: 10px 0;
+}
+
+#id_title {
+  border-bottom: 1px solid #cecece;
+  font-size: 20px;
+}
+
+#id_content {
+  resize: none;
+  word-break: break-word;
+}
+
+.post__form__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 25px;
+}
+
+.form__bottom__left {
+  display: flex;
+  align-items: center;
+}
+
+.form__bottom__left img {
+  cursor: pointer;
+  width: 35px;
+}
+
+.form__bottom__left input {
+  display: none;
+}
+
+.form__bottom__right {
+  display: flex;
+  align-items: center;
+}
+
+.post__checkbox__wrapper {
+  display: flex;
+  align-items: center;
+  font-family: YDIYGO320;
+}
+
+.post__checkbox {
+  display: none;
+}
+
+.post__checkbox__wrapper {
+  margin-right: 10px;
+}
+
+#id_is_anonymous {
+  display: none;
+}
+
+#id_is_anonymous + label {
+  margin-right: 5px;
+  border: 1px solid #4fbcbd;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+  padding: 0;
+  cursor: pointer;
+}
+
+#id_is_anonymous:checked + label {
+  background-color: #4fbcbd;
+}
+
+@media (max-width: 769px) {
+  body {
+    background-color: white;
+  }
+
+  .container {
+    padding: 0;
+    margin-top: -8px;
+  }
+
+  .post__form__top {
+    display: none;
+  }
+
+  .new__post__container {
+    border-radius: unset;
+    border-bottom: 1px solid #cecece;
+  }
+
+  .form__category {
+    background-color: white;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  #id_ctgy {
+    background-color: white;
+  }
+}

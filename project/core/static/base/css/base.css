@@ -21,3 +21,8 @@ body {
     font-family: YDIYGO340;
     src: url("../../fonts/YDIYGO340.ttf") format('truetype');
 }
+
+@font-face {
+    font-family: YDIYGO320;
+    src: url("../../fonts/YDIYGO320.ttf") format('truetype');
+}

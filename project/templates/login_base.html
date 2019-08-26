@@ -1,0 +1,60 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static "base/css/base.css" %}" type="text/css">
+    <link rel="stylesheet" media="(min-width:768px)" href="{% static "board/css/board_header/board_header_small.css" %}" type="text/css">
+    <link rel="stylesheet" media="(min-width:992px)" href="{% static "board/css/board_header/board_header_medium.css" %}" type="text/css">
+    <link rel="stylesheet" media="(min-width:1200px)" href="{% static "board/css/board_header/board_header_large.css" %}" type="text/css">
+    <title>{% firstof html_title "MY CAMPUS" %}</title>
+    <script src="https://kit.fontawesome.com/6b942254ad.js"></script>
+    {% block css %}
+    {% endblock %}
+</head>
+
+<body>
+    <div class="base__header pc__header">
+        <div class="base__header__used-space container">
+            <div class="base__logo">
+            <a href="{% url 'core:board:main_board' univ.url_name %}">
+            <img src="{{ univ.logo.url }}">
+            </a></div>
+                
+                <div class="board__header__search pc__header">
+                    <form action="" method="get">
+                        <button type="submit" value="term">
+                            <img src="{% static "/svg/search.svg" %}">
+                        </button>
+                        <input type="hidden" name="state" value="{{ state }}">
+                        <input type="text" placeholder="Search mycampus" name="term" value="{{ search }}">
+                    </form>
+                </div>
+                <div class="board__header__right pc__header">
+                    <ul class="board__buttons">
+                        <li><img src="{% static "/svg/alarm.svg" %}"></li>
+                        <li><img src="{% static "/svg/messege box.svg" %}"></li>
+                        <li><img src="{% static "/svg/mypage.svg" %}"></li>
+                        <a href="{% url 'core:board:post_create' univ.url_name %}">
+                            <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
+                        </a>
+                    </ul>
+                </div>
+        </div>
+    </div>
+    {% block contents %}
+
+    {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/sendbird@3.0.105/SendBird.min.js"></script>
+    <script src="{% static 'chat/js/API.js' %}"></script>
+    <script src="{% static 'chat/js/chatUtil.js' %}"></script>
+    {% block javascript %}
+    {% endblock %}
+</body>
+
+</html>
