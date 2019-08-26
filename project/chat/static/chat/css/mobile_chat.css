@@ -132,6 +132,13 @@ hr{
     left: 1rem;
 }
 
+#back {
+    position: absolute;
+    top: 0.8rem;
+    left: 1rem;
+}
+}
+
 #hide {
     fill: transparent;
 }
