@@ -22,7 +22,7 @@
             <div>
               <button type="button" class="reset-button"
                       onclick="bookmark({{ post.pk }})">
-               {% if user in post.saved.all %}
+                {% if user in post.saved.all %}
                   <img id="saved_id_{{ post.pk }}" src="{% static 'svg/bookmark.svg' %}" alt=""
                        class="post__bookmark bookmark_clicked">
                 {% else %}
@@ -40,13 +40,13 @@
             {{ post.title }}
           </div>
         </div>
-        <div class="post__container__row">
+        <div class="post__container__row post__author_when__row">
           <div id="post__author">
             <img src="{% static '/svg/Anon.svg' %}" alt="">
             <div>{{ post.name }}</div>
           </div>
           <div id="post__when">
-            날짜!!
+            {{ post.time_interval }}
           </div>
         </div>
         <div class="post__container__row">
@@ -73,9 +73,10 @@
               <img src="{% static "/svg/comment.svg" %}"/>
               <div>{{ post.comments.all.count }}</div>
             </div>
-            <div class="post__share">
+            <div class="post__share" id="current_url">
               <img src="{% static '/svg/share.svg' %}" alt="">
               <div>Share</div>
+{#              <input type="hidden" id="current_url">#}
             </div>
           </div>
         </div>
@@ -111,8 +112,8 @@
                 <div class="comment__top__left">
                   <img src="{% static '/svg/Anon.svg' %}" alt="">
                   <div class="comment__info">
-                    <div>{{ comment.name }}</div>
-                    <div class="comment__created_at">날짜</div>
+                    <div class="comment__author">{{ comment.name }}</div>
+                    <div class="comment__created_at">{{ comment.time_interval }}</div>
                   </div>
                 </div>
                 <div class="comment__top__right">
@@ -151,11 +152,11 @@
                       <div class="comment__top__left">
                         <img src="{% static '/svg/Anon.svg' %}" alt="">
                         <div class="comment__info">
-                          <div>{{ nested_comment.name }}</div>
-                          <div class="comment__created_at">날짜</div>
+                          <div class="comment__author">{{ nested_comment.name }}</div>
+                          <div class="comment__created_at">{{ nested_comment.time_interval }}</div>
                         </div>
                       </div>
-                      <div class="comment__top__right" style="width: 80px;">
+                      <div class="comment__top__right nest_comment__top__right">
                         <div class="comment__like">
                           <button type="button" class="like reset-button" name="{{ comment.pk }}" value="Like"
                                   onclick="likeComment({{ nested_comment.pk }})">
@@ -384,5 +385,17 @@
       })
     }
     */
+
+    // share
+    document.querySelector("#current_url").addEventListener("click", function () {
+      let tempElem = document.createElement('textarea');
+      tempElem.value = window.location.href;
+      document.body.appendChild(tempElem);
+
+      tempElem.select();
+      tempElem.setSelectionRange(0, 9999);
+      document.execCommand("copy");
+      document.body.removeChild(tempElem);
+    })
   </script>
 {% endblock %}

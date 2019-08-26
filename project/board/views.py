@@ -184,9 +184,13 @@ def category_board(request, url_name, category_name):
 def post_detail(request, url_name, category_name, post_pk):
     univ = get_object_or_404(Univ, url_name=url_name)
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
-    post = get_object_or_404(Post.objects.prefetch_related('likes', 'saved', 'comments'), ctgy=selected_category, pk=post_pk)
+    post = get_object_or_404(
+        Post.objects.select_related('author')
+            .prefetch_related('likes', 'saved', 'comments'),
+        ctgy=selected_category, pk=post_pk
+    )
     comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
-        .select_related('author', 'parent', 'post')\
+        .select_related('author', 'parent', 'post', 'post__author')\
         .filter(post=post, parent=None)
 
     # post.viewed_by.add(request.user)
