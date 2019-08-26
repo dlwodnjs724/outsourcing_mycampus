@@ -146,7 +146,7 @@ def post_like(request):
         return HttpResponseBadRequest(content="Bad request:" + str(e))
 
 
-def comment_like(request, url_name, category_name, post_pk):
+def comment_like(request):
     try:
         if not request.user.is_authenticated:
             raise Exception("User is not authenticated")

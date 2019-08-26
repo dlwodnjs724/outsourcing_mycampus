@@ -57,7 +57,7 @@ const createChannelBtn = (channel) => {
     <li>
         <div class="url ChannelBtn" url="${channel.url}" with="${flag? "anon" : _with.userId}" anonKey="${_with.metaData.anonKey}">
             <div class="prof">
-                ${flag? '<img src="{% static "svg/Anon.svg" %}" >' :"<img src="+_with.profileUrl+">"}
+                ${flag? '<img src="{% static "/svg/Anon.svg" %}" >' :"<img src="+_with.profileUrl+">"}
             </div>
             <div class="two-line">
                 <div class="fst">

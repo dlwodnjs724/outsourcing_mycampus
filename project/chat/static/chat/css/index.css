@@ -1,21 +1,20 @@
-html, body{
+html {
+    height: calc(100% - 3rem);
+}
+
+body{
     height: 100%;
 }
-body{
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-}
 hr{
-    margin : 15px 0px;
+    margin : 0;
     padding : 0px;
     border: solid 1.5px #E3E3E3;
 }
-#chat-container{
+.chat-container{
     display : flex;
     flex-direction: row;
-    justify-content: center;
-    height: auto;
+    justify-content: space-between;
+    height: calc(100% - 2rem);
 }
 #chat-container > div{
     margin: 0px 10px;
@@ -23,8 +22,8 @@ hr{
 
 #chat-list-container{
     background-color: #ffffff;
-    border-radius: 12px;
-    width : 20%;
+    border-radius: 12px 12px 0 0;
+    width : 40%;
     justify-content: center;
 }
 
@@ -32,11 +31,18 @@ hr{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 30px;
+    height: 2rem;
 }
 #chat-search{
-    width:100%;
+    background-color: #f5f6f7;
+    width: 95%;
+    border: none;f
+    height: 1.5rem;
     margin-bottom: 20px;
+    margin: 0.5rem 0.5rem;
+    padding: 5px;
+    border-radius: 8px;
+    text-align: center;
 }
 
 #chat-list{
@@ -58,32 +64,55 @@ hr{
 .prof img{
     width: 40px;
     height: 40px;
+    border-radius: 25px;
 }
 .two-line{
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 .fst{
     display: flex;
     justify-content: space-between;
+    margin-bottom: 5px;
 }
+
+.last-time {
+    margin-right: 10px;
+    color: #a6a7a7;
+    font-size: 0.7rem;
+}
+
 .sec{
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
+    color:#a6a7a7;
+    font-size: 0.8rem;
 }
+
+
 #chat-main{
-    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    border-radius: 12px 12px 0 0;
     background-color: #ffffff!important;
-    width: 40%;
+    width: 59%;
 }
 #chat-header {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 30px;
+    height: 2rem;
 }
 #chat-box{
     overflow: scroll;
+    overflow-x: hidden;
+    height: calc(100% - 5rem);
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+
 }
 .other{
     display: flex;
@@ -97,8 +126,110 @@ hr{
     width: 80%;
 }
 #chat-text{
-    width: 100%;
+    width: 92%;
+    border: none;
+    height: 100%;
+    padding-left: 1rem;
+
 }
 #chat-text-btn{
-    width:19%;
+    border: none;
+    background-color: transparent;
+    padding: 0;
 }
+
+
+#chat-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 2rem;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+#chat-input img {
+    height: 2rem;
+}
+
+.chat {
+    margin: 2px 0;
+}
+
+
+
+.me {
+    position: relative;
+    padding: 10px 20px;
+    color: white;
+    background: #4fbcbd;
+    border-radius: 12px;
+    float: right;
+    width: auto;
+    margin-left:auto;
+    margin-right: 5px;
+}
+
+
+.me::before {
+    content: "";
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    border-left: 15px solid #4fbcbd;
+    border-right: 15px solid transparent;
+    border-top: 15px solid #4fbcbd;
+    border-bottom: 15px solid transparent;
+    right: -16px;
+    top: 0px;
+  }
+  
+.other {
+    position: relative;
+    padding: 10px 20px;
+    background: #eceff0;
+    border-radius: 12px;
+    color: black;
+    float: left;
+    width: auto;
+    margin-right:auto;
+    margin-left: 15px;
+}
+
+
+.other:before {
+    content: "";
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    border-left: 15px solid transparent;
+    border-right: 15px solid #eceff0;
+    border-top: 15px solid #eceff0;
+    border-bottom: 15px solid transparent;
+    left: -16px;
+    top: 0px;
+  }
+
+
+
+
+#chat-box::-webkit-scrollbar {
+    width: 9px; /* 세로축 스크롤바 길이 */
+}
+#chat-box::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);
+}
+#chat-box::-webkit-scrollbar-track-piece {
+    background-color: rgba(0, 0, 0, 0);
+}
+#chat-box::-webkit-scrollbar-thumb {
+    background-color: #383838;
+    height: 200px;
+}
+#chat-box::-webkit-scrollbar-button {
+    background-color: rgba(0, 0, 0, 0);
+    width: 0;
+    height: 0;
+}
+
+

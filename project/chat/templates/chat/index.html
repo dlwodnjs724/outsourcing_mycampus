@@ -5,13 +5,13 @@
 <link rel="stylesheet" href="{% static "chat/css/index.css" %}" type="text/css">
 {% endblock %}
 {% block contents %}
-<div id="chat-container">
+<div class="container chat-container">
     <div id="chat-list-container">
         <div id="chat-list-header">
-            messenger
+            Messenger
         </div>
         <hr width=100%>
-        <input id="chat-search" type="text" placeholder="search messenger">
+        <input id="chat-search" type="text" placeholder="Search Messenger">
         <ul id='chat-list'>
         </ul>
     </div>
@@ -25,8 +25,10 @@
         </ul>
         <hr width=100%>
         <div id="chat-input">
-            <input type="text" id="chat-text">
-            <input type="submit" id="chat-text-btn">
+            <input type="text" id="chat-text" placeholder="Please enter a message">
+            <button type="submit" id="chat-text-btn">
+                <img src="{% static "/svg/send message.svg"%}" alt="">
+            </button>
         </div>
     </div>
 </div>
