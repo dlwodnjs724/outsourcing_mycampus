@@ -24,11 +24,11 @@
             <div class="header__wrap">
                 <div class="header__main">
                     <div class="header__ham" id="h_click">
-                        <img src="{% static "/svg/햄버거.svg" %}" alt="">
+                        <img src="{% static "/svg/ham-white.svg" %}" alt="">
                     </div>
                     <div class="header__logo">
                         <a href="{% url 'core:board:main_board' univ.url_name %}">
-                            <img src="{% static "/svg/box logo.svg" %}">
+                            <img src="{% static "/svg/box-logo.svg" %}">
                             <img src="{{ univ.logo_mobile.url }}">
                         </a>
                     </div>
@@ -44,10 +44,8 @@
                             </a>
                         </ul>
                         {% else %}
-                            <a href="{% url 'core:accounts:login' univ.url_name %}" class="board__header__a">
-                                <div class="board__header__login">
-                                    LogIn / SignUp
-                                </div>
+                            <a href="{% url 'core:accounts:login' univ.url_name %}" class="board__header__a_m">
+                                <img src="{% static "/svg/signup.svg" %}" alt="">
                             </a>
                         {% endif %}
                     </div>
@@ -59,16 +57,16 @@
     <div class="header__dropdown mobile__header" id="h_h" style="display: none;">
      <a href="{% url 'core:accounts:mypage' univ.url_name %}">
         <div class="header__drop__mypage">
-            <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page
+            <img src="{% static "/svg/mypage-green.svg" %}" alt="">My Page
         </div>
         </a>
         <div class="header__drop__notification">
-            <img src="{% static "/svg/알림.svg" %}" alt="">Notification
+            <img src="{% static "/svg/alarm-green.svg" %}" alt="">Notification
         </div>
         <div class="header__drop__search">
             <form action="" method="get">
                 <button type="submit" value="search">
-                    <img src="{% static "/svg/검색.svg" %}">
+                    <img src="{% static "/svg/search-green.svg" %}">
                 </button>
                 <input type="text" placeholder="Search" name="search" value="{{ search }}">
             </form>
@@ -80,16 +78,16 @@
         <div class="pannel__top__state">
             <a href="{{ url }}?state=new">
                 {% if state == 'new' %}
-                    <img src="{% static "/svg/버튼2.svg" %}">
+                    <img src="{% static "/svg/new-green.svg" %}">
                 {% else %}
-                    <img src="{% static "/svg/버튼3.svg" %}">
+                    <img src="{% static "/svg/new-white.svg" %}">
                 {% endif %}
             </a>
             <a href="{{ url }}?state=hot">
                 {% if state == 'hot' %}
-                    <img src="{% static "/svg/버튼4.svg" %}">
+                    <img src="{% static "/svg/hot-green.svg" %}">
                 {% else %}
-                    <img src="{% static "/svg/버튼1.svg" %}">
+                    <img src="{% static "/svg/hot-white.svg" %}">
                 {% endif %}
             </a>
         </div>
@@ -117,9 +115,11 @@
                             <div class="board__post__content">
                                 <div class="post__text">
                                     <div class="post__top">
+                                        <a href="{% url 'core:board:category_board' univ.url_name post.ctgy.name %}" style="text-decoration:none;">
                                         <div class="post__top__category">
                                             {{ post.ctgy.name }}
                                         </div>
+                                        </a>
                                         <div class="post__top__author">
                                             {{ post.name }}
                                         </div>
@@ -185,7 +185,7 @@
         <div class="board__pannel__right">
             <a href="{% url 'core:board:post_create' univ.url_name %}">
                 <div class="pannel__right__create">
-                    <img src="{% static "svg/create post.svg/" %}" alt="">
+                    <img src="{% static "svg/create-post.svg/" %}" alt="">
                     <p>Create Post</p>
                 </div>
             </a>
@@ -215,16 +215,16 @@
             <div class="testtest">
             <a href="{{ url }}?state=new">
                 {% if state == 'new' %}
-                    <img src="{% static "/svg/버튼2.svg" %}">
+                    <img src="{% static "/svg/new-green.svg" %}">
                 {% else %}
-                    <img src="{% static "/svg/버튼3.svg" %}">
+                    <img src="{% static "/svg/new-white.svg" %}">
                 {% endif %}
             </a>
             <a href="{{ url }}?state=hot" id="hothot">
                 {% if state == 'hot' %}
-                    <img src="{% static "/svg/버튼4.svg" %}">
+                    <img src="{% static "/svg/hot-green.svg" %}">
                 {% else %}
-                    <img src="{% static "/svg/버튼1.svg" %}">
+                    <img src="{% static "/svg/hot-white.svg" %}">
                 {% endif %}
             </a>
             </div>
@@ -239,7 +239,7 @@
                     Category
                 {% endif %}
             </div>
-            <img src="{% static "/svg/회색.svg" %}" id="m_drop" alt="">
+            <img src="{% static "/svg/down-arrow.svg" %}" id="m_drop" alt="">
         </div>
         <div class="pannel__top__category_drop" id="hide_drop_category" style="display:none;">
             <img src="{% static "/svg/category.svg" %}" id="m_category_drop" alt="">
@@ -252,13 +252,13 @@
                     </div>
                 {% endfor %}
             </div>
-            <img src="{% static "/svg/회색.svg" %}" id="m_drop_drop" alt="">
+            <img src="{% static "/svg/down-arrow.svg" %}" id="m_drop_drop" alt="">
         </div>
 
         {% comment %} <div class="board__pannel__right">
             <a href="{% url 'core:board:post_create' univ.url_name %}">
                 <div class="pannel__right__create">
-                    <img src="{% static "svg/create post.svg/" %}" alt="">
+                    <img src="{% static "svg/create-post.svg/" %}" alt="">
                     <p>Create Post</p>
                 </div>
             </a>
@@ -289,9 +289,11 @@
                             <div class="board__post__content">
                                 <div class="post__text">
                                     <div class="post__top">
+                                        <a href="{% url 'core:board:category_board' univ.url_name post.ctgy.name %}" style="text-decoration:none;">
                                         <div class="post__top__category">
                                             {{ post.ctgy.name }}
                                         </div>
+                                        </a>
                                         <div class="post__top__author">
                                             {{ post.name }}
                                         </div>
