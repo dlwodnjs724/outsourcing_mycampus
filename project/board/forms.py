@@ -47,7 +47,8 @@ Don't post names, phone numbers, etc
 Make beautiful communication
 """
         self.fields['content'].widget.attrs.update({
-            'placeholder': content_placeholder
+            'placeholder': content_placeholder,
+            'onfocus': "this.placeholder=''",
 
         })
         self.fields['is_anonymous'].widget.attrs.update({
