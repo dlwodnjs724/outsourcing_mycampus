@@ -264,7 +264,7 @@ hr{
     background-color: rgba(0, 0, 0, 0);
 }
 #chat-box_m::-webkit-scrollbar-thumb {
-    background-color: #383838;
+    background-color: transparent;
     height: 200px;
 }
 #chat-box_m::-webkit-scrollbar-button {
