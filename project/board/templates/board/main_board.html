@@ -687,19 +687,12 @@
         var drop = document.getElementById("h_h");
 
         document.getElementById('h_click').onclick = () => {
-            $('html').scrollTop(0);
             if (drop.style.display == 'none') {
                 drop.style.display = 'flex';
             } else {
                 drop.style.display = 'none';
             }
         };
-        $(window).scroll(function(){
-            var top = $(window).scrollTop();
-            console.log(top);
-            if(top > 200) {
-                drop.style.display = 'none';
-            }
-        });
+
     </script>
 {% endblock %}
