@@ -123,7 +123,7 @@ def post_create(request, url_name):
         if request.method == 'POST':
             if form.is_valid():
                 post = form.save(commit=False)
-                if not post.ctgy.is_anonymous:
+                if post.ctgy.is_anonymous:
                     post.is_anonymous = True
                 post.save()
                 for image in request.FILES.getlist('images'):
