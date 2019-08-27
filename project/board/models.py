@@ -20,13 +20,37 @@ class Noti(models.Model):
 
 
 class Report(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
-    object_id = models.PositiveIntegerField(db_column='object_id')
-    content_object = GenericForeignKey('content_type', 'object_id')
+    TYPE_CHOICES = (
+        ('Sexual insult', 'sexual'),
+        ('Cyber bullying', 'bully'),
+        ('Racist remarks', 'racisist'),
+        ('Illegal activity', 'illegal'),
+        ('Others', 'others')
+    )
 
-    reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    TARGET_CHOICES = (
+        ('comment', 'c'),
+        ('post', 'p')
+    )
 
-    what = models.TextField(max_length=500, blank=False)
+    report_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    target_type = models.CharField(max_length=1, choices=TARGET_CHOICES)
+    reporter = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='reporting', null=True)
+    abuser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reported')
+    target_content = models.OneToOneField('ReportedContent', on_delete=models.PROTECT, related_name='report_paper')
+
+    accepted = models.BooleanField(default=False)
+    is_handled = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class ReportedContent(models.Model):
+    origin_comment = models.ForeignKey('Comment', on_delete=models.SET_NULL, related_name='reported_copy', null=True)
+    origin_post = models.ForeignKey('Post', on_delete=models.SET_NULL, related_name='reported_copy', null=True)
+    content = models.TextField(blank=False, null=False)
+    title = models.CharField(max_length=100, null=True)
 
 
 class Category(models.Model):
@@ -70,7 +94,7 @@ class Post(models.Model):
 
     saved = models.ManyToManyField(User, related_name='saved', blank=True)
 
-    report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
+    is_reported = models.BooleanField(default=False)
     noti = GenericRelation(Noti, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
 
     class Meta:
