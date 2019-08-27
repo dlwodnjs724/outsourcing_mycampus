@@ -7,9 +7,11 @@
 
 {% endblock %}
 {% block contents %}
-
+    
     <div class="mobile__header mypage__mobile__header">
-        Mypage
+    <img src="{% static "/svg/흰색.svg" %}" alt="" id="back">
+
+        <p>My Page</p>
     </div>
     <div class="container flex-container">
         <div class="white-wrapper">
@@ -130,4 +132,15 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    const back = document.getElementById('back');
+
+    back.onclick = () => {
+        window.history.back();
+    }
+    
+</script>
 {% endblock %}
