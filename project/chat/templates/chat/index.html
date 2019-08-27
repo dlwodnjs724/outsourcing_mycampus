@@ -68,6 +68,7 @@
 
 {% block javascript %}
 <script>
+    console.log(!!("{{ target }}"!='None'))
     const chat_list = document.getElementById('chat-list')
     const chat_header = document.getElementById('chat-header')
     const chat_box = document.getElementById('chat-box')
@@ -103,8 +104,14 @@
     sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
         const channels = await loadChatList()
-        const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
-        if(first_btn) first_btn.click()
+        const btns = await renderChatList(channels, chat_list, chat_header, chat_box)
+        if("{{other}}" == "None" || "{{type}}" =="None") btns[0].click()
+        else {
+            const users = await loadUsers()
+            const btn = findChatBtn(btns, users,"{{other}}","{{type}}")
+            console.log(btn)
+            btn.click()
+        }
     });
 
     chat_search.addEventListener('keypress', async (e) => {
@@ -113,7 +120,7 @@
             try {
                 await openAChat(chat_search.value, flag)
                 const channels = await loadChatList()
-                const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
+                const btns = await renderChatList(channels, chat_list, chat_header, chat_box)
                 first_btn.click()
             } catch (e) {
                 console.log(e)
@@ -121,20 +128,7 @@
             }
         }
     })
-    chat_search.addEventListener('click', async (e) => {
-        if (chat_search.value != "") {
-            flag = 'anon'
-            try {
-                await openAChat(chat_search.value, flag)
-                const channels = await loadChatList()
-                const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
-                first_btn.click()
-            } catch (e) {
-                console.log(e)
-                alert('check username')
-            }
-        }
-    })
+
     chat_text.addEventListener('keypress', async (e) => {
         if (e.key == 'Enter' && chat_box.getAttribute('url') != 'none' && chat_text.value != "") {
             sb.GroupChannel.getChannel(chat_box.getAttribute('url'), async (groupChannel, error) => {
@@ -174,8 +168,15 @@
     sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
         const channels = await loadChatList()
-        const first_btn_m = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
-        if(first_btn_m) first_btn_m.click()
+        const btns_m = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
+        if("{{other}}" == "None" || "{{type}}" =="None") btns_m[0].click()
+        else {
+            const users = await loadUsers()
+            const btn = findChatBtn(btns_m, users,"{{other}}","{{type}}")
+            
+            console.log(btn)            
+            btn.click()
+        }
     });
 
     chat_search_m.addEventListener('keypress', async (e) => {
@@ -184,22 +185,8 @@
             try {
                 await openAChat(chat_search_m.value, flag)
                 const channels = await loadChatList()
-                const first_btn_m = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
-                first_btn_m.click()
-            } catch (e) {
-                console.log(e)
-                alert('check username')
-            }
-        }
-    })
-    chat_search_m.addEventListener('click', async (e) => {
-        if (chat_search_m.value != "") {
-            flag = 'anon'
-            try {
-                await openAChat(chat_search_m.value, flag)
-                const channels = await loadChatList()
-                const first_btn = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
-                first_btn_m.click()
+                const btns_m = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
+                btns_m.click()
             } catch (e) {
                 console.log(e)
                 alert('check username')
