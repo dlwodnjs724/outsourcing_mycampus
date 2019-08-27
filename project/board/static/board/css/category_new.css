@@ -1,0 +1,76 @@
+.reset-button {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+
+  background: transparent;
+
+  /* inherit font & color from ancestor */
+  color: inherit;
+  font: inherit;
+
+  /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+  line-height: normal;
+
+  /* Corrects font smoothing for webkit */
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+
+  /* Corrects inability to style clickable `input` types in iOS */
+  -webkit-appearance: none;
+}
+
+.new__category__container {
+  background-color: white;
+  border-radius: 13px;
+  margin-top: 2rem;
+}
+
+.new__category__main {
+  /*padding: 70px;*/
+}
+
+.category__form__top {
+  display: flex;
+  align-items: center;
+  padding: 13px;
+}
+
+.category__form__top img {
+  width: 16px;
+}
+
+.category__form {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+@media (max-width: 769px) {
+  body {
+    background-color: white;
+  }
+
+  .container {
+    padding: 0;
+    margin-top: -8px;
+  }
+
+  .category__form__top {
+    display: none;
+  }
+
+  .new__category__container {
+    border-radius: unset;
+    border-bottom: 1px solid #cecece;
+  }
+
+  .form__category {
+    background-color: white;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+}

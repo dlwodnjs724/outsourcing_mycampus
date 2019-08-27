@@ -64,7 +64,7 @@
     width: 18px;
 }
 
-.board__header__a{
+#board__header__a{
     text-decoration: none;
     color:black;
     width: 100%;
@@ -82,4 +82,5 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+    font-family: YDIYGO320;
 }

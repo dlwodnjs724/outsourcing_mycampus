@@ -83,7 +83,10 @@
                                     Log out
                                 </h4>
                             </div>
-                            <button class="body-component__button">Log out</button>
+                            <button class="body-component__button"
+                                    onclick="location.href='{% url 'core:accounts:logout' url_name %}'">
+                                Log out
+                            </button>
                         </div>
                     </div>
                 </div>

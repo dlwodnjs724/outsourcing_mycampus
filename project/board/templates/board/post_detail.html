@@ -160,10 +160,17 @@
             </div>
             <div class="comment__form__bottom">
               <div class="comment__checkbox__wrapper">
+                {% if not anon %}
                 <input type="checkbox" name="is_anonymous" class="comment__checkbox"
                        id="comment__is_anonymous" checked>
                 <label for="comment__is_anonymous">
                 </label>
+                {% else %}
+                  <input type="checkbox" name="is_anonymous" class="comment__checkbox"
+                         id="comment__is_anonymous" checked onclick="return false;">
+                  <label for="comment__is_anonymous">
+                  </label>
+                {% endif %}
                 anon
               </div>
               <button type="submit" class="reset-button comment__write">
@@ -266,8 +273,8 @@
     const type_v = document.getElementById('type_v')
     const mdl_f = document.getElementById('mdl_f')
     const modal = document.getElementById('myModal');
-    const yes_btn = document.getElementById("yes")                                          
-    const no_btn = document.getElementById("no")                                          
+    const yes_btn = document.getElementById("yes")
+    const no_btn = document.getElementById("no")
     const comment_profs = [...document.getElementsByClassName('comment__top__left')]
     const comment_authors = []
 
@@ -313,7 +320,7 @@
             modal.style.display = "none";
         }
     }
-    
+
     for (c in comment_profs) {
       ( (btn, id) => {
         btn.addEventListener('click', e=>{
@@ -464,6 +471,21 @@
     // 대댓글 버튼 클릭
     function clickNestedComment(commentPk) {
       let nestedCommentBox = document.querySelector(`#nested_comment_form_${commentPk}`);
+      let anon = '{{ anon }}';
+      let anonCheck = '';
+      console.log(anonCheck);
+      if (anon !== 'False') {
+        anonCheck = `
+        <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
+                       id="comment__is_anonymous_${commentPk}" checked onclick="return false;">
+        `
+      }
+      else {
+        anonCheck = `
+        <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
+                       id="comment__is_anonymous_${commentPk}" checked>
+        `
+      }
       let commentForm;
       if (nestedCommentBox.innerHTML)
         commentForm = '';
@@ -479,8 +501,7 @@
             </div>
             <div class="comment__form__bottom">
               <div class="comment__checkbox__wrapper">
-                <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
-                       id="comment__is_anonymous_${commentPk}" checked>
+                ${anonCheck}
                 <label for="comment__is_anonymous_${commentPk}">
                 </label>
                 anon

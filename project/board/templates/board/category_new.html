@@ -1,0 +1,44 @@
+{% extends 'login_base.html' %}
+
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static "board/css/category_new.css" %}" type="text/css">
+  <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_category/board_category_mobile.css" %}"
+        type="text/css">
+  <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_header/board_header_mobile.css" %}"
+        type="text/css">
+
+{% endblock %}
+
+{% block contents %}
+  <div class="container">
+    <div class="new__category__container">
+      <div class="new__category__main">
+        <div class="category__form__top">
+          <a href="{% url 'core:board:main_board' url_name %}">
+            <img src="{% static 'svg/cancel.svg' %}" alt="">
+          </a>
+            Create a new category
+        </div>
+        <form action="" method="post" enctype="multipart/form-data" class="category__form">
+          {% csrf_token %}
+          {{ form.name.label }}
+          {{ form.name }}
+
+          explain it in a sentence.
+          {{ form.dscrp }}
+          <button type="submit" class="reset-button">
+            <img src="{% static 'svg/send message.svg' %}" alt="">
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  <script>
+  </script>
+
+{% endblock %}

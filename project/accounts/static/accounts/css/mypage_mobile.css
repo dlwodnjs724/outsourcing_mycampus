@@ -100,6 +100,7 @@
     color: #fff;
     font-size: 1rem;
     border:none;
+    cursor: pointer;
 }
 
 .mypage__mobile__header {
