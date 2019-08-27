@@ -50,6 +50,7 @@ const getTimePassed = (ms) => {
  * @returns element html양식의 문자열.
  */
 const createChannelBtn = (channel) => {
+    if(channel.members.length < 2) return ''
     const _with = channel.members.filter(v => v.userId != sb.currentUser.userId)[0]
     const flag = channel.customType == 'anon' ? true : false
     const html = `
@@ -172,7 +173,7 @@ const customCreateChannel = (other, type) => {
                 })(groupChannel)
                 rej('no such user')
             }
-            res(groupChannel)
+            else res(groupChannel)
         })
     })
 }
@@ -186,12 +187,14 @@ const customCreateChannel = (other, type) => {
  */
 const openAChat = async (other, type) => {
     if (other == sb.currentUser.userId) throw new Error('self inviting is not allowed')
-    const channels = await loadChatList(other)
+    const channels = await loadChatList()
     const targets = channels.filter(cur => {
         if (cur.members.filter(_cur => _cur.userId == other).length) return cur
     })
+    console.log(targets)
+    console.log(channels)
     if (targets.length == 2 || (targets.length == 1 && targets[0].customType == type) ) throw new Error(1)
-    return await customCreateChannel(other, type)
+    else return await customCreateChannel(other, type)
 }
 
 const findChatBtn = (btns, users, other, type) => {

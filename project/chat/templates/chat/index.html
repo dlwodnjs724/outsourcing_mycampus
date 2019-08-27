@@ -112,13 +112,34 @@
         window.history.back();
     }
 
+    if("{{match}}" != "None") console.log("{{match}}")
+
     sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
-        const channels = await loadChatList() 
+        try{
+            if("{{match}}" != "None") await openAChat("{{match}}", 'anon')
+        }
+        catch (e) {
+            alert(e)
+        }
+        const channels = await loadChatList()
         const btns = await renderChatList(channels, chat_list, chat_header, chat_box)
+        const btns_m = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
         const users = await loadUsers()
-        const btn = findChatBtn(btns, users,"{{other}}","{{type}}")
-        btn.click()
+        if(window.innerWidth > 768){
+            if("{{match}}" != "None"){
+                const btn = findChatBtn(btns, users,"{{match}}","anon")
+                btn.click()
+            }
+            else {
+                const btn = findChatBtn(btns, users,"{{other}}","{{type}}")
+                btn.click()
+            }
+        }
+        else if ("{{match}}" != "None"){
+            const btn = findChatBtn(btns_m, users,"{{match}}","anon")
+            btn.click()
+        }
     });
 
 
@@ -127,10 +148,15 @@
     })
 
     chat_text_btn.addEventListener('click', async (e) => {
-        if (chat_text.value != "") {
+        let msg = chat_text.value
+        if (sb.currentUser.userId == "adm" && chat_text.value.split('/').length > 1 && chat_text.value.split('/')[0] == "invite"){
+            const user = chat_text.value.split('/')[1]
+            msg = `<form action="" method="get"><input type="hidden" name="match" value="${user}"><input type="submit" value="match"></form>`
+        }
+        if (msg.trim() != "") {
             sb.GroupChannel.getChannel(chat_box.getAttribute('url'), async (groupChannel, error) => {
                 if (error) return
-                groupChannel.sendUserMessage(chat_text.value, async (message, error) => {
+                groupChannel.sendUserMessage(msg, async (message, error) => {
                     if (error) return
                     chat_box.innerHTML += strfy(message, groupChannel.customType)
                     chat_box.scrollTop = chat_box.scrollHeight;
@@ -146,24 +172,24 @@
     <!-- mobile -->
     
     sb.connect("{{ user.username }}", async function (user, error) {
-        if (error) return;
-        const channels = await loadChatList()
-        const btns_m = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
-        const users = await loadUsers()
-        const btn = findChatBtn(btns_m, users,"{{other}}","{{type}}")
-        btn.click()
+
     });
 
 
     chat_text_m.addEventListener('keypress', async (e) => {
-        if (e.key == 'Enter' && chat_box.getAttribute('url') != 'none' && chat_text_m.value != "") chat_text_btn_m.click()
+        if (e.key == 'Enter' && chat_box_m.getAttribute('url') != 'none' && chat_text_m.value != "") chat_text_btn_m.click()
     })
 
     chat_text_btn_m.addEventListener('click', async (e) => {
-        if (chat_text_m.value != "") {
+        let msg = chat_text_m.value
+        if (sb.currentUser.userId == "adm" && chat_text_m.value.split('/').length > 1 && chat_text_m.value.split('/')[0] == "invite"){
+            const user = chat_text_m.value.split('/')[1]
+            msg = `<form action="" method="get"><input type="hidden" name="match" value="${user}"><input type="submit" value="match"></form>`
+        }
+        if (msg.trim() != "") {
             sb.GroupChannel.getChannel(chat_box_m.getAttribute('url'), async (groupChannel, error) => {
-                if (error) return
-                groupChannel.sendUserMessage(chat_text_m.value, async (message, error) => {
+                if (error) alert(error)
+                groupChannel.sendUserMessage(msg, async (message, error) => {
                     if (error) return
                     chat_box_m.innerHTML += strfy(message, groupChannel.customType)
                     chat_box_m.scrollTop = chat_box_m.scrollHeight;
