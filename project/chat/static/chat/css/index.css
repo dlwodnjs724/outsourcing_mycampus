@@ -99,9 +99,10 @@ hr{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    border-radius: 12px 12px 0 0;
+    border-radius: 12px 12px 12px 12px;
     background-color: #ffffff!important;
     width: 59%;
+    margin-bottom: 1rem;
 }
 #chat-header {
     display: flex;

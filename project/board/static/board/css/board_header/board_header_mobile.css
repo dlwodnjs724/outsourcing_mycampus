@@ -129,23 +129,12 @@
     width: 25%;
 }
 
-.board__header__a{
-    text-decoration: none;
-    color:black;
+.board__header__a_m{
     width: 100%;
-    height: 1.7rem;
-    background-color: white;
-    border-radius: 5px;
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size:0.7rem;
 }
-.board__header__login {
-    display:flex;
-    align-items: center;
-    justify-content: center;
+
+
+.board__header__a_m img {
     width: 100%;
-    font-family: YDIYGO320;
 }
+

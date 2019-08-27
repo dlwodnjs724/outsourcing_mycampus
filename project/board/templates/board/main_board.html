@@ -44,10 +44,8 @@
                             </a>
                         </ul>
                         {% else %}
-                            <a href="{% url 'core:accounts:login' univ.url_name %}" class="board__header__a">
-                                <div class="board__header__login">
-                                    LogIn / SignUp
-                                </div>
+                            <a href="{% url 'core:accounts:login' univ.url_name %}" class="board__header__a_m">
+                                <img src="{% static "/svg/login-signup.svg" %}" alt="">
                             </a>
                         {% endif %}
                     </div>
