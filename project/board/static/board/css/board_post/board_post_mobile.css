@@ -66,9 +66,12 @@
 }
 
 .header__dropdown {
+    position: fixed;
     color:#4fbcbd;
     font-family: YDIYGO320;
     font-size: 0.9rem;
+    background-color: rgba(227, 227, 227, 0.8);
+    z-index: 1;
 }
 
 .header__dropdown a{
