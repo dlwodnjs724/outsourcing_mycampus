@@ -45,7 +45,7 @@
                         </ul>
                         {% else %}
                             <a href="{% url 'core:accounts:login' univ.url_name %}" class="board__header__a_m">
-                                <img src="{% static "/svg/login-signup.svg" %}" alt="">
+                                <img src="{% static "/svg/signup.svg" %}" alt="">
                             </a>
                         {% endif %}
                     </div>
@@ -115,9 +115,11 @@
                             <div class="board__post__content">
                                 <div class="post__text">
                                     <div class="post__top">
+                                        <a href="{% url 'core:board:category_board' univ.url_name post.ctgy.name %}" style="text-decoration:none;">
                                         <div class="post__top__category">
                                             {{ post.ctgy.name }}
                                         </div>
+                                        </a>
                                         <div class="post__top__author">
                                             {{ post.name }}
                                         </div>
@@ -287,9 +289,11 @@
                             <div class="board__post__content">
                                 <div class="post__text">
                                     <div class="post__top">
+                                        <a href="{% url 'core:board:category_board' univ.url_name post.ctgy.name %}" style="text-decoration:none;">
                                         <div class="post__top__category">
                                             {{ post.ctgy.name }}
                                         </div>
+                                        </a>
                                         <div class="post__top__author">
                                             {{ post.name }}
                                         </div>
