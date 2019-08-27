@@ -8,7 +8,7 @@
 }
 
 .base__header__used-space {
-    padding-right: 5px;
+    padding-right: 15px;
     padding-left: 15px;
 }
 
@@ -130,11 +130,13 @@
 }
 
 .board__header__a_m{
+    display:flex;
+    justify-content: flex-end;
     width: 100%;
 }
 
 
 .board__header__a_m img {
-    width: 100%;
+    height: 100%;
 }
 
