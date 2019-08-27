@@ -6,14 +6,10 @@ new post
 
 
 {% block body %}
-awifjoiwefjiowaejfaoiwfjioawe
-        <div class="new__post__main">
-                <form action="" method='POST'>
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit"> 작성 </button>
-                </form>
-
-        </div>
+<form action="" method='POST'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit"> 작성 </button>
+</form>
 {% endblock body %}
 

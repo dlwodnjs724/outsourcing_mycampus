@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div class="base__header pc__header">
+    <div class="base__header">
         <div class="base__header__used-space container">
         {% if univ.logo %}
             <div class="base__logo"><img src="{{ univ.logo.url }}"></div>
@@ -31,8 +31,7 @@
     {% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/sendbird@3.0.105/SendBird.min.js"></script>
-    <script src="{% static 'chat/js/API.js' %}"></script>
-    <script src="{% static 'chat/js/chatUtil.js' %}"></script>
+    <script src="{% static 'js/API.js' %}"></script>
     {% block javascript %}
     {% endblock %}
 </body>

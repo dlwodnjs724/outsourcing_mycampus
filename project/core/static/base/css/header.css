@@ -8,7 +8,6 @@
     background-color: var(--main-color);
     margin-bottom: 1rem;
     position: sticky;
-    z-index: 2;
     top: 0px;
 }
 
@@ -25,7 +24,7 @@
     width: 30%;
 }
 
-.base__logo img {
+.base__logo object {
     width: 100%;
 }
 
