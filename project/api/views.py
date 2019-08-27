@@ -10,9 +10,11 @@ import random
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.contenttypes.models import ContentType
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
-
-from board.models import Post, Comment, Noti
+from accounts.models import User
+from board.models import Post, Comment, Noti, ReportedContent, Report
 from core.models import Univ
 from .models import Token
 
@@ -199,3 +201,61 @@ def comment_like(request):
 
     except Exception as e:
         return HttpResponseBadRequest(content="Bad request: " + str(e))
+
+
+def report_content(request):
+    """
+    :param request:
+    pk: 댓글, 게시글 pk
+    targetType: c or p (댓글, 게시글)
+    abuseType: (sexual, bully, racisist, illegal, others)
+    reporter: 신고 하는 사람 pk
+
+    :return:
+    로그인 안 한 유저는 univ_url
+    한 유저는 200 ok
+    """
+    if not request.is_ajax():
+        return JsonResponse({
+            "err": "Only for api"
+        })
+
+    if not request.method == 'POST':
+        return JsonResponse({
+            "err": "Not allowed request method"
+        })
+
+    pk = request.POST.get('pk')
+    target_type = request.POST.get('targetType')
+    target = None
+
+    if request.user.is_anonymous:
+        if target_type == 'c':
+            target = Comment.objects.select_related('author', 'author__univ').get(pk=pk)
+            url_name = target.author.univ.url_name
+        else:
+            target = Post.objects.select_related('author', 'author__univ').get(pk=pk)
+            url_name = target.author.univ.url_name
+        return JsonResponse({
+            'univ_url': url_name,
+        })
+
+    abuse_type = request.POST.get('abuseType')
+    reporter_pk = request.POST.get('reporter')
+    reporter = User.objects.get(pk=reporter_pk)
+    abuser = target.author
+
+    report_content = ReportedContent(origin_comment=target, content=target.content)
+    report_paper = Report(target_type=target_type, target_content=report_content, report_type=abuse_type, abuser=abuser, reporter=reporter)
+    if target_type == 'p':
+        report_content.title = target.title
+
+    report_content.save()
+    report_paper.save()
+
+    abuser.is_reported = True
+    abuser.save()
+
+    return JsonResponse({
+        "message": "Reporting is success"
+    })

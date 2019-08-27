@@ -8,5 +8,6 @@ urlpatterns = [
     path('activate/', views.activate, name="activate"),
     path('like/', views.post_like, name='post_like'),
     path('bookmark/', views.post_bookmark, name='post_bookmark'),
-    path('comment-like/', views.comment_like, name='comment_like')
+    path('comment-like/', views.comment_like, name='comment_like'),
+    path('report/', views.report_content, name='report_content')
 ]

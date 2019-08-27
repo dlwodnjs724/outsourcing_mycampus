@@ -1,10 +1,14 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
+  <link rel="stylesheet" href="href="{% static "/css/error.css" %}" type="text/css">
 </head>
 <body>
-500 page 입니다.
+  <p class="error-number">500</p>
+  <p class="error-message">Page Not Found</p>
 </body>
 </html>

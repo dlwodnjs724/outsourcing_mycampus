@@ -1,10 +1,15 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>MY CAMPUS 404</title>
+  <link rel="stylesheet" href="href="{% static "/css/error.css" %}" type="text/css">
 </head>
 <body>
-404 page 입니다.
+  <!-- <img src="{% static "/svg/box-logo.svg" %}"> -->
+  <p class="error-number">404</p>
+  <p class="error-message">Page Not Found</p>
 </body>
 </html>

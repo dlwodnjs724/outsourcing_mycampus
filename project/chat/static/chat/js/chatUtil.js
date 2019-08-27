@@ -4,7 +4,6 @@
  * @returns string 
  */
 const strfy = (message) => {
-    const time = new Date(message.createdAt).toISOString()
     if (message._sender.userId == sb.currentUser.userId) return `<div class="chat me"> ${message.message}</div>`
     return `<div class="chat other"> ${message.message}</div>`
 }
@@ -62,7 +61,7 @@ const createChannelBtn = (channel) => {
             <div class="two-line">
                 <div class="fst">
                     <div class="partner">
-                        ${flag? `anon${_with.metaData.anonKey}` : _with.userId}
+                        ${flag? `anon` : _with.userId}
                     </div>
                     <div class="last-time">
                         ${channel.lastMessage==null ? "" : getTimePassed(channel.lastMessage.createdAt)}

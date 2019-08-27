@@ -70,21 +70,9 @@
 } */
 
 #board__header__a{
-    text-decoration: none;
-    color:black;
     width: 100%;
-    height: 2rem;
-    background-color: white;
-    border-radius: 5px;
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
 }
-.board__header__login {
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    font-family: YDIYGO320;
+
+#board__header__a img {
+    width:100%;
 }
