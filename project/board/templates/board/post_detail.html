@@ -1,15 +1,10 @@
-{% extends 'login_base.html' %}
+{% extends 'base.html' %}
 
 {% load child_comments %}
 {% load static %}
 
-{% block css %}
-  <link rel="stylesheet" href="{% static 'board/css/post_detail.css' %}">
-  <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_post/board_post_mobile.css" %}" type="text/css">
-  <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_header/board_header_mobile.css" %}" type="text/css">
-{% endblock %}
-
 {% block contents %}
+<<<<<<< HEAD
     <div class="base__header mobile__header">
         <div class="base__header__used-space container">
             <div class="header__wrap">
@@ -178,70 +173,56 @@
                     <div class="comment__author">{{ comment.name }}</div>
                     <div class="comment__created_at">{{ comment.time_interval }}</div>
                   </div>
+=======
+  <div class="container">
+    {{ post.title }}
+
+    <div>
+      title : {{ post.title }}<br>
+      author : {{ post.name }}<br>
+      content : {{ post.content }}<br>
+      <br>
+
+      <input type="button" class="like" name="{{ post.pk }}" value="Like" onclick="likePost({{ post.pk }})">
+      <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
+
+      <br>
+      <h1>{{post.views}}</h1>
+      write comment: {{ comment_form.content }}
+      is_anonymous: {{ comment_form.is_anonymous }}
+      <button type="button" id="comment_write" onclick="writeComment()">comment</button>
+
+      <div class="comment_list">
+        {% for comment in comments %}
+          <input type="button" class="comment_like" name="{{ comment.pk }}" value="Like"
+                 onclick="likeComment({{ comment.pk }})">
+          <span id="comment_{{ comment.pk }}">{{ comment.total_likes }}</span>
+          {{ comment.content }} {{ comment.name }} / {{ comment.pk }}
+          <span style="font-size: 13px; color: grey;">{{ comment.created_at }}</span>
+          <button type="button" onclick="clickNestedComment({{ comment.pk }})">
+            대댓글
+          </button>
+          <div class="nested_comment">
+            <div class="nested_comment_form" id="nested_comment_form_{{ comment.pk }}"></div>
+            <div class="nested_comment_list" id="nested_comment_list_{{ comment.pk }}" style="margin-left: 50px;">
+              {% for nested_comment in comment|child_comments %}
+                <div>
+                  <input type="button" class="comment_like" name="{{ nested_comment.pk }}" value="Like"
+                         onclick="likeComment({{ nested_comment.pk }})">
+                  <span id="comment_{{ nested_comment.pk }}">{{ nested_comment.total_likes }}</span>
+                  {{ nested_comment.content }} {{ nested_comment.name }} / {{ nested_comment.pk }}
+                  <span style="font-size: 13px; color: grey;">{{ nested_comment.created_at }}</span>
+>>>>>>> parent of 20ddaf7... Merge pull request #57 from dlwodnjs724/front/mypage_mobile
                 </div>
-                <div class="comment__top__right">
-                  <div class="comment__like">
-                    <button type="button" class="like reset-button" name="{{ comment.pk }}" value="Like"
-                            onclick="likeComment({{ comment.pk }})">
-                      {% if user in comment.likes.all %}
-                        <img id="like_id_{{ comment.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
-                      {% else %}
-                        <img id="like_id_{{ comment.pk }}" src="{% static "/svg/like.svg" %}"/>
-                      {% endif %}
-                    </button>
-                    <div id="comment_{{ comment.pk }}">
-                      {{ comment.total_likes }}
-                    </div>
-                  </div>
-                  <div class="comment__comment">
-                    <button type="button" class="reset-button" name="{{ comment.pk }}"
-                            onclick="clickNestedComment({{ comment.pk }})">
-                      <img src="{% static "/svg/comment.svg" %}"/>
-                      comment
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="comment__bottom">
-                {{ comment.content }}
-              </div>
+              {% endfor %}
             </div>
-            <div class="nested_comment">
-              <div class="nested_comment_form" id="nested_comment_form_{{ comment.pk }}"></div>
-              <div class="nested_comment_list" id="nested_comment_list_{{ comment.pk }}">
-                {% for nested_comment in comment|child_comments %}
-                  <div class="comment__row nested_comment__row">
-                    <div class="comment__top">
-                      <div class="comment__top__left">
-                        <img src="{% static '/svg/Anon.svg' %}" alt="">
-                        <div class="comment__info">
-                          <div class="comment__author">{{ nested_comment.name }}</div>
-                          <div class="comment__created_at">{{ nested_comment.time_interval }}</div>
-                        </div>
-                      </div>
-                      <div class="comment__top__right nest_comment__top__right">
-                        <div class="comment__like">
-                          <button type="button" class="like reset-button" name="{{ comment.pk }}" value="Like"
-                                  onclick="likeComment({{ nested_comment.pk }})">
-                            <img id="like_id_{{ nested_comment.pk }}" src="{% static "/svg/like.svg" %}"/>
-                          </button>
-                          <div id="comment_{{ nested_comment.pk }}">
-                            {{ nested_comment.total_likes }}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="comment__bottom">
-                      {{ nested_comment.content }}
-                    </div>
-                  </div>
-                {% endfor %}
-              </div>
-            </div>
-          {% endfor %}
-        </div>
+          </div>
+          <br>
+        {% endfor %}
       </div>
     </div>
+
+    <a href="{% url 'core:board:main_board' univ.url_name %}">Go list</a>
   </div>
 {% endblock %}
 
@@ -251,6 +232,7 @@
           crossorigin="anonymous"></script>
 
   <script>
+<<<<<<< HEAD
       sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
     });
@@ -338,18 +320,11 @@
       })
     }
 
+=======
+>>>>>>> parent of 20ddaf7... Merge pull request #57 from dlwodnjs724/front/mypage_mobile
     // 게시글 좋아요
     function likePost(postPk) {
-      let like_img = document.getElementById(`like_id_${postPk}`);
-      // console.log(like_img.classList.contains('clicked'));
-      if (!(like_img.classList.contains('clicked'))) {
-        like_img.src = '{% static 'svg/like-clicked.svg' %}';
-        like_img.setAttribute('class', 'clicked');
-      } else {
-        like_img.src = '{% static 'svg/like.svg' %}';
-        like_img.removeAttribute('class', 'clicked');
-      }
-      const url = '{% url 'api:post_like' %}';
+      const url = '{% url 'core:board:post_like' 0 %}'.replace('0', '{{ univ.url_name }}');
       $.ajax({
         type: 'POST',
         url: url,
@@ -370,8 +345,8 @@
 
     // 댓글 좋아요
     function likeComment(commentPk) {
-      const url = '{% url 'api:comment_like' %}';
-
+      const url = '{% url 'core:board:comment_like' 'url_name' 'category' 0 %}'
+          .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
       $.ajax({
         type: 'POST',
         url: url,
@@ -391,7 +366,6 @@
 
 
     // 댓글 작성
-    /*
     function writeComment() {
       const url = '{% url 'core:board:comment_create' 'url_name' 'category' 0 %}'
           .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
@@ -433,7 +407,7 @@
         }
       })
     }
-    */
+
 
     // 대댓글 버튼 클릭
     function clickNestedComment(commentPk) {
@@ -443,36 +417,14 @@
         commentForm = '';
       else
         commentForm = `
-        <div class="comment__form__row">
-          <form action="{% url 'core:board:comment_nest_create' univ.url_name selected_category.name post.pk %}"
-                method="post" class="comment__form">
-            {% csrf_token %}
-            <div class="comment__form__top">
-              <textarea name="nested_content" cols="40" rows="10"
-                        placeholder="Please leave a comment."></textarea>
-            </div>
-            <div class="comment__form__bottom">
-              <div class="comment__checkbox__wrapper">
-                <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
-                       id="comment__is_anonymous_${commentPk}" checked>
-                <label for="comment__is_anonymous_${commentPk}">
-                </label>
-                anon
-              </div>
-              <button type="submit" class="reset-button comment__write" id="comment_write_${commentPk}">
-                <img src="{% static "/svg/comment.svg" %}"/>
-                comment
-              </button>
-            </div>
-            <input type="hidden" name="parent_id" value="${commentPk}">
-          </form>
-        </div>
+          write comment: <textarea name="nested_comment_content" required id="nested_comment_write_${commentPk}"></textarea>
+          is_anonymous: <input type="checkbox" name="nested_comment_content" id="nested_comment_is_anonymous_${commentPk}" checked>
+          <button type="button" id="comment_write_${commentPk}" onclick="writeNestedComment(${commentPk})">comment</button>
         `;
       nestedCommentBox.innerHTML = commentForm;
     }
 
 
-    /*
     // 대댓글 작성
     function writeNestedComment(commentPk) {
       const url = '{% url 'core:board:comment_nest_create' 'url_name' 'category' 0 %}'
@@ -507,28 +459,5 @@
         }
       })
     }
-    */
-
-    // share
-    document.querySelector("#current_url").addEventListener("click", function () {
-      let tempElem = document.createElement('textarea');
-      tempElem.value = window.location.href;
-      document.body.appendChild(tempElem);
-
-      tempElem.select();
-      tempElem.setSelectionRange(0, 9999);
-      document.execCommand("copy");
-      document.body.removeChild(tempElem);
-    })
-
-      document.getElementById('h_click').onclick = () =>{
-        console.log("helllo");
-        var drop = document.getElementById("h_h");
-        if(drop.style.display == 'none'){
-            drop.style.display = 'flex';
-        } else {
-            drop.style.display = 'none';
-        }
-    };
   </script>
 {% endblock %}
