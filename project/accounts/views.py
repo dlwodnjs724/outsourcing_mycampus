@@ -115,7 +115,7 @@ def mypage(request, url_name):
     user = request.user
 
     if request.method == "GET":
-        ctx = {"user": user, "univ":univ, "url_name":url_name}
+        ctx = {"user": user}
         return render(request, "accounts/mypage.html", ctx)
 
     else:

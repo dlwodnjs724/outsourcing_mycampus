@@ -1,14 +1,15 @@
-{% extends 'login_base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 {% load humanize %}
 
+<<<<<<< HEAD
 
 
 
 {% block css %}
-    <link rel="stylesheet" media="(max-width:768px)"
+    <link rel="stylesheet" media="(max-width:767px)"
           href="{% static "board/css/board_header/board_header_mobile.css" %}" type="text/css">
-    <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_post/board_post_mobile.css" %}"
+    <link rel="stylesheet" media="(max-width:767px)" href="{% static "board/css/board_post/board_post_mobile.css" %}"
           type="text/css">
     <link rel="stylesheet" media="(min-width:768px)" href="{% static "board/css/board_post/board_post_small.css" %}"
           type="text/css">
@@ -46,65 +47,89 @@
                 </div>
             </div>
         </div>
+=======
+{% block header %}
+    <link rel="stylesheet" href="{% static "board/css/board_header.css" %}" type="text/css">
+    <div class="board__header__search">
+        <form action="" method="get">
+            <button type="submit" value="search">
+                <img src="{% static "/svg/search.svg" %}">
+            </button>
+            <input type="text" placeholder="Search mycampus" name="search" value="{{ search }}">
+        </form>
+>>>>>>> parent of 20ddaf7... Merge pull request #57 from dlwodnjs724/front/mypage_mobile
     </div>
-
-    <div class="header__dropdown mobile__header" id="h_h" style="display: none;">
-     <a href="{% url 'core:accounts:mypage' univ.url_name %}">
-        <div class="header__drop__mypage">
-            <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page
-        </div>
-        </a>
-        <div class="header__drop__notification">
-            <img src="{% static "/svg/알림.svg" %}" alt="">Notification
-        </div>
-        <div class="header__drop__search">
-            <form action="" method="get">
-                <button type="submit" value="search">
-                    <img src="{% static "/svg/검색.svg" %}">
-                </button>
-                <input type="text" placeholder="Search" name="search" value="{{ search }}">
-            </form>
-        </div>
+    <div class="board__header__right">
+        <ul class="board__buttons">
+            <li><img src="{% static "/svg/alarm.svg" %}"></li>
+            <li><img src="{% static "/svg/messege box.svg" %}"></li>
+            <li><img src="{% static "/svg/mypage.svg" %}"></li>
+            <li><img id="h__post" src="{% static "/svg/post.svg" %}">
+            </li>
+        </ul>
     </div>
+{% endblock %}
 
+{##}
+{#{{ univ.full_name }} <br>#}
+{#{{ univ.short_name }} <br>#}
+{#{% for category in categories %}#}
+{#  {{ category.name }}#}
+{#{% endfor %}#}
 
-    <div class="board__pannel__top container pc__board">
-        <div class="pannel__top__state">
-            <a href="{{ url }}?state=new">
-                {% if state == 'new' %}
-                    <img src="{% static "/svg/버튼2.svg" %}">
-                {% else %}
-                    <img src="{% static "/svg/버튼3.svg" %}">
-                {% endif %}
-            </a>
-            <a href="{{ url }}?state=hot">
-                {% if state == 'hot' %}
-                    <img src="{% static "/svg/버튼4.svg" %}">
-                {% else %}
-                    <img src="{% static "/svg/버튼1.svg" %}">
-                {% endif %}
-            </a>
-        </div>
+{% block contents %}
+    <link rel="stylesheet" href="{% static "board/css/main_board.css" %}" type="text/css">
+    <div class="board__pannel__top container">
+      <a href="{% url 'core:board:main_board_new' univ.url_name %}">
+      {% if state == 'new' %}
+        <img src="{% static "/svg/버튼2.svg"%}">
+      {% else %}
+        <img src="{% static "/svg/버튼3.svg"%}">
+      {% endif %}
+      </a>
+      <a href="{% url 'core:board:main_board' univ.url_name %}">
+      {% if state == 'hot' %}
+        <img src="{% static "/svg/버튼4.svg"%}">
+      {% else %}
+        <img src="{% static "/svg/버튼1.svg"%}">
+      {% endif %}
+      </a>
     </div>
+    
+
+    <div class="container board__main">
 
 
-    <div class="container board__main pc__board">
         <div class="board__pannel__left">
             <ul>
                 {% for post in posts %}
                     <div>
                         <li class="board__post__container">
+
                             <div class="board__post__like">
                                 <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
-                                <button type="button" class="like" name="{{ post.pk }}" value="Like">
+<<<<<<< HEAD
+                                <button type="button" class="like" name="{{ post.pk }}" value="Like"
+                                        onclick="likePost({{ post.pk }})">
                                     {% if user in post.likes.all %}
                                         <img id="like_id_{{ post.pk }}" class='clicked'
                                              src="{% static "/svg/like-clicked.svg" %}"/>
                                     {% else %}
                                         <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
                                     {% endif %}
+=======
+
+                                <button type="button" class="like" name="{{ post.pk }}" value="Like">
+                                  {% if user in post.likes.all %}
+                                    <img id="like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
+                                  {% else %}
+                                    <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
+                                  {% endif %}
+
+>>>>>>> parent of 20ddaf7... Merge pull request #57 from dlwodnjs724/front/mypage_mobile
                                 </button>
                             </div>
+
                             <div class="board__post__content">
                                 <div class="post__text">
                                     <div class="post__top">
@@ -117,59 +142,62 @@
                                     </div>
                                     <div class="post__mid">
                                         <div class="post__mid__title">
-                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
+                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
                                         </div>
                                         <div class="post__mid__content">
-                                            {{ post.content|truncatechars:60 }}
+                                            {{ post.content }}
                                         </div>
                                     </div>
                                     <hr/>
                                     <div class="post__bottom">
                                         <div class="post__bottom__icon">
                                             <div class="s_con post__bottom__view">
-                                                {% if user in post.viewed_by.all %}
-                                                    <img src="{% static "/svg/view-clicked.svg" %}"/>
-                                                {% else %}
-                                                    <img src="{% static "/svg/view.svg" %}"/>
-                                                {% endif %}
-                                                <span>{{ post.views }}</span>
+                                            {% if user in post.viewed_by.all %}
+                                                <img src="{% static "/svg/view-clicked.svg" %}"/>
+                                            {% else %}
+                                                <img src="{% static "/svg/view.svg" %}"/>
+                                            {% endif %}
+                                                <span>{{post.views}}</span>
                                             </div>
                                             <div class="s_con post__bottom__comment">
-                                                {% if user.pk in post.comments_author %}
-                                                    <img src="{% static "/svg/comment-clicked.svg" %}"/>
-                                                {% else %}
-                                                    <img src="{% static "/svg/comment.svg" %}"/>
-                                                {% endif %}
+                                            {% if user.pk in post.comments_author %}
+                                                <img src="{% static "/svg/comment-clicked.svg" %}"/>
+                                            {% else %}
+                                                <img src="{% static "/svg/comment.svg" %}"/>
+                                            {% endif %}
                                                 <span>{{ post.comments.all.count }}</span>
                                             </div>
                                             <div class="s_con post__bottom__bookmark">
                                                 {% if user in post.saved.all %}
                                                     <img src="{% static "/svg/bookmark.svg" %}"/>
                                                 {% else %}
-                                                    <img src="{% static "/svg/scrap.svg" %}"/>
+                                                <img src="{% static "/svg/scrap.svg" %}"/>
                                                 {% endif %}
                                                 <span>{{ post.saved.all.count }}</span>
                                             </div>
                                         </div>
                                         <div class="post__bottom__time">
-                                            {{ post.time_interval }}
+                                            {{ post.created_at|naturaltime }}
                                         </div>
+                                        {##}
+                                        {##}
+                                        {#         {% if user in post.saved.all %}#}
+                                        {#                                            <input type="button" class="bookmark" name="{{ post.pk }}" value="O">#}
+                                        {#                                        {% else %}#}
+                                        {#                                            <input type="button" class="bookmark" name="{{ post.pk }}" value="X">#}
+                                        {#                                        {% endif %}#}
+
                                     </div>
                                 </div>
 
                                 <div class="post__image">
-                                    {% for img in post.images.all %}
-                                        <img src="{{ img.image_thumbnail.url }}" alt="">
-                                    {% endfor %}
+
                                 </div>
+
                             </div>
                         </li>
                     </div>
-
                 {% endfor %}
-                <div id="loading" class="spinner-box">
-                    <div class="spinner"/>
-                </div>
             </ul>
         </div>
 
@@ -183,11 +211,9 @@
             <div class="pannel__right__category">
                 <p>Category</p>
                 <ul class="right__category__list">
-                    <li class="c_d">+</li>
                     {% for category in categories %}
                         <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
-                            <a id="category__a"
-                               href="{% url 'core:board:category_board' univ.url_name category.name %}">
+                            <a id="category__a" href="{% url 'core:board:category_board' univ.url_name category.name %}">
                                 <span class="c_common">
                                     {{ category.name }}
                                 </span>
@@ -198,6 +224,7 @@
             </div>
         </div>
     </div>
+<<<<<<< HEAD
 
     <div class="board__pannel__top container mobile__board">
         <div class="pannel__top__state">
@@ -305,7 +332,8 @@
                                             </div>
 
                                             <div class="s_con post__bottom__like">
-                                                <button type="button" class="like" name="{{ post.pk }}" value="Like">
+                                                <button type="button" class="like" name="{{ post.pk }}" value="Like"
+                                                        onclick="likePost({{ post.pk }})">
                                                     {% if user in post.likes.all %}
                                                         <img id="m_like_id_{{ post.pk }}" class='clicked'
                                                              src="{% static "/svg/like-clicked.svg" %}"/>
@@ -351,12 +379,15 @@
             </div>
         </div>
     </div>
+=======
+>>>>>>> parent of 20ddaf7... Merge pull request #57 from dlwodnjs724/front/mypage_mobile
 {% endblock %}
 
 {% block javascript %}
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
+<<<<<<< HEAD
     <script src="{% static "board/js/scroll.js" %}"></script>
     <script>
         window.onload = function () {
@@ -454,6 +485,7 @@
                             postFields.likes.length,
                             postPk,
                             postPk,
+                            postPk,
                             isClicked,
                             like_icon_will_use,
                             postFields.ctgy.name,
@@ -535,25 +567,29 @@
             })(user)
         });
 
-        $('.like').click(function () {
-            var pk = $(this).attr('name')
+        function likePost(postPK) {
+            var pk = postPK;
             var like_img = document.getElementById(`like_id_${pk}`);
             var m_like_img = document.getElementById(`m_like_id_${pk}`);
 
-            console.log(like_img.classList.contains('clicked'));
-            if (!(like_img.classList.contains('clicked'))) {
+            // console.log(like_img.classList.contains('clicked'));
+            if (like_img) {
+              if (!(like_img.classList.contains('clicked'))) {
                 like_img.src = "/static/svg/like-clicked.svg";
                 like_img.setAttribute('class', 'clicked');
-            } else {
+              } else {
                 like_img.src = "/static/svg/like.svg";
                 like_img.removeAttribute('class', 'clicked');
+              }
             }
-            if (!(m_like_img.classList.contains('clicked'))) {
-                m_like_img.src = "/static/svg/like-clicked.svg";
-                m_like_img.setAttribute('class', 'clicked');
-            } else {
-                m_like_img.src = "/static/svg/like.svg";
-                m_like_img.removeAttribute('class', 'clicked');
+            if (m_like_img) {
+              if (!(m_like_img.classList.contains('clicked'))) {
+                  m_like_img.src = "/static/svg/like-clicked.svg";
+                  m_like_img.setAttribute('class', 'clicked');
+              } else {
+                  m_like_img.src = "/static/svg/like.svg";
+                  m_like_img.removeAttribute('class', 'clicked');
+              }
             }
 
 
@@ -563,7 +599,7 @@
                 type: 'POST',
                 url: url,
                 data: {
-                    'pk': $(this).attr('name'),
+                    'pk': postPK,
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     url_name: univUrlName
                 },
@@ -576,11 +612,52 @@
                     alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
                 }
             })
-        });
+        }
 
+
+/*
+=======
+
+    <script>
+>>>>>>> parent of 20ddaf7... Merge pull request #57 from dlwodnjs724/front/mypage_mobile
+        $('.like').click(function () {
+            var pk = $(this).attr('name')
+            var like_img = document.getElementById(`like_id_${pk}`);
+            console.log(like_img.classList.contains('clicked'));
+            if (!(like_img.classList.contains('clicked'))) {
+              like_img.src="/static/svg/like-clicked.svg";
+              like_img.setAttribute('class','clicked');
+            } else {
+              like_img.src="/static/svg/like.svg";
+              like_img.removeAttribute('class','clicked');
+            }
+
+
+
+
+            const univUrlName = "{{ univ.url_name }}";
+            const url = '{% url 'core:board:post_like' 0 %}'.replace('0', univUrlName);
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'pk': $(this).attr('name'),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    url_name: univUrlName
+                },
+                datatype: "json",
+                success: function (response) {
+                    $(`#post_${response['pk']}`).text(response['likes_count']);
+                },
+                error: function (request, status, error) {
+                    alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                }
+            })
+        });
+*/
 
         $('.bookmark').click(function () {
-            const url = '{% url 'api:post_bookmark' %}';
+            const url = '{% url 'core:board:post_bookmark' 0 %}'.replace('0', "{{ univ.url_name }}");
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -598,33 +675,5 @@
                 }
             })
         });
-
-
-        const hide_category = document.getElementById('hide_drop_category');
-        const show_category = document.getElementById('show_drop_category');
-
-        document.getElementById('m_drop').onclick = () => {
-            if (hide_category.style.display == 'none') {
-                hide_category.style.display = 'flex';
-                show_category.style.display = 'none';
-            }
-        };
-
-        document.getElementById('m_drop_drop').onclick = () => {
-            if (show_category.style.display == 'none') {
-                show_category.style.display = 'flex';
-                hide_category.style.display = 'none';
-            }
-        };
-
-        document.getElementById('h_click').onclick = () => {
-            var drop = document.getElementById("h_h");
-            if (drop.style.display == 'none') {
-                drop.style.display = 'flex';
-            } else {
-                drop.style.display = 'none';
-            }
-        };
-
     </script>
 {% endblock %}

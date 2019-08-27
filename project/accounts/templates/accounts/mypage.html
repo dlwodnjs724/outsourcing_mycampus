@@ -1,10 +1,8 @@
-{% extends "login_base.html" %}
+{% extends "base.html" %}
 {% load staticfiles %}
 {% block css %}
-    <link rel="stylesheet" media="(min-width:768px)" href="{% static 'components/white-wrapper.css' %}">
-    <link rel="stylesheet" media="(min-width:768px)" href="{% static 'accounts/css/mypage.css' %}">
-    <link rel="stylesheet" media="(max-width:768px)" href="{% static "accounts/css/mypage_mobile.css" %}" type="text/css">
-
+    <link rel="stylesheet" href="{% static 'components/white-wrapper.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/mypage.css' %}">
 {% endblock %}
 {% block contents %}
 

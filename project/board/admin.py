@@ -1,11 +1,9 @@
 from django.contrib import admin
 from django.contrib import messages
-from .models import Category, Post, Image, Comment, Suggested, Report, Noti
+from .models import Category, Post, Image, Comment, Suggested, Report
 from core.models import Univ
 # from django.urls import path
 # from django.shortcuts import render, redirect,get_object_or_404
-
-admin.site.register(Noti)
 
 
 class PostAdmin(admin.ModelAdmin):
