@@ -17,7 +17,11 @@
 <body>
     <div class="base__header pc__header">
         <div class="base__header__used-space container">
+        {% if univ.logo %}
             <div class="base__logo"><img src="{{ univ.logo.url }}"></div>
+        {% else %}
+            <div class="base__logo"><img src="{% static 'svg/logo.svg' %}" alt=""></div>
+        {% endif %}
             {% block header %}
             {% endblock %}
         </div>

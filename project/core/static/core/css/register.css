@@ -1,0 +1,172 @@
+/* modal display:flex*/
+
+.success-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #E3E3E3;
+}
+
+.modal-contents {
+  border-radius: var(--border-radius);
+  width: 30rem;
+  background-color: white;
+  padding: 0 2rem;
+}
+
+
+.modal__exit-button {
+  width: 100%;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 1.1rem 0;
+}
+
+.modal__exit-button > a {
+  text-decoration: none;
+}
+
+
+.signup-form .signup-form__input {
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-form__input input {
+  margin: 0.1rem 0 0.4rem 0;
+  font-size: 20px;
+  height: 2.5rem;
+  text-indent: 1rem;
+}
+
+.signup-form__input input::placeholder {
+  color: #A7ABAD;
+  font-size: 20px;
+  font-weight: 100;
+}
+
+.signup-form__input {
+  margin-bottom: 15px;
+}
+
+.signup-form__input button {
+  background-color: var(--main-color);
+  color: white;
+  border: none;
+  margin: 0.1rem 0 2.5rem 0;
+  font-size: 20px;
+  height: 2.5rem;
+  font-weight: 300;
+}
+
+.modal__exit-button span {
+  color: var(--main-color);
+  font-size: 1.5rem;
+  transition: all linear .1s;
+}
+
+
+.modal__exit-button span:hover {
+  font-size: 2.0rem;
+  cursor: pointer;
+}
+
+
+@media (max-width: 769px) {
+  .base__logo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .base__logo > img {
+    width: 40%;
+  }
+
+  .success-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #E3E3E3;
+  }
+
+  .modal-contents {
+    border-radius: var(--border-radius);
+    width: 90%;
+    background-color: white;
+    padding: 0 2rem;
+  }
+
+
+  .modal__exit-button {
+    width: 100%;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 1.1rem 0;
+  }
+
+
+  .signup-form .signup-form__input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  .signup-form__input input {
+    font-size: 15px;
+    height: 2.5rem;
+    text-indent: 1rem;
+  }
+
+  .signup-form__input input::placeholder {
+    color: #A7ABAD;
+    font-size: 1rem;
+    font-weight: 100;
+  }
+
+  .signup-form__input:first-child {
+    margin-bottom: 1.4rem;
+  }
+
+  .signup-form__input button {
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    margin: 0.1rem 0 2.5rem 0;
+    font-size: 1.2rem;
+    height: 2.5rem;
+    font-weight: 300;
+  }
+
+  .modal__exit-button span {
+    color: var(--main-color);
+    font-size: 1.5rem;
+    transition: all linear .1s;
+  }
+
+
+  .modal__exit-button span:hover {
+    font-size: 2.0rem;
+    cursor: pointer;
+  }
+
+  .signup__form-label {
+    color: #464749;
+  }
+
+}
