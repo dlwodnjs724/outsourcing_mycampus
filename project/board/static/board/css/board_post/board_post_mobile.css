@@ -49,12 +49,19 @@
     border-radius: 3px;
 }
 
+#show_drop_category a{
+    display:flex!important;
+    align-items: center!important;
+    margin-top:3px!important;
+    height: 100%!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+}
+
 #m_category {
     margin-top:1%;
     height: 80%!important;
     width: 20px;
-    margin-left:auto;
-    margin-right:auto;
 }
 
 #m_drop {
@@ -465,10 +472,10 @@
     margin-top:1%;
     height: 20px;
     width: 20px;
-    margin-left:auto;
-    margin-right:auto;
+    margin-left:2px;
+    margin-right:2px;
     margin-bottom:auto;
-    margin-top: 6px;
+    margin-top: 8px;
 
 }
 

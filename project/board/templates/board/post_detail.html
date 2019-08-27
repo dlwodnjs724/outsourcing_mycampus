@@ -598,27 +598,27 @@
     }
     */
 
-        // share
-        document.querySelector("#current_url").addEventListener("click", function () {
-            let tempElem = document.createElement('textarea');
-            tempElem.value = window.location.href;
-            document.body.appendChild(tempElem);
+    // share
+    document.querySelector("#current_url").addEventListener("click", function () {
+      let tempElem = document.createElement('textarea');
+      tempElem.value = window.location.href;
+      document.body.appendChild(tempElem);
 
-            tempElem.select();
-            tempElem.setSelectionRange(0, 9999);
-            document.execCommand("copy");
-            document.body.removeChild(tempElem);
-            alert('URL successfully copied.')
-        });
+      tempElem.select();
+      tempElem.setSelectionRange(0, 9999);
+      document.execCommand("copy");
+      document.body.removeChild(tempElem);
+      alert('URL successfully copied.')
+    });
 
-        document.getElementById('h_click').onclick = () => {
-            console.log("helllo");
-            var drop = document.getElementById("h_h");
-            if (drop.style.display == 'none') {
-                drop.style.display = 'flex';
-            } else {
-                drop.style.display = 'none';
-            }
-        };
-    </script>
+      document.getElementById('h_click').onclick = () =>{
+        var drop = document.getElementById("h_h");
+        if(drop.style.display == 'none'){
+            drop.style.display = 'flex';
+        } else {
+            drop.style.display = 'none';
+        }
+    };
+  </script>
+
 {% endblock %}
