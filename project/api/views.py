@@ -95,6 +95,13 @@ def activate(request):
 
 
 def post_bookmark(request):
+    if request.user.is_anonymous:
+        post = Post.objects.select_related('author', 'author__univ').get(pk=request.POST.get('pk', None))
+        univ_url = post.author.univ.url_name
+        return JsonResponse({
+            'univ_url': univ_url,
+        })
+
     try:
         if not request.user.is_authenticated:
             raise Exception("User is not authenticated")
@@ -122,6 +129,13 @@ def post_bookmark(request):
 
 
 def post_like(request):
+    if request.user.is_anonymous:
+        post = Post.objects.select_related('author', 'author__univ').get(pk=request.POST.get('pk', None))
+        univ_url = post.author.univ.url_name
+        return JsonResponse({
+            'univ_url': univ_url,
+        })
+
     try:
         if not request.user.is_authenticated:
             raise Exception("User is not authenticated")
@@ -151,6 +165,13 @@ def post_like(request):
 
 
 def comment_like(request):
+    if request.user.is_anonymous:
+        comment = Comment.objects.select_related('author', 'author__univ').get(pk=request.POST.get('pk', None))
+        univ_url = comment.author.univ.url_name
+        return JsonResponse({
+            'univ_url': univ_url,
+        })
+
     try:
         if not request.user.is_authenticated:
             raise Exception("User is not authenticated")
