@@ -191,6 +191,8 @@ const openAChat = async (other, type) => {
     const targets = channels.filter(cur => {
         if (cur.members.filter(_cur => _cur.userId == other).length) return cur
     })
+    console.log(targets)
+    console.log(channels)
     if (targets.length == 2 || (targets.length == 1 && targets[0].customType == type) ) throw new Error(1)
     else return await customCreateChannel(other, type)
 }
