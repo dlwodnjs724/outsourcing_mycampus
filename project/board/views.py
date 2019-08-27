@@ -11,7 +11,7 @@ from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 
-from board.forms import PostForm
+from board.forms import PostForm, SuggestForm
 from board.serializers import PostSerializer
 from board.models import Category, Post, Image, Comment, Report, Noti
 from django.contrib.contenttypes.models import ContentType
@@ -122,7 +122,10 @@ def post_create(request, url_name):
         form = PostForm(request.POST or None, request=request)
         if request.method == 'POST':
             if form.is_valid():
-                post = form.save()
+                post = form.save(commit=False)
+                if not post.ctgy.is_anonymous:
+                    post.is_anonymous = True
+                post.save()
                 for image in request.FILES.getlist('images'):
                     Image.objects.create(post=post, image=image)
                 return redirect(reverse('core:board:main_board', args=[url_name]) + '?state=new')
@@ -171,7 +174,7 @@ def category_board(request, url_name, category_name):
 
             return render(request, 'board/main_board.html', {
                 'univ': univ,
-                'url_name':url_name,
+                'url_name': url_name,
                 'categories': univ.category.all(),
                 'selected_category': selected_category,
                 'use_category': False,
@@ -204,6 +207,7 @@ def post_detail(request, url_name, category_name, post_pk):
 
     univ = get_object_or_404(Univ, url_name=url_name)
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
+    anon = True if selected_category.is_anonymous else False
     post = get_object_or_404(
         Post.objects.select_related('author')
             .prefetch_related('likes', 'saved', 'comments'),
@@ -226,6 +230,7 @@ def post_detail(request, url_name, category_name, post_pk):
         'post': post,
         'selected_category': selected_category,
         'comments': comments,
+        'anon': anon,
         # 'comment_form': CommentForm(request=request),
     }
 
@@ -367,3 +372,29 @@ def report_send(request, pk, content_type):
         form = ReportForm()
 
     return
+
+
+def category_create(request, url_name):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:category_create',
+            params={
+                'to': [url_name],
+                'next': [url_name]
+            }
+        )
+
+    form = SuggestForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            suggest = form.save(commit=False)
+            suggest.suggested_by = request.user
+            suggest.univ = request.user.univ
+            suggest.save()
+            return redirect('core:board:main_board', url_name)
+    return render(request, 'board/category_new.html', {
+        'univ': request.user.univ,
+        'url_name': url_name,
+        'form': form,
+    })

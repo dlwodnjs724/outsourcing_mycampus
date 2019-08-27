@@ -34,8 +34,21 @@ class PostForm(forms.ModelForm):
         self.fields['title'].widget.attrs.update({
             'placeholder': 'Please enter the title.',
         })
+        content_placeholder = """<Before You Post>
+- content Policy -
+
+1. No harassment
+No illegal activity, No racism, No bullying
+        
+2. No personal information
+Don't post names, phone numbers, etc
+        
+3. Keep Positive
+Make beautiful communication
+"""
         self.fields['content'].widget.attrs.update({
-            'placeholder': 'Please enter your contents.'
+            'placeholder': content_placeholder
+
         })
         self.fields['is_anonymous'].widget.attrs.update({
             'checked': True
@@ -67,6 +80,7 @@ class SuggestForm(forms.ModelForm):
     class Meta:
         model = Suggested
         fields = ('name', 'dscrp')
+
 
 class ReportForm(forms.ModelForm):
     class Meta:

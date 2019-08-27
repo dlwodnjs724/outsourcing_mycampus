@@ -35,6 +35,7 @@ class Category(models.Model):
     dscrp = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=True)
+    is_anonymous = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at']

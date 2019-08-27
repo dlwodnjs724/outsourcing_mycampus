@@ -71,8 +71,8 @@
                 <p></p>
                 <form action = "{% url 'core:chat:index' univ.url_name %}" method="post">
                 {%csrf_token%}
-                <input type="hidden" id="other_v" name="other"> 
-                <input type="hidden" id="type_v" name="type"> 
+                <input type="hidden" id="other_v" name="other">
+                <input type="hidden" id="type_v" name="type">
                 <button type="submit" class="modal-button" id="yes">Send a message</button>
                 <button type="submit" class="modal-button" id="no">Report abuse</button>
                 </form>
@@ -160,10 +160,17 @@
             </div>
             <div class="comment__form__bottom">
               <div class="comment__checkbox__wrapper">
+                {% if not anon %}
                 <input type="checkbox" name="is_anonymous" class="comment__checkbox"
                        id="comment__is_anonymous" checked>
                 <label for="comment__is_anonymous">
                 </label>
+                {% else %}
+                  <input type="checkbox" name="is_anonymous" class="comment__checkbox"
+                         id="comment__is_anonymous" checked onclick="return false;">
+                  <label for="comment__is_anonymous">
+                  </label>
+                {% endif %}
                 anon
               </div>
               <button type="submit" class="reset-button comment__write">
@@ -264,8 +271,8 @@
     const other_v = document.getElementById('other_v')
     const type_v = document.getElementById('type_v')
     const modal = document.getElementById('myModal');
-    const yes_btn = document.getElementById("yes")                                          
-    const no_btn = document.getElementById("no")                                          
+    const yes_btn = document.getElementById("yes")
+    const no_btn = document.getElementById("no")
     const comment_profs = [...document.getElementsByClassName('comment__top__left')]
     const comment_authors = []
 
@@ -275,8 +282,8 @@
     comment_authors.push("{{child.author}}")
     {% endfor %}
     {% endfor %}
-    
-    
+
+
     author.addEventListener('click', e => {
       type_v.value=('type', "{{post.is_anonymous}}" == "True" ? "anon" : "norm" )
       other_v.value=('other',  "{{post.author.username}}")
@@ -293,7 +300,7 @@
         console.log('err')
         e.stopPropagation()
       }
-      
+
     })
     no_btn.addEventListener('click', e=>{
       alert('함부로 신고하지마라임마')
@@ -308,7 +315,7 @@
             modal.style.display = "none";
         }
     }
-    
+
     for (c in comment_profs) {
       ( (btn, id) => {
         btn.addEventListener('click', e=>{
@@ -459,6 +466,21 @@
     // 대댓글 버튼 클릭
     function clickNestedComment(commentPk) {
       let nestedCommentBox = document.querySelector(`#nested_comment_form_${commentPk}`);
+      let anon = '{{ anon }}';
+      let anonCheck = '';
+      console.log(anonCheck);
+      if (anon !== 'False') {
+        anonCheck = `
+        <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
+                       id="comment__is_anonymous_${commentPk}" checked onclick="return false;">
+        `
+      }
+      else {
+        anonCheck = `
+        <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
+                       id="comment__is_anonymous_${commentPk}" checked>
+        `
+      }
       let commentForm;
       if (nestedCommentBox.innerHTML)
         commentForm = '';
@@ -474,8 +496,7 @@
             </div>
             <div class="comment__form__bottom">
               <div class="comment__checkbox__wrapper">
-                <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
-                       id="comment__is_anonymous_${commentPk}" checked>
+                ${anonCheck}
                 <label for="comment__is_anonymous_${commentPk}">
                 </label>
                 anon
