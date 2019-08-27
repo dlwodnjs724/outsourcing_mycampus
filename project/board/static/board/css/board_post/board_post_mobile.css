@@ -22,6 +22,8 @@
 .pannel__top__state {
     width: 37%;
     height: 98%;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .pannel__top__category {
@@ -76,12 +78,12 @@
 
 .board__pannel__top a {
     text-decoration: none;
+    display: inline-block;
+    height: 100%;
     width: auto;
-    margin-right: -10px;
 }
 
 .board__pannel__top img {
-    width: 50%;
     height:100%;
 }
 
@@ -462,4 +464,15 @@
     margin-bottom:auto;
 
 
+}
+
+
+.testest {
+    display:flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+#hothot {
+    margin-left: -10px;
 }
