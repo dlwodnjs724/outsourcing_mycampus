@@ -1,33 +1,14 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <style>
-    html {
-      height: 100%;
-    }
-    body{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #4fbcbd;
-      flex-direction: column;
-    }
-    .error-number {
-      font-size: 200px;
-      font-weight: bold;
-      margin-bottom: 0;
-    }
-    .error-message {
-      margin-top:0;
-      font-size: 30px;
-    }
-
-
-  </style>
   <meta charset="UTF-8">
   <title>MY CAMPUS 404</title>
+  <link rel="stylesheet" href="href="{% static "/css/error.css" %}" type="text/css">
 </head>
 <body>
+  <!-- <img src="{% static "/svg/box logo.svg" %}"> -->
   <p class="error-number">404</p>
   <p class="error-message">Page Not Found</p>
 </body>
