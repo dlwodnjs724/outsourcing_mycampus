@@ -61,13 +61,18 @@
         </a>
       </div>
       <div class="detail__post__container">
-      <div id="myModal" class="modal" other="none" type="">
+      <div id="myModal" class="modal">
               <div class="modal-content">
                 <span>&times;</span>
                 <img src="{% static '/svg/Anon.svg' %}" alt="">
                 <p></p>
-                <button class="modal-button" id="yes">Send a message</button>
-                <button class="modal-button" id="no">Report abuse</button>
+                <form action = "{% url 'core:chat:index' univ.url_name %}" method="post">
+                {%csrf_token%}
+                <input type="hidden" id="other_v" name="other"> 
+                <input type="hidden" id="type_v" name="type"> 
+                <button type="submit" class="modal-button" id="yes">Send a message</button>
+                <button type="submit" class="modal-button" id="no">Report abuse</button>
+                </form>
                 </div>
             </div>
         <div class="post__container__row">
@@ -253,6 +258,8 @@
     });
     const author = document.getElementById('post__author')
     const msg_btn = document.getElementById('post__message')
+    const other_v = document.getElementById('other_v')
+    const type_v = document.getElementById('type_v')
     const modal = document.getElementById('myModal');
     const yes_btn = document.getElementById("yes")                                          
     const no_btn = document.getElementById("no")                                          
@@ -268,16 +275,22 @@
 
 
     author.addEventListener('click', e => {
-      modal.setAttribute('type', "{{post.is_anonymous}}" == "True" ? "anon" : "norm" )
-      modal.setAttribute('other',  "{{post.author.username}}")
+      type_v.value=('type', "{{post.is_anonymous}}" == "True" ? "anon" : "norm" )
+      other_v.value=('other',  "{{post.author.username}}")
       modal.querySelector('p').innerText = `wanna chat {{ post.name }}`
       modal.style.display = "block";
     })
     yes_btn.addEventListener('click', async e=>{
       modal.style.display='none';
-      await openAChat(modal.getAttribute('other'),modal.getAttribute('type') )
-      e.stopPropagation()
-      window.location.href = "{% url 'core:chat:index' univ.url_name %}"
+      try{
+        await openAChat(other_v.value,type_v.value )
+        e.stopPropagation()
+      }
+      catch (err) {
+        console.log('err')
+        e.stopPropagation()
+      }
+      
     })
     no_btn.addEventListener('click', e=>{
       alert('함부로 신고하지마라임마')
@@ -296,9 +309,9 @@
     for (c in comment_profs) {
       ( (btn, id) => {
         btn.addEventListener('click', e=>{
-          modal.setAttribute('type', btn.querySelector('.comment__author').innerText
+          type_v.value=('type', btn.querySelector('.comment__author').innerText
  == id ? "norm" : "anon" )
-          modal.setAttribute('other', id)
+          other_v.value=('other', id)
           modal.querySelector('p').innerText = `wanna chat with ${btn.querySelector('.comment__author').innerText
  == id ? id : "anon"}`
           modal.style.display = "block";

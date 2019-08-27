@@ -190,8 +190,8 @@ const openAChat = async (other, type) => {
     const targets = channels.filter(cur => {
         if (cur.members.filter(_cur => _cur.userId == other).length) return cur
     })
-    if (targets.length == 2) throw new Error('already has a chat with that user')
-    else if (targets.length == 1 && targets[0].customType == type) throw new Error(`already existing ${type} chat with that user`)
+    if (targets.length == 2) throw new Error(1)
+    else if (targets.length == 1 && targets[0].customType == type) throw new Error(2)
     return await customCreateChannel(other, type)
 }
 
@@ -202,9 +202,10 @@ const findChatBtn = (btns, users, other, type) => {
             return (cur.getAttribute('with') == other) 
         }
         else {
-            return (users.filter(cur => cur.userId == other)[0].metaData["anonKey"] == cur.getAttribute('anonkey'))
+            return ((users.filter(cur => cur.userId == other)[0].metaData["anonKey"] == cur.getAttribute('anonkey')) && cur.getAttribute('with') != users.filter(cur => cur.userId == other)[0].userId)
         }
     })
+    console.log(arr)
     return arr[0]
 
 }
