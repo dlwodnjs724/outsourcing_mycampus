@@ -212,7 +212,7 @@
 
     <div class="board__pannel__top container mobile__board">
         <div class="pannel__top__state">
-
+            <div class="testtest">
             <a href="{{ url }}?state=new">
                 {% if state == 'new' %}
                     <img src="{% static "/svg/버튼2.svg" %}">
@@ -220,13 +220,14 @@
                     <img src="{% static "/svg/버튼3.svg" %}">
                 {% endif %}
             </a>
-            <a href="" {{ url }}?state=hot"">
+            <a href="{{ url }}?state=hot" id="hothot">
                 {% if state == 'hot' %}
                     <img src="{% static "/svg/버튼4.svg" %}">
                 {% else %}
                     <img src="{% static "/svg/버튼1.svg" %}">
                 {% endif %}
             </a>
+            </div>
         </div>
 
         <div class="pannel__top__category" id="show_drop_category">
@@ -683,15 +684,22 @@
                 hide_category.style.display = 'none';
             }
         };
+        var drop = document.getElementById("h_h");
 
         document.getElementById('h_click').onclick = () => {
-            var drop = document.getElementById("h_h");
+            $('html').scrollTop(0);
             if (drop.style.display == 'none') {
                 drop.style.display = 'flex';
             } else {
                 drop.style.display = 'none';
             }
         };
-
+        $(window).scroll(function(){
+            var top = $(window).scrollTop();
+            console.log(top);
+            if(top > 200) {
+                drop.style.display = 'none';
+            }
+        });
     </script>
 {% endblock %}
