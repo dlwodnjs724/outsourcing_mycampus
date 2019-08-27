@@ -4,7 +4,6 @@
  * @returns string 
  */
 const strfy = (message) => {
-    const time = new Date(message.createdAt).toISOString()
     if (message._sender.userId == sb.currentUser.userId) return `<div class="chat me"> ${message.message}</div>`
     return `<div class="chat other"> ${message.message}</div>`
 }
