@@ -119,8 +119,11 @@
 }
 
 .header__logo {
+    display: flex;
+    justify-content: center;
     width: 40%;
 }
+
 
 .board__header__right {
     width: 25%;
