@@ -138,6 +138,10 @@ hr{
     left: 1rem;
 }
 
+#back:hover {
+    cursor: pointer;
+}
+
 #hide {
     fill: transparent;
 }
