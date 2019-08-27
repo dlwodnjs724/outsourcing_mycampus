@@ -31,7 +31,7 @@ def login(request, url_name):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            url = request.GET.get('next') or reverse("core:board:main_board")
+            url = request.GET.get('next') or reverse("core:board:main_board", args=[url_name])
             return redirect(url, url_name=url_name)
         else:
             ctx["error"] = "Login failed"
