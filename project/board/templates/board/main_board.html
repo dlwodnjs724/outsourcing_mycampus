@@ -192,9 +192,11 @@
             <div class="pannel__right__category">
                 <p>Category</p>
                 <ul class="right__category__list">
+                      <a href="{% url 'core:board:category_create' url_name %}" style="color: white;">
                     <li class="c_d">
-                      <a href="{% url 'core:board:category_create' url_name %}" style="color: white;">+</a>
+                    +
                     </li>
+                    </a>
                     {% for category in categories %}
                         <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
                             <a id="category__a"
@@ -231,7 +233,9 @@
         </div>
 
         <div class="pannel__top__category" id="show_drop_category">
+        <a href="{% url 'core:board:category_create' url_name %}" id="m_category_a">
             <img src="{% static "/svg/category.svg" %}" id="m_category" alt="">
+            </a>
             <div class="top__category__face">
                 {% if selected_category %}
                     {{ selected_category }}
@@ -242,7 +246,9 @@
             <img src="{% static "/svg/down-arrow.svg" %}" id="m_drop" alt="">
         </div>
         <div class="pannel__top__category_drop" id="hide_drop_category" style="display:none;">
+                <a href="{% url 'core:board:category_create' url_name %}">
             <img src="{% static "/svg/category.svg" %}" id="m_category_drop" alt="">
+            </a>
             <div class="category__face__drop">
                 {% for category in categories %}
                     <div class="top__category__face__drop {% cycle "c_a" "c_b" "c_c" "c_d" %}">
