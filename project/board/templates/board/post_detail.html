@@ -63,9 +63,11 @@
       <div class="detail__post__container">
       <div id="myModal" class="modal" other="none" type="">
               <div class="modal-content">
+                <span>&times;</span>
+                <img src="{% static '/svg/Anon.svg' %}" alt="">
                 <p></p>
-                <button class="modal-button" id="yes">yes</button>
-                <button class="modal-button" id="no">no</button>
+                <button class="modal-button" id="yes">Send a message</button>
+                <button class="modal-button" id="no">Report abuse</button>
                 </div>
             </div>
         <div class="post__container__row">
@@ -278,6 +280,7 @@
       window.location.href = "{% url 'core:chat:index' univ.url_name %}"
     })
     no_btn.addEventListener('click', e=>{
+      alert('함부로 신고하지마라임만')
       modal.style.display='none';
       e.stopPropagation()
     })

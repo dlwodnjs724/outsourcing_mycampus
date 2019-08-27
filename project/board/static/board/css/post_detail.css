@@ -484,7 +484,16 @@
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
-    width: 50%; /* Could be more or less, depending on screen size */                          
+    width: 50%; /* Could be more or less, depending on screen size */ 
+    height: 30%;  
+    display : flex;
+    flex-direction: column;
+    text-align: center;                       
+}
+.modal-content > span {
+    display: flex;
+    justify-content: flex-start;
+
 }
 /* The Close Button */
 .close {
