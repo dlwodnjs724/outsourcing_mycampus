@@ -196,17 +196,16 @@ const openAChat = async (other, type) => {
 }
 
 const findChatBtn = (btns, users, other, type) => {
+    if (type != 'norm' && type != 'anon') return btns[0]
     const arr = btns.filter( cur => {
         if(type == 'norm'){
-            if(cur.getAttribute('with') == other) return true
-            else return false
+            return (cur.getAttribute('with') == other) 
         }
         else {
-            users.filter(cur => cur.userId == other)[0]
-            !!(users.filter(cur => cur.userId == other)[0].metaData["anonKey"] == cur.getAttribute('anonkey'))
+            return (users.filter(cur => cur.userId == other)[0].metaData["anonKey"] == cur.getAttribute('anonkey'))
         }
     })
-    return arr
+    return arr[0]
 
 }
 

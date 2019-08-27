@@ -105,13 +105,9 @@
         if (error) return;
         const channels = await loadChatList()
         const btns = await renderChatList(channels, chat_list, chat_header, chat_box)
-        if("{{other}}" == "None" || "{{type}}" =="None") btns[0].click()
-        else {
-            const users = await loadUsers()
-            const btn = findChatBtn(btns, users,"{{other}}","{{type}}")
-            console.log(btn)
-            btn.click()
-        }
+        const users = await loadUsers()
+        const btn = findChatBtn(btns, users,"{{other}}","{{type}}")
+        btn.click()
     });
 
     chat_search.addEventListener('keypress', async (e) => {
@@ -170,13 +166,9 @@
         const channels = await loadChatList()
         const btns_m = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
         if("{{other}}" == "None" || "{{type}}" =="None") btns_m[0].click()
-        else {
-            const users = await loadUsers()
-            const btn = findChatBtn(btns_m, users,"{{other}}","{{type}}")
-            
-            console.log(btn)            
-            btn.click()
-        }
+        const users = await loadUsers()
+        const btn = findChatBtn(btns_m, users,"{{other}}","{{type}}")
+        btn.click()
     });
 
     chat_search_m.addEventListener('keypress', async (e) => {
