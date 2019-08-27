@@ -67,6 +67,7 @@ def can_use(request, url_name, ck_category=False, ck_anon=False, ck_univ_url=Fal
 
     return [univ, state, term, selected_category]
 
+
 @api_view(('POST', 'GET'))
 @renderer_classes((JSONRenderer, TemplateHTMLRenderer))
 def main(request, url_name):
@@ -116,6 +117,15 @@ def main(request, url_name):
 
 
 def post_create(request, url_name):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:post_create',
+            params={
+                'to': [url_name],
+                'next': [url_name]
+            }
+        )
     try:
         can_use(request, url_name, ck_univ_url=True, ck_anon=True)
         univ = get_object_or_404(Univ, url_name=url_name)
