@@ -38,7 +38,7 @@
 <div class="container chat-container mobile_chat">
     <img src="{% static "/svg/흰색.svg" %}" alt="" id="chat_back">
     
-    <img src="{% static "/svg/흰색.svg" %}" alt="" id="back">
+    <img src="{% static "/svg/흰색.svg" %}" alt="" id="back" style="display:none;">
 
         <div id="chat-list-container_m">
             <div id="chat-list-header_m">
@@ -103,6 +103,10 @@
             chat_m.style.display = 'flex';
         }
     };
+    if(chat_back.style.display == 'block'){
+        back.style.display = 'none';
+    }
+
 
     back.onclick = () => {
         window.history.back();

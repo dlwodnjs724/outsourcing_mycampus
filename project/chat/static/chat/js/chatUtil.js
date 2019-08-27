@@ -102,6 +102,7 @@ const setChannelBtn = async (button, chat_header, chat_box) => {
         chat_a.style.display = 'none';
         chat_m.style.display = 'flex';
         chat_back.style.display = 'block';
+        back.style.display = 'none';
         chat_header.innerHTML = `<span>${button.querySelector('.partner').innerHTML}</span>`
         chat_box.setAttribute('url', button.getAttribute('url'))
         chat_box.setAttribute('with', `${button.querySelector('.partner').innerHTML}`)
