@@ -69,6 +69,11 @@
     font-size: 0.9rem;
 }
 
+.header__dropdown a{
+    color:#4fbcbd;
+    text-decoration: none;
+}
+
 .board__pannel__top a {
     text-decoration: none;
     width: auto;

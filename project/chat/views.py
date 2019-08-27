@@ -8,10 +8,4 @@ def index(request, url_name):
 
 def chat(request, url_name, username):
     user = User.objects.get(username=username)
-    return render(request, 'chat/chat.html', {'partner':user})
-
-
-
-
-
-
+    return render(request, 'chat/chat.html', {'partner':user, 'url_name':url_name, 'univ': request.user.univ })

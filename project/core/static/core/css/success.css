@@ -1,0 +1,136 @@
+/* modal display:flex*/
+
+.success-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #E3E3E3;
+}
+
+.modal-contents {
+  border-radius: var(--border-radius);
+  width: 30rem;
+  background-color: white;
+  padding: 0 2rem;
+}
+
+
+.modal__exit-button {
+  width: 100%;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 10px 0;
+}
+
+.modal__exit-button > a {
+  text-decoration: none;
+  color: #4FBCBD;
+}
+
+.success__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.success__top {
+  font-family: YDIYGO340;
+  font-size: 25px;
+  margin-bottom: 30px;
+}
+
+.success__bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+}
+
+.bottom_img {
+  margin-bottom: 30px;
+}
+
+.bottom_img > img {
+  width: 100%;
+}
+
+.bottom_sentence {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+}
+
+.bottom_sentence > div {
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-family: YDIYGO320;
+  text-align: center;
+}
+
+.bottom_sentence span {
+  font-weight: bolder;
+  font-size: 20px;
+  word-break: break-word;
+}
+
+
+@media (max-width: 769px) {
+  .base__logo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .base__logo > img {
+    width: 40%;
+  }
+
+  .success-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #E3E3E3;
+  }
+
+  .modal-contents {
+    border-radius: var(--border-radius);
+    width: 90%;
+    background-color: white;
+    padding: 0 10px;
+  }
+
+  .modal__exit-button {
+    width: 100%;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 10px 0;
+  }
+
+  .success__top {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .bottom_sentence > div {
+    font-size: 18px;
+  }
+}

@@ -37,6 +37,9 @@
 
 <div class="container chat-container mobile_chat">
     <img src="{% static "/svg/흰색.svg" %}" alt="" id="chat_back">
+    
+    <img src="{% static "/svg/흰색.svg" %}" alt="" id="back">
+
         <div id="chat-list-container_m">
             <div id="chat-list-header_m">
                 Messenger
@@ -86,6 +89,7 @@
     const chat_a = document.getElementById('chat-list-container_m');
     const chat_m = document.getElementById('chat-main_m');
     const chat_back = document.getElementById('chat_back');
+    const back = document.getElementById('back');
 
     let flag = 'norm'
 
@@ -97,12 +101,16 @@
             chat_a.style.display = 'block';
             chat_m.style.display = 'none';
             chat_back.style.display = 'none';
+            back.style.display = 'block';
         } else {
             chat_a.style.display = 'none';
             chat_m.style.display = 'flex';
         }
     };
 
+    back.onclick = () => {
+        window.history.back();
+    }
 
     sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;

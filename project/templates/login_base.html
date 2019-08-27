@@ -21,7 +21,7 @@
     <div class="base__header pc__header">
         <div class="base__header__used-space container">
             <div class="base__logo">
-            <a href="{% url 'core:board:main_board' univ.url_name %}">
+            <a href="{% url 'core:board:main_board' url_name %}">
             <img src="{{ univ.logo.url }}">
             </a></div>
                 
@@ -37,8 +37,12 @@
                 <div class="board__header__right pc__header">
                     <ul class="board__buttons">
                         <li><img src="{% static "/svg/alarm.svg" %}"></li>
-                        <li><img src="{% static "/svg/messege box.svg" %}"></li>
-                        <li><img src="{% static "/svg/mypage.svg" %}"></li>
+                        <a href="{% url 'core:chat:index' univ.url_name %}">
+                            <li><img src="{% static "/svg/messege box.svg" %}"></li>
+                        </a>
+                        <a href="{% url 'core:accounts:mypage' univ.url_name %}">
+                            <li><img src="{% static "/svg/mypage.svg" %}"></li>
+                        </a>
                         <a href="{% url 'core:board:post_create' univ.url_name %}">
                             <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
                         </a>
