@@ -4,7 +4,6 @@
 {% load static %}
 
 {% block contents %}
-<<<<<<< HEAD
     <div class="base__header mobile__header">
         <div class="base__header__used-space container">
             <div class="header__wrap">
@@ -173,46 +172,6 @@
                     <div class="comment__author">{{ comment.name }}</div>
                     <div class="comment__created_at">{{ comment.time_interval }}</div>
                   </div>
-=======
-  <div class="container">
-    {{ post.title }}
-
-    <div>
-      title : {{ post.title }}<br>
-      author : {{ post.name }}<br>
-      content : {{ post.content }}<br>
-      <br>
-
-      <input type="button" class="like" name="{{ post.pk }}" value="Like" onclick="likePost({{ post.pk }})">
-      <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
-
-      <br>
-      <h1>{{post.views}}</h1>
-      write comment: {{ comment_form.content }}
-      is_anonymous: {{ comment_form.is_anonymous }}
-      <button type="button" id="comment_write" onclick="writeComment()">comment</button>
-
-      <div class="comment_list">
-        {% for comment in comments %}
-          <input type="button" class="comment_like" name="{{ comment.pk }}" value="Like"
-                 onclick="likeComment({{ comment.pk }})">
-          <span id="comment_{{ comment.pk }}">{{ comment.total_likes }}</span>
-          {{ comment.content }} {{ comment.name }} / {{ comment.pk }}
-          <span style="font-size: 13px; color: grey;">{{ comment.created_at }}</span>
-          <button type="button" onclick="clickNestedComment({{ comment.pk }})">
-            대댓글
-          </button>
-          <div class="nested_comment">
-            <div class="nested_comment_form" id="nested_comment_form_{{ comment.pk }}"></div>
-            <div class="nested_comment_list" id="nested_comment_list_{{ comment.pk }}" style="margin-left: 50px;">
-              {% for nested_comment in comment|child_comments %}
-                <div>
-                  <input type="button" class="comment_like" name="{{ nested_comment.pk }}" value="Like"
-                         onclick="likeComment({{ nested_comment.pk }})">
-                  <span id="comment_{{ nested_comment.pk }}">{{ nested_comment.total_likes }}</span>
-                  {{ nested_comment.content }} {{ nested_comment.name }} / {{ nested_comment.pk }}
-                  <span style="font-size: 13px; color: grey;">{{ nested_comment.created_at }}</span>
->>>>>>> parent of 20ddaf7... Merge pull request #57 from dlwodnjs724/front/mypage_mobile
                 </div>
               {% endfor %}
             </div>
@@ -232,7 +191,6 @@
           crossorigin="anonymous"></script>
 
   <script>
-<<<<<<< HEAD
       sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
     });
@@ -320,8 +278,6 @@
       })
     }
 
-=======
->>>>>>> parent of 20ddaf7... Merge pull request #57 from dlwodnjs724/front/mypage_mobile
     // 게시글 좋아요
     function likePost(postPk) {
       const url = '{% url 'core:board:post_like' 0 %}'.replace('0', '{{ univ.url_name }}');
