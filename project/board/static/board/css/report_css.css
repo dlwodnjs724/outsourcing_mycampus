@@ -1,0 +1,23 @@
+.report-modal {
+    display:none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.report-form-container {
+    width: 50%;
+    height: 50%;
+    background-color: white;
+}
+
+.on-report-modal {
+    display: flex;
+}

@@ -17,7 +17,6 @@ from board.models import Category, Post, Image, Comment, Report, Noti
 from django.contrib.contenttypes.models import ContentType
 from core.models import Univ
 from core.utils.url_controll import redirect_with_next
-from .forms import ReportForm
 
 
 def make_posts_set(category, univ, state, term=""):
@@ -353,25 +352,6 @@ def comment_nest_create(request, url_name, category_name, post_pk):
     #     }
     #     return JsonResponse(context)
     # return redirect('core:board:post_detail', url_name, category_name, post_pk)
-
-
-def report_send(request, pk, content_type):
-    if content_type == 'comment':
-        q = get_object_or_404(Comment, pk=pk)
-    elif content_type == 'post':
-        q = get_object_or_404(Post, pk=pk)
-
-    if request.method == 'POST':
-        form = ReportForm(request.POST)
-        if form.is_valid():
-            r = form.save(commit=False)
-            r = Report(content_object=q)
-            r.save()
-            return
-    else:
-        form = ReportForm()
-
-    return
 
 
 def category_create(request, url_name):
