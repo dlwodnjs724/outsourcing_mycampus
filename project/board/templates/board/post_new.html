@@ -1,15 +1,7 @@
-{% extends 'login_base.html' %}
-
-{% load static %}
-
-{% block css %}
-  <link rel="stylesheet" href="{% static "board/css/post_new.css" %}" type="text/css">
-    <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_post/board_post_mobile.css" %}" type="text/css">
-  <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_header/board_header_mobile.css" %}" type="text/css">
-
-{% endblock %}
+{% extends 'base.html' %}
 
 {% block contents %}
+<<<<<<< HEAD
     <div class="base__header mobile__header">
         <div class="base__header__used-space container">
             <div class="header__wrap">
@@ -54,45 +46,18 @@
             </form>
         </div>
     </div>
+=======
+>>>>>>> parent of 20ddaf7... Merge pull request #57 from dlwodnjs724/front/mypage_mobile
   <div class="container">
-    <div class="new__post__container">
-      <div class="new__post__main">
-        <div class="post__form__top">
-          <a href="{% url 'core:board:main_board' url_name %}">
-            <img src="{% static 'svg/cancel.svg' %}" alt="">
-          </a>
-        </div>
-        <form action="" method="post" enctype="multipart/form-data" class="post__form">
-          {% csrf_token %}
-          <div class="form__category">
-            <img src="{% static 'svg/category.svg' %}" alt="">
-            {{ form.ctgy }}
-          </div>
-          {{ form.title }}
-          {{ form.content }}
-          <div class="post__form__bottom">
-            <div class="form__bottom__left">
-              <div onclick="photoClick()">
-                <img src="{% static 'svg/photo.svg' %}">
-              </div>
-              <input type="file" accept="image/*" name="images" multiple id="image_field">
-            </div>
-            <div class="form__bottom__right">
-              <div class="post__checkbox__wrapper">
-                {{ form.is_anonymous }}
-                <label for="id_is_anonymous"></label>
-                anon
-              </div>
-              <button type="submit" class="reset-button">
-                <img src="{% static 'svg/send message.svg' %}" alt="">
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+    <form action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="file" accept="image/*" name="images" multiple>
+      <input type="submit">
+    </form>
   </div>
 {% endblock %}
+<<<<<<< HEAD
 
 {% block javascript %}
   <script>
@@ -111,3 +76,5 @@
   </script>
 
 {% endblock %}
+=======
+>>>>>>> parent of 20ddaf7... Merge pull request #57 from dlwodnjs724/front/mypage_mobile
