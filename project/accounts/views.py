@@ -40,7 +40,7 @@ def login(request, url_name):
     return render(request, 'registration/login.html', ctx)
 
 
-@login_required
+
 def logout(request, url_name):
     auth.logout(request)
     return redirect('main')

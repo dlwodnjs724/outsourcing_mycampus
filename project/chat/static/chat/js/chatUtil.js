@@ -148,7 +148,7 @@ const renderChatList = async (channels, chat_list, chat_header, chat_box, last) 
         buttons.forEach(async cur => {
             await setChannelBtn(cur, chat_header, chat_box)
         })
-        return buttons[0]
+        return buttons
     }
 }
 
@@ -185,12 +185,38 @@ const customCreateChannel = (other, type) => {
  * @returns {channel} 생선된 채널
  */
 const openAChat = async (other, type) => {
-    if (other == sb.currentUser.userId) throw new Error('param err')
+    if (other == sb.currentUser.userId) throw new Error('self inviting is not allowed')
     const channels = await loadChatList(other)
     const targets = channels.filter(cur => {
         if (cur.members.filter(_cur => _cur.userId == other).length) return cur
     })
-    if (targets.length == 2) throw new Error('already 2 chat')
-    else if (targets.length == 1 && targets[0].customType == type) throw new Error(`already existing ${type} chat`)
+    if (targets.length == 2) throw new Error(1)
+    else if (targets.length == 1 && targets[0].customType == type) throw new Error(2)
     return await customCreateChannel(other, type)
 }
+
+const findChatBtn = (btns, users, other, type) => {
+    if (type != 'norm' && type != 'anon') return btns[0]
+    const arr = btns.filter( cur => {
+        if(type == 'norm'){
+            return (cur.getAttribute('with') == other) 
+        }
+        else {
+            return ((users.filter(cur => cur.userId == other)[0].metaData["anonKey"] == cur.getAttribute('anonkey')) && cur.getAttribute('with') != users.filter(cur => cur.userId == other)[0].userId)
+        }
+    })
+    console.log(arr)
+    return arr[0]
+
+}
+
+const loadUsers = async () => {
+    return new Promise ((res,rej) => {
+        const UserQ = sb.createApplicationUserListQuery()
+        UserQ.next((users, err) => {
+            if (err) rej('no users')
+            else res(users)
+        })
+    })
+    
+} 

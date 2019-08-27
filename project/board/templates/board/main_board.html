@@ -33,6 +33,8 @@
                         </a>
                     </div>
                     <div class="board__header__right">
+                        {% if request.user.is_authenticated %}
+
                         <ul class="board__buttons">
                             <a href="{% url 'core:chat:index' univ.url_name %}">
                             <li><img src="{% static "/svg/messege box.svg" %}"></li>
@@ -41,6 +43,13 @@
                                 <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
                             </a>
                         </ul>
+                        {% else %}
+                            <a href="{% url 'core:accounts:login' univ.url_name %}" class="board__header__a">
+                                <div class="board__header__login">
+                                    LogIn / SignUp
+                                </div>
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
