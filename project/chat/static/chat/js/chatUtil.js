@@ -62,7 +62,7 @@ const createChannelBtn = (channel) => {
             <div class="two-line">
                 <div class="fst">
                     <div class="partner">
-                        ${flag? `anon${_with.metaData.anonKey}` : _with.userId}
+                        ${flag? `anon` : _with.userId}
                     </div>
                     <div class="last-time">
                         ${channel.lastMessage==null ? "" : getTimePassed(channel.lastMessage.createdAt)}
