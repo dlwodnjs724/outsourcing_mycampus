@@ -402,7 +402,11 @@ def category_create(request, url_name):
             suggest.suggested_by = request.user
             suggest.univ = request.user.univ
             suggest.save()
-            return redirect('core:board:main_board', url_name)
+            return render(request, 'board/category_success.html', {
+                'univ': request.user.univ,
+                'url_name': url_name,
+                'category_name': suggest.name,
+            })
     return render(request, 'board/category_new.html', {
         'univ': request.user.univ,
         'url_name': url_name,

@@ -148,7 +148,7 @@
   background-color: #4fbcbd;
 }
 
-@media (max-width: 769px) {
+@media (max-width: 767px) {
   body {
     background-color: white;
   }

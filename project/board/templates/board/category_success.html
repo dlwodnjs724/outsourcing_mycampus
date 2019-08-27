@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block css %}
-  <link rel="stylesheet" href="{% static "board/css/category_new.css" %}" type="text/css">
+  <link rel="stylesheet" href="{% static "board/css/category_success.css" %}" type="text/css">
   <link rel="stylesheet" media="(max-width:767px)" href="{% static "board/css/board_post/board_post_mobile.css" %}"
         type="text/css">
   <link rel="stylesheet" media="(max-width:767px)" href="{% static "board/css/board_header/board_header_mobile.css" %}"
@@ -68,22 +68,9 @@
           </div>
         </div>
         <div class="category__form__bottom">
-          <form action="{% url 'core:board:category_create' url_name %}" method="post" enctype="multipart/form-data" class="category__form">
-            {% csrf_token %}
-            <div class="category__form__name">
-              <label for="id_name">Name</label>
-              {{ form.name }}
-            </div>
-            <div class="category__form__dscrp">
-              <div>Explain it in a sentence.</div>
-              {{ form.dscrp }}
-            </div>
-            <div class="category__form__button">
-              <button type="submit" class="reset-button">
-                <img src="{% static 'svg/send message.svg' %}" alt="">
-              </button>
-            </div>
-          </form>
+          <div>{{ category_name }} was successfully</div>
+          <div>submitted! ;) Please wait while we</div>
+          <div>examine the value of the community.</div>
         </div>
       </div>
     </div>
