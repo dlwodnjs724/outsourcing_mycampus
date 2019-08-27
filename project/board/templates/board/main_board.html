@@ -584,6 +584,11 @@
                 },
                 datatype: "json",
                 success: function (response) {
+                  if (response['univ_url']) {
+                    location.href = "{% url 'core:accounts:login' 'univ_url' %}".replace('univ_url', response['univ_url']);
+                    return;
+                  }
+
                     $(`#post_${response['pk']}`).text(response['likes_count']);
                     $(`#m_post_${response['pk']}`).text(response['likes_count']);
                 },

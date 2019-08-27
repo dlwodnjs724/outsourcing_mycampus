@@ -17,3 +17,6 @@ class Univ(models.Model):
 class UnivRegister(models.Model):
     full_name = models.CharField(max_length=50)
     email = models.EmailField(blank=False, null=False)
+
+    def __str__(self):
+        return self.full_name

@@ -191,8 +191,17 @@ def category_board(request, url_name, category_name):
         return HttpResponseBadRequest(content="Bad request: " + str(e))
 
 
-@login_required
 def post_detail(request, url_name, category_name, post_pk):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:post_detail',
+            params={
+                'to': [url_name],
+                'next': [url_name, category_name, post_pk]
+            }
+        )
+
     univ = get_object_or_404(Univ, url_name=url_name)
     selected_category = get_object_or_404(Category, univ=univ, name=category_name)
     post = get_object_or_404(
@@ -245,13 +254,21 @@ def post_detail(request, url_name, category_name, post_pk):
     return render(request, 'board/post_detail.html', ctx)
 
 
-@login_required
 def post_edit(request):
     pass
 
 
-@login_required
 def comment_create(request, url_name, category_name, post_pk):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:post_detail',
+            params={
+                'to': [url_name],
+                'next': [url_name, category_name, post_pk]
+            }
+        )
+
     if request.method == 'POST':
         is_anonymous = True if request.POST.get('is_anonymous') else False
         comment = Comment.objects.create(
@@ -285,8 +302,17 @@ def comment_create(request, url_name, category_name, post_pk):
     # return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
 
-@login_required
 def comment_nest_create(request, url_name, category_name, post_pk):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:post_detail',
+            params={
+                'to': [url_name],
+                'next': [url_name, category_name, post_pk]
+            }
+        )
+
     if request.method == 'POST':
         is_anonymous = True if request.POST.get('nested_is_anonymous') else False
         comment = Comment.objects.create(

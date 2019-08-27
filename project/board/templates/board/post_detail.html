@@ -275,8 +275,8 @@
     comment_authors.push("{{child.author}}")
     {% endfor %}
     {% endfor %}
-
-
+    
+    
     author.addEventListener('click', e => {
       type_v.value=('type', "{{post.is_anonymous}}" == "True" ? "anon" : "norm" )
       other_v.value=('other',  "{{post.author.username}}")
@@ -344,6 +344,10 @@
         },
         datatype: "json",
         success: function (response) {
+          if (response['univ_url']) {
+            location.href = "{% url 'core:accounts:login' 'univ_url' %}".replace('univ_url', response['univ_url']);
+            return;
+          }
         },
         error: function (request, status, error) {
           alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
@@ -394,6 +398,10 @@
         },
         datatype: "json",
         success: function (response) {
+          if (response['univ_url']) {
+            location.href = "{% url 'core:accounts:login' 'univ_url' %}".replace('univ_url', response['univ_url']);
+            return;
+          }
           $(`#comment_${response['pk']}`).text(response['likes_count']);
         },
         error: function (request, status, error) {
@@ -532,7 +540,8 @@
       tempElem.setSelectionRange(0, 9999);
       document.execCommand("copy");
       document.body.removeChild(tempElem);
-    })
+      alert('URL successfully copied.')
+    });
 
       document.getElementById('h_click').onclick = () =>{
         console.log("helllo");
