@@ -1,12 +1,117 @@
-{% extends 'base.html' %}
+{% extends 'login_base.html' %}
+
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static "board/css/post_new.css" %}" type="text/css">
+    <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_post/board_post_mobile.css" %}" type="text/css">
+  <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_header/board_header_mobile.css" %}" type="text/css">
+
+{% endblock %}
 
 {% block contents %}
+    <div class="base__header mobile__header">
+        <div class="base__header__used-space container">
+            <div class="header__wrap">
+                <div class="header__main">
+                    <div class="header__ham" id="h_click">
+                        <img src="{% static "/svg/햄버거.svg" %}" alt="">
+                    </div>
+                    <div class="header__logo">
+                    <a href="{% url 'core:board:main_board' url_name %}">
+                        <img src="{% static "/svg/box logo.svg" %}">
+                        <img src="{{ univ.logo_mobile.url }}">
+                        </a>
+                    </div>
+                    <div class="board__header__right">
+                        <ul class="board__buttons">
+                            <a href="{% url 'core:chat:index' univ.url_name %}">
+                            <li><img src="{% static "/svg/messege box.svg" %}"></li>
+                            </a>
+                            <a href="{% url 'core:board:post_create' univ.url_name %}">
+                                <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
+                            </a>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header__dropdown mobile__header pd__drop"  id="h_h"  style="display: none;">
+     <a href="{% url 'core:accounts:mypage' univ.url_name %}">
+        <div class="header__drop__mypage">
+            <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page
+        </div>
+        </a>
+        <div class="header__drop__notification">
+            <img src="{% static "/svg/알림.svg" %}" alt="">Notification</div>
+        <div class="header__drop__search">
+            <form action="" method="get">
+                <button type="submit" value="search">
+                    <img src="{% static "/svg/검색.svg" %}">
+                </button>
+                <input type="text" placeholder="Search" name="search" value="{{ search }}">
+            </form>
+        </div>
+    </div>
   <div class="container">
-    <form action="" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="file" accept="image/*" name="images" multiple>
-      <input type="submit">
-    </form>
+    <div class="new__post__container">
+      <div class="new__post__main">
+        <div class="post__form__top">
+          <a href="{% url 'core:board:main_board' url_name %}">
+            <img src="{% static 'svg/cancel.svg' %}" alt="">
+          </a>
+        </div>
+        <form action="" method="post" enctype="multipart/form-data" class="post__form">
+          {% csrf_token %}
+          <div class="form__category">
+            <img src="{% static 'svg/category.svg' %}" alt="">
+            {{ form.ctgy }}
+          </div>
+          {{ form.title }}
+          {{ form.content }}
+          <div class="post__form__bottom">
+            <div class="form__bottom__left">
+              <div onclick="photoClick()">
+                <img src="{% static 'svg/photo.svg' %}">
+              </div>
+              <input type="file" accept="image/*" name="images" multiple id="image_field">
+            </div>
+            <div class="form__bottom__right">
+              <div class="post__checkbox__wrapper">
+                {{ form.is_anonymous }}
+                <label for="id_is_anonymous"></label>
+                anon
+              </div>
+              <button type="submit" class="reset-button">
+                <img src="{% static 'svg/send message.svg' %}" alt="">
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
+{% endblock %}
+
+{% block javascript %}
+  <script>
+    $("input[type='image']").click(function () {
+      $("input[id='my_file']").click();
+    });
+
+    function photoClick() {
+      document.querySelector('#image_field').click();
+    }
+
+    document.getElementById('h_click').onclick = () =>{
+        var drop = document.getElementById("h_h");
+        if(drop.style.display == 'none'){
+            drop.style.display = 'flex';
+        } else {
+            drop.style.display = 'none';
+        }
+    }
+  </script>
+
 {% endblock %}

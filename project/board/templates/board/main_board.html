@@ -1,77 +1,110 @@
-{% extends 'base.html' %}
+{% extends 'login_base.html' %}
 {% load static %}
 {% load humanize %}
 
-{% block header %}
-    <link rel="stylesheet" href="{% static "board/css/board_header.css" %}" type="text/css">
-    <div class="board__header__search">
-        <form action="" method="get">
-            <button type="submit" value="search">
-                <img src="{% static "/svg/search.svg" %}">
-            </button>
-            <input type="text" placeholder="Search mycampus" name="search" value="{{ search }}">
-        </form>
-    </div>
-    <div class="board__header__right">
-        <ul class="board__buttons">
-            <li><img src="{% static "/svg/alarm.svg" %}"></li>
-            <li><img src="{% static "/svg/messege box.svg" %}"></li>
-            <li><img src="{% static "/svg/mypage.svg" %}"></li>
-            <li><img id="h__post" src="{% static "/svg/post.svg" %}">
-            </li>
-        </ul>
-    </div>
+
+
+
+{% block css %}
+    <link rel="stylesheet" media="(max-width:768px)"
+          href="{% static "board/css/board_header/board_header_mobile.css" %}" type="text/css">
+    <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_post/board_post_mobile.css" %}"
+          type="text/css">
+    <link rel="stylesheet" media="(min-width:768px)" href="{% static "board/css/board_post/board_post_small.css" %}"
+          type="text/css">
+    <link rel="stylesheet" media="(min-width:992px)" href="{% static "board/css/board_post/board_post_medium.css" %}"
+          type="text/css">
+    <link rel="stylesheet" media="(min-width:1200px)" href="{% static "board/css/board_post/board_post_large.css" %}"
+          type="text/css">
+    <link rel="stylesheet" href="{% static "components/spinner.css" %}">
 {% endblock %}
 
-{##}
-{#{{ univ.full_name }} <br>#}
-{#{{ univ.short_name }} <br>#}
-{#{% for category in categories %}#}
-{#  {{ category.name }}#}
-{#{% endfor %}#}
-
 {% block contents %}
-    <link rel="stylesheet" href="{% static "board/css/main_board.css" %}" type="text/css">
-    <div class="board__pannel__top container">
-      <a href="{% url 'core:board:main_board_new' univ.url_name %}">
-      {% if state == 'new' %}
-        <img src="{% static "/svg/버튼2.svg"%}">
-      {% else %}
-        <img src="{% static "/svg/버튼3.svg"%}">
-      {% endif %}
-      </a>
-      <a href="{% url 'core:board:main_board' univ.url_name %}">
-      {% if state == 'hot' %}
-        <img src="{% static "/svg/버튼4.svg"%}">
-      {% else %}
-        <img src="{% static "/svg/버튼1.svg"%}">
-      {% endif %}
-      </a>
+    <div class="base__header mobile__header">
+        <div class="base__header__used-space container">
+            <div class="header__wrap">
+                <div class="header__main">
+                    <div class="header__ham" id="h_click">
+                        <img src="{% static "/svg/햄버거.svg" %}" alt="">
+                    </div>
+                    <div class="header__logo">
+                        <a href="{% url 'core:board:main_board' univ.url_name %}">
+                            <img src="{% static "/svg/box logo.svg" %}">
+                            <img src="{{ univ.logo_mobile.url }}">
+                        </a>
+                    </div>
+                    <div class="board__header__right">
+                        <ul class="board__buttons">
+                            <a href="{% url 'core:chat:index' univ.url_name %}">
+                            <li><img src="{% static "/svg/messege box.svg" %}"></li>
+                            </a>
+                            <a href="{% url 'core:board:post_create' univ.url_name %}">
+                                <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
+                            </a>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    
 
-    <div class="container board__main">
+    <div class="header__dropdown mobile__header" id="h_h" style="display: none;">
+     <a href="{% url 'core:accounts:mypage' univ.url_name %}">
+        <div class="header__drop__mypage">
+            <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page
+        </div>
+        </a>
+        <div class="header__drop__notification">
+            <img src="{% static "/svg/알림.svg" %}" alt="">Notification
+        </div>
+        <div class="header__drop__search">
+            <form action="" method="get">
+                <button type="submit" value="search">
+                    <img src="{% static "/svg/검색.svg" %}">
+                </button>
+                <input type="text" placeholder="Search" name="search" value="{{ search }}">
+            </form>
+        </div>
+    </div>
 
 
+    <div class="board__pannel__top container pc__board">
+        <div class="pannel__top__state">
+            <a href="{{ url }}?state=new">
+                {% if state == 'new' %}
+                    <img src="{% static "/svg/버튼2.svg" %}">
+                {% else %}
+                    <img src="{% static "/svg/버튼3.svg" %}">
+                {% endif %}
+            </a>
+            <a href="{{ url }}?state=hot">
+                {% if state == 'hot' %}
+                    <img src="{% static "/svg/버튼4.svg" %}">
+                {% else %}
+                    <img src="{% static "/svg/버튼1.svg" %}">
+                {% endif %}
+            </a>
+        </div>
+    </div>
+
+
+    <div class="container board__main pc__board">
         <div class="board__pannel__left">
             <ul>
                 {% for post in posts %}
                     <div>
                         <li class="board__post__container">
-
                             <div class="board__post__like">
                                 <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
-
                                 <button type="button" class="like" name="{{ post.pk }}" value="Like">
-                                  {% if user in post.likes.all %}
-                                    <img id="like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
-                                  {% else %}
-                                    <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
-                                  {% endif %}
-
+                                    {% if user in post.likes.all %}
+                                        <img id="like_id_{{ post.pk }}" class='clicked'
+                                             src="{% static "/svg/like-clicked.svg" %}"/>
+                                    {% else %}
+                                        <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
+                                    {% endif %}
                                 </button>
                             </div>
-
                             <div class="board__post__content">
                                 <div class="post__text">
                                     <div class="post__top">
@@ -84,62 +117,59 @@
                                     </div>
                                     <div class="post__mid">
                                         <div class="post__mid__title">
-                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
+                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
                                         </div>
                                         <div class="post__mid__content">
-                                            {{ post.content }}
+                                            {{ post.content|truncatechars:60 }}
                                         </div>
                                     </div>
                                     <hr/>
                                     <div class="post__bottom">
                                         <div class="post__bottom__icon">
                                             <div class="s_con post__bottom__view">
-                                            {% if user in post.viewed_by.all %}
-                                                <img src="{% static "/svg/view-clicked.svg" %}"/>
-                                            {% else %}
-                                                <img src="{% static "/svg/view.svg" %}"/>
-                                            {% endif %}
-                                                <span>{{post.views}}</span>
+                                                {% if user in post.viewed_by.all %}
+                                                    <img src="{% static "/svg/view-clicked.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/view.svg" %}"/>
+                                                {% endif %}
+                                                <span>{{ post.views }}</span>
                                             </div>
                                             <div class="s_con post__bottom__comment">
-                                            {% if user.pk in post.comments_author %}
-                                                <img src="{% static "/svg/comment-clicked.svg" %}"/>
-                                            {% else %}
-                                                <img src="{% static "/svg/comment.svg" %}"/>
-                                            {% endif %}
+                                                {% if user.pk in post.comments_author %}
+                                                    <img src="{% static "/svg/comment-clicked.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/comment.svg" %}"/>
+                                                {% endif %}
                                                 <span>{{ post.comments.all.count }}</span>
                                             </div>
                                             <div class="s_con post__bottom__bookmark">
                                                 {% if user in post.saved.all %}
                                                     <img src="{% static "/svg/bookmark.svg" %}"/>
                                                 {% else %}
-                                                <img src="{% static "/svg/scrap.svg" %}"/>
+                                                    <img src="{% static "/svg/scrap.svg" %}"/>
                                                 {% endif %}
                                                 <span>{{ post.saved.all.count }}</span>
                                             </div>
                                         </div>
                                         <div class="post__bottom__time">
-                                            {{ post.created_at|naturaltime }}
+                                            {{ post.time_interval }}
                                         </div>
-                                        {##}
-                                        {##}
-                                        {#         {% if user in post.saved.all %}#}
-                                        {#                                            <input type="button" class="bookmark" name="{{ post.pk }}" value="O">#}
-                                        {#                                        {% else %}#}
-                                        {#                                            <input type="button" class="bookmark" name="{{ post.pk }}" value="X">#}
-                                        {#                                        {% endif %}#}
-
                                     </div>
                                 </div>
 
                                 <div class="post__image">
-
+                                    {% for img in post.images.all %}
+                                        <img src="{{ img.image_thumbnail.url }}" alt="">
+                                    {% endfor %}
                                 </div>
-
                             </div>
                         </li>
                     </div>
+
                 {% endfor %}
+                <div id="loading" class="spinner-box">
+                    <div class="spinner"/>
+                </div>
             </ul>
         </div>
 
@@ -153,9 +183,11 @@
             <div class="pannel__right__category">
                 <p>Category</p>
                 <ul class="right__category__list">
+                    <li class="c_d">+</li>
                     {% for category in categories %}
                         <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
-                            <a id="category__a" href="{% url 'core:board:category_board' univ.url_name category.name %}">
+                            <a id="category__a"
+                               href="{% url 'core:board:category_board' univ.url_name category.name %}">
                                 <span class="c_common">
                                     {{ category.name }}
                                 </span>
@@ -166,31 +198,367 @@
             </div>
         </div>
     </div>
+
+    <div class="board__pannel__top container mobile__board">
+        <div class="pannel__top__state">
+
+            <a href="{{ url }}?state=new">
+                {% if state == 'new' %}
+                    <img src="{% static "/svg/버튼2.svg" %}">
+                {% else %}
+                    <img src="{% static "/svg/버튼3.svg" %}">
+                {% endif %}
+            </a>
+            <a href="" {{ url }}?state=hot"">
+                {% if state == 'hot' %}
+                    <img src="{% static "/svg/버튼4.svg" %}">
+                {% else %}
+                    <img src="{% static "/svg/버튼1.svg" %}">
+                {% endif %}
+            </a>
+        </div>
+
+        <div class="pannel__top__category" id="show_drop_category">
+            <img src="{% static "/svg/category.svg" %}" id="m_category" alt="">
+            <div class="top__category__face">
+                {% if selected_category %}
+                    {{ selected_category }}
+                {% else %}
+                    Category
+                {% endif %}
+            </div>
+            <img src="{% static "/svg/회색.svg" %}" id="m_drop" alt="">
+        </div>
+        <div class="pannel__top__category_drop" id="hide_drop_category" style="display:none;">
+            <img src="{% static "/svg/category.svg" %}" id="m_category_drop" alt="">
+            <div class="category__face__drop">
+                {% for category in categories %}
+                    <div class="top__category__face__drop {% cycle "c_a" "c_b" "c_c" "c_d" %}">
+                        <a href="{% url 'core:board:category_board' univ.url_name category.name %}">
+                            {{ category.name }}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+            <img src="{% static "/svg/회색.svg" %}" id="m_drop_drop" alt="">
+        </div>
+
+        {% comment %} <div class="board__pannel__right">
+            <a href="{% url 'core:board:post_create' univ.url_name %}">
+                <div class="pannel__right__create">
+                    <img src="{% static "svg/create post.svg/" %}" alt="">
+                    <p>Create Post</p>
+                </div>
+            </a>
+            <div class="pannel__right__category">
+                <p>Category</p>
+                <ul class="right__category__list">
+                      <li class="c_d">+</li>
+                    {% for category in categories %}
+                        <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
+                            <a id="category__a"
+                               href="{% url 'core:board:category_board' univ.url_name category.name %}">
+                                <span class="c_common">
+                                    {{ category.name }}
+                                </span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div> {% endcomment %}
+    </div>
+    <div class="container board__main mobile__board">
+        <div class="board__pannel__left">
+            <ul>
+                {% for post in posts %}
+                    <div>
+                        <li class="board__post__container">
+                            <div class="board__post__content">
+                                <div class="post__text">
+                                    <div class="post__top">
+                                        <div class="post__top__category">
+                                            {{ post.ctgy.name }}
+                                        </div>
+                                        <div class="post__top__author">
+                                            {{ post.name }}
+                                        </div>
+                                    </div>
+                                    <div class="post__mid">
+                                        <div class="post__mid__title">
+                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
+                                        </div>
+                                        <div class="post__mid__content">
+                                            {{ post.content|truncatechars:140 }}
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="post__bottom">
+                                        <div class="post__bottom__icon">
+                                            <div class="s_con post__bottom__view">
+                                                {% if user in post.viewed_by.all %}
+                                                    <img src="{% static "/svg/view-clicked.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/view.svg" %}"/>
+                                                {% endif %}
+                                                <span>{{ post.views }}</span>
+                                            </div>
+
+                                            <div class="s_con post__bottom__like">
+                                                <button type="button" class="like" name="{{ post.pk }}" value="Like">
+                                                    {% if user in post.likes.all %}
+                                                        <img id="m_like_id_{{ post.pk }}" class='clicked'
+                                                             src="{% static "/svg/like-clicked.svg" %}"/>
+                                                    {% else %}
+                                                        <img id="m_like_id_{{ post.pk }}"
+                                                             src="{% static "/svg/like.svg" %}"/>
+                                                    {% endif %}
+                                                </button>
+                                                <span id="m_post_{{ post.pk }}">{{ post.total_likes }}</span>
+                                            </div>
+
+                                            <div class="s_con post__bottom__comment">
+                                                {% if user.pk in post.comments_author %}
+                                                    <img src="{% static "/svg/comment-clicked.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/comment.svg" %}"/>
+                                                {% endif %}
+                                                <span>{{ post.comments.all.count }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="post__bottom__right">
+                                            <div class="post__bottom__time">
+                                                {{ post.time_interval }}
+                                            </div>
+                                            <div class="post__bottom__bookmark">
+                                                {% if user in post.saved.all %}
+                                                    <img src="{% static "/svg/bookmark.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/scrap.svg" %}"/>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+
+                {% endfor %}
+            </ul>
+            <div id="loading" class="spinner-box">
+                <div class="spinner"/>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascript %}
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
-
+    <script src="{% static "board/js/scroll.js" %}"></script>
     <script>
+        window.onload = function () {
+            var isMobile = window.innerWidth < 769;
+            var USER = {{ request.user.pk }};
+            var tempToJs = {
+                True: true,
+                False: false
+            };
+
+            var spinner = document.querySelector('#loading')
+            var pcContents = document.querySelector('.pc__board .board__pannel__left ul');
+            var mobileContents = document.querySelector('.mobile__board .board__pannel__left ul');
+
+            var currentPage = 1;
+            var loading = {
+                _isLoading: false,
+                set isLoading(bool) {
+                    if (bool) {
+                        spinner.classList.add('spinner-on')
+                    } else {
+                        spinner.classList.remove('spinner-on')
+                    }
+                    this._isLoading = bool
+                },
+                get isLoading() {
+                    return this._isLoading
+                }
+            };
+
+            var has_next = tempToJs["{{ has_next }}"];
+
+            var url = {
+                baseUrl: "{% url "core:board:main_board" univ.url_name %}",
+                univUrlName: "{{ univ.url_name }}",
+                staticViewed: {
+                    clicked: "{% static "/svg/view-clicked.svg" %}",
+                    unClicked: "{% static "/svg/view.svg" %}"
+                },
+                staticLikes: {
+                    clicked: "{% static "/svg/like-clicked.svg" %}",
+                    unClicked: "{% static "/svg/like.svg" %}"
+                },
+                staticComment: {
+                    clickeded: "{% static "/svg/comment-clicked.svg" %}",
+                    unClicked: "{% static "/svg/comment.svg" %}"
+                },
+                staticBookmark: {
+                    bookmark: "{% static "/svg/bookmark.svg" %}",
+                    scrap: "{% static "/svg/scrap.svg" %}"
+                }
+            };
+
+            window.onscroll = function () {
+                function makeComponents(next_posts, userPk) {
+                    return Promise.all(next_posts.map(post => new Promise((resolve, reject) => {
+                        postFields = post;
+                        postPk = post.id;
+
+                        var user_liked_this = userPk in postFields.likes;
+                        var user_saw_this = userPk in postFields.viewed_by;
+                        var user_saved_this = userPk in postFields.saved;
+
+                        var like_icon_will_use = user_liked_this ? url.staticLikes.clicked : url.staticLikes.unClicked;
+                        var view_icon_will_use = user_saw_this ? url.staticViewed.clicked : url.staticViewed.unClicked;
+                        var save_icon_will_use = user_saved_this ? url.staticBookmark.bookmark : url.staticBookmark.scrap;
+                        var comment_icon_will_use = url.staticComment.unClicked;
+                        var isClicked = user_liked_this ? "clicked" : "";
+
+                        postTitle = (postFields.title.length > 30 ? postFields.title.substring(0, 30) + "…" : postFields.title);
+                        postContent = (postFields.content.length > 60 ? postFields.content.substring(0, 60) + "…" : postFields.content);
+
+                        var imgs = postFields.images.map(image => document.createElement("img").src = image.image).join();
+
+                        var ctx = {
+                            "post.pk": postPk,
+                            "post.total_likes": postFields.likes.length,
+                            isClicked,
+                            "post.ctgy.name": postFields.ctgy.name,
+                            "post.name": postFields.author.username,
+                            detailUrl: url.baseUrl + postFields.ctgy.name + '/' + postPk + '/',
+                            "post.title": postTitle,
+                            "post.content": postContent,
+                            view_icon_will_use,
+                            "post.views": postFields.views,
+                            like_icon_will_use,
+                            comment_icon_will_use,
+                            "post.comments.all.count": postFields.comments.length,
+                            "post.time_interval": postFields.time_interval,
+                            save_icon_will_use
+                        };
+
+                        var content = [
+                            postPk,
+                            postFields.likes.length,
+                            postPk,
+                            postPk,
+                            isClicked,
+                            like_icon_will_use,
+                            postFields.ctgy.name,
+                            postFields.author.username,
+                            url.baseUrl + postFields.ctgy.name + '/' + postPk + '/',
+                            postTitle,
+                            postContent, //
+                            view_icon_will_use,
+                            postFields.views,
+                            comment_icon_will_use,
+                            postFields.comments.length,
+                            save_icon_will_use,
+                            postFields.saved.length,
+                            postFields.time_interval,
+                            imgs
+                        ];
+
+                        var cmpStr;
+
+                        if (isMobile) {
+                            cmpStr = mobileTemplate.formatFromObj(ctx);
+                        } else {
+                            cmpStr = componentTemplate.format(...content);
+                        }
+
+                        var htmlObject = document.createElement('div');
+                        htmlObject.innerHTML = cmpStr;
+
+                        resolve(htmlObject);
+                    })));
+                }
+
+
+                var condition = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1500;
+
+                if (condition && !loading.isLoading && has_next) {
+                    loading.isLoading = true;
+                    //ajax
+
+                    const req = new XMLHttpRequest();
+                    req.open("POST", "{{ url }}");
+                    req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    req.send(`requestPage=${++currentPage}&csrfmiddlewaretoken={{ csrf_token }}`)
+
+                    req.onreadystatechange = function (e) {
+                        if (req.readyState !== XMLHttpRequest.DONE) return;
+
+                        if (req.status === 200) {
+                            var json = JSON.parse(req.response);
+                            var next_posts = json.next_posts;
+                            has_next = json.has_next;
+
+                            makeComponents(next_posts, USER).then(value => value.map(el => {
+                                if (isMobile) mobileContents.appendChild(el);
+                                else pcContents.appendChild(el);
+                            })).then(result => {
+                                loading.isLoading = false
+                            });
+                        } else {
+                            loading.isLoading = false;
+
+                            alert(req.responseText);
+                        }
+                    };
+                }
+            };
+        };
+
+
+        sb.connect("{{ user.username }}", async function (user, error) {
+            if (error) return;
+            await ((user) => {
+                return new Promise((res, rej) => {
+                    if (!user.metaData["anonKey"]) user.createMetaData({"anonKey": String(Date.now())}, (m, e) => {
+                        if (e) return
+                    })
+                })
+            })(user)
+        });
+
         $('.like').click(function () {
             var pk = $(this).attr('name')
             var like_img = document.getElementById(`like_id_${pk}`);
+            var m_like_img = document.getElementById(`m_like_id_${pk}`);
+
             console.log(like_img.classList.contains('clicked'));
             if (!(like_img.classList.contains('clicked'))) {
-              like_img.src="/static/svg/like-clicked.svg";
-              like_img.setAttribute('class','clicked');
+                like_img.src = "/static/svg/like-clicked.svg";
+                like_img.setAttribute('class', 'clicked');
             } else {
-              like_img.src="/static/svg/like.svg";
-              like_img.removeAttribute('class','clicked');
+                like_img.src = "/static/svg/like.svg";
+                like_img.removeAttribute('class', 'clicked');
+            }
+            if (!(m_like_img.classList.contains('clicked'))) {
+                m_like_img.src = "/static/svg/like-clicked.svg";
+                m_like_img.setAttribute('class', 'clicked');
+            } else {
+                m_like_img.src = "/static/svg/like.svg";
+                m_like_img.removeAttribute('class', 'clicked');
             }
 
 
-
-
             const univUrlName = "{{ univ.url_name }}";
-            const url = '{% url 'core:board:post_like' 0 %}'.replace('0', univUrlName);
+            const url = '{% url 'api:post_like' %}';
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -202,6 +570,7 @@
                 datatype: "json",
                 success: function (response) {
                     $(`#post_${response['pk']}`).text(response['likes_count']);
+                    $(`#m_post_${response['pk']}`).text(response['likes_count']);
                 },
                 error: function (request, status, error) {
                     alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
@@ -211,7 +580,7 @@
 
 
         $('.bookmark').click(function () {
-            const url = '{% url 'core:board:post_bookmark' 0 %}'.replace('0', "{{ univ.url_name }}");
+            const url = '{% url 'api:post_bookmark' %}';
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -229,5 +598,33 @@
                 }
             })
         });
+
+
+        const hide_category = document.getElementById('hide_drop_category');
+        const show_category = document.getElementById('show_drop_category');
+
+        document.getElementById('m_drop').onclick = () => {
+            if (hide_category.style.display == 'none') {
+                hide_category.style.display = 'flex';
+                show_category.style.display = 'none';
+            }
+        };
+
+        document.getElementById('m_drop_drop').onclick = () => {
+            if (show_category.style.display == 'none') {
+                show_category.style.display = 'flex';
+                hide_category.style.display = 'none';
+            }
+        };
+
+        document.getElementById('h_click').onclick = () => {
+            var drop = document.getElementById("h_h");
+            if (drop.style.display == 'none') {
+                drop.style.display = 'flex';
+            } else {
+                drop.style.display = 'none';
+            }
+        };
+
     </script>
 {% endblock %}

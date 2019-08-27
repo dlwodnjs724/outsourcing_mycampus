@@ -1,0 +1,127 @@
+.pc__header {
+    display: none!important;
+}
+
+.base__header {
+    margin: 0;
+    height: 3.2rem;
+}
+
+.base__header__used-space {
+    padding-right: 5px;
+    padding-left: 15px;
+}
+
+.board__header__right {
+    display: flex;
+    align-items: center;
+    
+}
+
+.board__header__right li {
+    display: flex;
+    justify-content: center;
+}
+
+.board__buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    list-style: none;
+    width:100%;
+}
+
+.board__buttons img{
+    height: 25px;
+    width: 90%;
+}
+
+#h__post {
+    height: 33px!important;
+}
+
+.board__header__search {
+    height: 2rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    width: 400px;
+}
+
+.board__header__search form {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.board__header__search input {
+    border: none;
+    height: 100%;
+    padding: 0;
+    background-color: transparent;
+}
+
+.board__header__search button {
+    border: none;
+    background-color:transparent;
+    padding: 0!important;
+    display: flex;
+    align-items: center;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-top: 1px;
+}
+
+.board__header__search button img {
+    width: 18px;
+}
+
+.header__wrap {
+    width: 100%;
+}
+
+.header__main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header__logo img {
+    height: 30px;
+}
+
+.header__dropdown {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+}
+
+.header__dropdown div {
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 2.8rem;
+    background-color: white;
+}
+
+.header__drop__search {
+    margin-top: 5px;
+}
+
+#h_h {
+    transition: height 1s, width 1s, padding 1s, visibility 1s, opacity 0.5s ease-out;
+}
+
+.header__ham {
+    width: 25%;
+}
+
+.header__logo {
+    width: 40%;
+}
+
+.board__header__right {
+    width: 25%;
+}

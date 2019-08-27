@@ -5,6 +5,19 @@ from core.models import Univ
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from pytz import utc
+import arrow
+import math
+from imagekit.models import ImageSpecField
+from imagekit.processors import Thumbnail
+
+
+class Noti(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
+    object_id = models.PositiveIntegerField(db_column='object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
+    _from = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="_from")
+    _to = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="_to")
+
 
 class Report(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
@@ -14,7 +27,7 @@ class Report(models.Model):
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     what = models.TextField(max_length=500, blank=False)
-    
+
 
 class Category(models.Model):
     univ = models.ForeignKey(Univ, on_delete=models.CASCADE, related_name='category', blank=False)
@@ -27,7 +40,8 @@ class Category(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'Category (PK: {self.pk}, Name: {self.name}, Univ: {self.univ.full_name})'
+
+        return self.name
 
 
 class Suggested(models.Model):
@@ -54,18 +68,27 @@ class Post(models.Model):
     is_anonymous = models.BooleanField(default=False)
 
     saved = models.ManyToManyField(User, related_name='saved', blank=True)
-    report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
 
+    report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
+    noti = GenericRelation(Noti, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
 
     class Meta:
         ordering = ['-created_at']
 
+    @property
     def time_interval(self):
-        now = utc.localize(datetime.datetime.utcnow())
-        create = utc.localize(self.created_at)
-        time_intervals = now - create
-        
-        return time_intervals
+        now = arrow.now().timestamp
+        # now = utc.localize(datetime.datetime.utcnow())
+        create = self.created_at.timestamp()
+        ti = math.floor(int(now - create) / 60)
+
+        if ti < 60:
+            t = f'{ti} minutes ago'
+        elif 60 <= ti < (24 * 60):
+            t = f'{math.floor(ti / 60)} hours ago'
+        else:
+            t = f'{math.floor(ti / (24 * 60))} days ago'
+        return t
 
     def total_likes(self):
         return self.likes.count()
@@ -77,21 +100,15 @@ class Post(models.Model):
     def name(self):
         return 'anon' if self.is_anonymous else self.author.username
 
-    # def comments_author(self):
-    #     c_list= []
-    #     for comment in self.comments.all:
-    #         c_list.append(comment.author.pk)
-    #     return c_list
-        
-
-def get_image_filename(instance, filename):
-    id = instance.post.id
-    return f'post_images/{id}'
-
 
 class Image(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, blank=False)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, blank=False, related_name="images")
     image = models.ImageField(upload_to='board/post/images/')
+    image_thumbnail = ImageSpecField(
+        source='image',  # 원본 ImageField 명
+        processors=[Thumbnail(200, 200)],  # 처리할 작업목록
+        format='JPEG',  # 최종 저장 포맷
+        options={'quality': 60})
 
     def __str__(self):
         return f'Image (PK: {self.pk}, Post: {self.post.pk}, Author: {self.post.author.username})'
@@ -110,9 +127,25 @@ class Comment(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
 
     report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='comments')
+    noti = GenericRelation(Noti, object_id_field='object_id', content_type_field='content_type', related_query_name='comments')
 
     class Meta:
         ordering = ['-created_at']
+
+    @property
+    def time_interval(self):
+        now = arrow.now().timestamp
+        # now = utc.localize(datetime.datetime.utcnow())
+        create = self.created_at.timestamp()
+        ti = math.floor(int(now - create) / 60)
+
+        if ti < 60:
+            t = f'{ti} minutes ago'
+        elif 60 <= ti < (24 * 60):
+            t = f'{math.floor(ti / 60)} hours ago'
+        else:
+            t = f'{math.floor(ti / (24 * 60))} days ago'
+        return t
 
     def total_likes(self):
         return self.comment_likes.count()
@@ -122,8 +155,12 @@ class Comment(models.Model):
 
     @property
     def name(self):
-        return 'anon' if self.is_anonymous else self.author.username
+        if self.is_anonymous:
+            if self.author == self.post.author:
+                return 'anon(writer)'
+            return 'anon'
+        return self.author.username
+        # if self.is_anonymous else self.author.username
 
     # def __str__(self):
     #     return f'Comment (PK: {self.pk}, Author: {self.author.username} Parent: {self.parent})'
-
