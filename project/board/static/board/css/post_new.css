@@ -144,6 +144,10 @@
   cursor: pointer;
 }
 
+#id_is_anonymous + label:hover {
+  border: 2px solid black;
+}
+
 #id_is_anonymous:checked + label {
   background-color: #4fbcbd;
 }

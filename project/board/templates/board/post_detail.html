@@ -124,8 +124,8 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="post__container__row row__align-center">
-                    <div id="post__info">
+                <div class="post__container__row row__align-center flex_direction_column">
+                    <div class="post__info">
                         <div class="post__like">
                             <button type="button" class="like reset-button" name="{{ post.pk }}" value="Like"
                                     onclick="likePost({{ post.pk }})">
@@ -149,6 +149,27 @@
                             <div>Share</div>
                         </div>
                     </div>
+
+                    {% if is_author %}
+                    <div id="post__info__bottom">
+                        <div class="post__edit">
+                            <img src="{% static 'svg/edit_btn.svg' %}" alt="">
+                            <a href="{% url 'core:board:post_edit' url_name selected_category post.pk %}">
+                                Edit
+                            </a>
+                        </div>
+                        <div>
+                            <form action="{% url 'core:board:post_delete' url_name selected_category post.pk %}"
+                                  method="post" class="post__delete__form">
+                                {% csrf_token %}
+                                <img src="{% static 'svg/delete_btn.svg' %}" alt="">
+                                <button type="submit" class="reset-button">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="detail__post__comment">
@@ -157,8 +178,8 @@
                           method="post" class="comment__form">
                         {% csrf_token %}
                         <div class="comment__form__top">
-              <textarea name="content" cols="40" rows="10"
-                        placeholder="Please leave a comment."></textarea>
+                            <textarea name="content" cols="40" rows="10"
+                                      placeholder="Please leave a comment."></textarea>
                         </div>
                         <div class="comment__form__bottom">
                             <div class="comment__checkbox__wrapper">

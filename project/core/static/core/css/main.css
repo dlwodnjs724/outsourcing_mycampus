@@ -134,6 +134,10 @@
   cursor: pointer;
 }
 
+.univ_list__check + label:hover {
+  border: 2px solid black;
+}
+
 .univ_list__check:checked + label {
   background-color: #4fbcbd;
 }

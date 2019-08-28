@@ -225,7 +225,7 @@ def post_detail(request, url_name, category_name, post_pk):
     comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
         .select_related('author', 'parent', 'post', 'post__author')\
         .filter(post=post, parent=None)
-
+    is_author = True if request.user == post.author else False
     # post.viewed_by.add(request.user)
     # post.views_double_check.add(request.user)
     # if not request.user in post.views_double_check: 
@@ -240,6 +240,7 @@ def post_detail(request, url_name, category_name, post_pk):
         'selected_category': selected_category,
         'comments': comments,
         'anon': anon,
+        'is_author': is_author,
         # 'comment_form': CommentForm(request=request),
     }
 
@@ -278,14 +279,29 @@ def post_edit(request, url_name, category_name, post_pk):
                 'next': [url_name, category_name, post_pk]
             }
         )
+    univ = get_object_or_404(Univ, url_name=url_name)
     post = Post.objects.get(pk=post_pk)
+    if request.user != post.author:
+        return redirect(
+            'core:board:post_detail',
+            url_name, category_name, post_pk
+        )
+
     form = PostForm(request.POST or None, request=request, instance=post)
     if request.method == 'POST':
         if form.is_valid():
-            post = form.save()
-            return redirect('core:board:post_detail',)
-    return render(request, 'board/new_post.html', {
+            post = form.save(commit=False)
+            if post.ctgy.is_anonymous:
+                post.is_anonymous = True
+            post.save()
+            return redirect(
+                'core:board:post_detail',
+                url_name, category_name, post_pk
+            )
+    return render(request, 'board/post_new.html', {
         'form': form,
+        'univ': univ,
+        'url_name': url_name
     })
 
 
@@ -299,7 +315,22 @@ def post_delete(request, url_name, category_name, post_pk):
                 'next': [url_name, category_name, post_pk]
             }
         )
-    return None
+
+    post = Post.objects.get(pk=post_pk)
+    if request.user != post.author:
+        return redirect(
+            'core:board:post_detail',
+            url_name, category_name, post_pk
+        )
+
+    if request.method == 'POST':
+        post.delete()
+        return redirect('core:board:main_board', url_name)
+
+    return redirect(
+        'core:board:post_detail',
+        url_name, category_name, post_pk
+    )
 
 
 def comment_create(request, url_name, category_name, post_pk):
