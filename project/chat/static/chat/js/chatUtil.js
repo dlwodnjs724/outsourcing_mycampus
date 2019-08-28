@@ -109,6 +109,10 @@ const setChannelBtn = async (button, chat_header, chat_box) => {
         chat_box.setAttribute('anon', button.getAttribute('with') == 'anon' ? true : false)
         chat_box.innerHTML = await loadLog(button.getAttribute('url'), 10)
         chat_box.scrollTop = chat_box.scrollHeight;
+        sb.GroupChannel.getChannel(button.getAttribute('url'), async (groupChannel, error) => {
+            if (error) return
+            groupChannel.markAsRead();
+        })
     })
 }
 
@@ -191,8 +195,6 @@ const openAChat = async (other, type) => {
     const targets = channels.filter(cur => {
         if (cur.members.filter(_cur => _cur.userId == other).length) return cur
     })
-    console.log(targets)
-    console.log(channels)
     if (targets.length == 2 || (targets.length == 1 && targets[0].customType == type) ) throw new Error(1)
     else return await customCreateChannel(other, type)
 }
