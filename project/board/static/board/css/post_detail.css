@@ -107,6 +107,7 @@
 
 #post__title {
   font-size: 30px;
+  word-break: break-word;
 }
 
 #post__author {

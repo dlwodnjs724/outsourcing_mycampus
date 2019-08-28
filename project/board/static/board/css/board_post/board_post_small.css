@@ -23,7 +23,7 @@
 }
 
 .pannel__top__state {
-    width: 180px;
+    width: 120px;
 }
 
 .board__pannel__top a {
@@ -33,11 +33,11 @@
 }
 
 .board__pannel__top img {
-    width: 80px;
+    width: 50%;
 }
 
 .post__top__author {
-    font-size: 0.7rem;
+    font-size: 1rem;
 }
 
 .board__pannel__left {
@@ -179,7 +179,7 @@
     font-family: YDIYGO320;
 
     color: #a6a7a7;
-    height: 60px;
+    height: 100%;
 
     word-break: break-all;
 }
@@ -305,7 +305,7 @@
 }
 
 .c_common {
-    font-size: 0.8rem;
+    font-size: 1rem;
     width: 80%;
     font-weight: normal;
     font-style: normal;
