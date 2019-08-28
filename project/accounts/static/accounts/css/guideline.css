@@ -1,0 +1,24 @@
+.guideline {
+  background: white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 50px;
+
+  border-radius: 13px;
+}
+
+.guideline > div:first-child {
+  font-size: 30px;
+  margin-top: 20px;
+}
+
+.guideline > div {
+  width: 100%;
+  text-align: left;
+  padding: 0 30px;
+  margin: 5px 0;
+}

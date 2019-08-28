@@ -40,7 +40,9 @@
                 <div class="board__header__right pc__header">
                 {% if request.user.is_authenticated %}
                     <ul class="board__buttons">
-                        <li><img src="{% static "/svg/alarm.svg" %}"></li>
+                        <a href="{% url 'core:board:notification' univ.url_name %}">
+                          <li><img src="{% static "/svg/alarm.svg" %}"></li>
+                        </a>
                         <a href="{% url 'core:chat:index' univ.url_name %}">
                             <li><img src="{% static "/svg/messege box.svg" %}"></li>
                         </a>

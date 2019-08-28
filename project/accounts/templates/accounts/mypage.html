@@ -3,11 +3,11 @@
 {% block css %}
     <link rel="stylesheet" media="(min-width:768px)" href="{% static 'components/white-wrapper.css' %}">
     <link rel="stylesheet" media="(min-width:768px)" href="{% static 'accounts/css/mypage.css' %}">
-    <link rel="stylesheet" media="(max-width:768px)" href="{% static "accounts/css/mypage_mobile.css" %}" type="text/css">
+    <link rel="stylesheet" media="(max-width:767px)" href="{% static "accounts/css/mypage_mobile.css" %}" type="text/css">
 
 {% endblock %}
 {% block contents %}
-    
+
     <div class="mobile__header mypage__mobile__header">
     <img src="{% static "/svg/side-arrow.svg" %}" alt="" id="back">
 
@@ -51,14 +51,16 @@
                                 <h2 class="content__header">My posts</h2>
                                 <h4 class="content__desc">All contents you posted</h4>
                             </div>
-                            <button class="body-component__button">VIEW ALL</button>
+                            <button class="body-component__button"
+                                    onclick="alert('Sorry, it is not ready yet!');">VIEW ALL</button>
                         </div>
                         <div class="section__body__component">
                             <div class="body-component__content">
                                 <h2 class="content__header">My comments</h2>
                                 <h4 class="content__desc">All contents you commented</h4>
                             </div>
-                            <button class="body-component__button">VIEW ALL</button>
+                            <button class="body-component__button"
+                                    onclick="alert('Sorry, it is not ready yet!');">VIEW ALL</button>
                         </div>
                         <div class="section__body__component">
                             <div class="body-component__content">
@@ -67,7 +69,8 @@
                                     All contents you saved
                                 </h4>
                             </div>
-                            <button class="body-component__button">VIEW ALL</button>
+                            <button class="body-component__button"
+                                    onclick="alert('Sorry, it is not ready yet!');">VIEW ALL</button>
                         </div>
                     </div>
                 </div>
@@ -106,7 +109,10 @@
                                     NO RACISM, NO BULLYING, NO THREATENING!!
                                 </h4>
                             </div>
-                            <button class="body-component__button">READ ALL</button>
+                            <button class="body-component__button"
+                                    onclick="location.href='{% url 'core:accounts:guideline' url_name %}'">
+                              READ ALL
+                            </button>
                         </div>
                         <div class="section__body__component">
                             <div class="body-component__content">
@@ -117,7 +123,10 @@
                                     About user privacy, message privacy and security
                                 </h4>
                             </div>
-                            <button class="body-component__button">READ ALL</button>
+                            <button class="body-component__button"
+                                    onclick="location.href='{% url 'core:accounts:policy' url_name %}'">
+                              READ ALL
+                            </button>
                         </div>
                         <div class="section__body__component">
                             <div class="body-component__content">
@@ -128,7 +137,10 @@
                                     Any question & Thank you for all your feedback in advance
                                 </h4>
                             </div>
-                            <button class="body-component__button">MESSAGE</button>
+                            <button class="body-component__button"
+                                    onclick="alert('Please contact us via \'official@mycampus.site\' ;)')">
+                              MESSAGE
+                            </button>
                         </div>
                     </div>
                 </div>
