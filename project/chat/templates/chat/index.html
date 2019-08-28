@@ -120,7 +120,7 @@
             if("{{match}}" != "None") await openAChat("{{match}}", 'anon')
         }
         catch (e) {
-            alert(e)
+            if(e.message == 1) {}
         }
         const channels = await loadChatList()
         const btns = await renderChatList(channels, chat_list, chat_header, chat_box)
