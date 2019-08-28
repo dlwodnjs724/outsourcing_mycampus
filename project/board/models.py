@@ -1,3 +1,4 @@
+from django import forms
 from django.db import models
 import datetime
 from accounts.models import User
@@ -182,7 +183,7 @@ class Comment(models.Model):
     def name(self):
         if self.is_anonymous:
             if self.author == self.post.author:
-                return 'anon(writer)'
+                return 'anon(OP)'
             return 'anon'
         return self.author.username
         # if self.is_anonymous else self.author.username

@@ -60,7 +60,7 @@
     <div class="container">
         <div class="detail__wrapper">
             <div class="detail__post__header">
-                <a href="{% url 'core:board:main_board' univ.url_name %}">
+                <a href="{{ request.META.HTTP_REFERER }}">
                     <span style="color: #55b8bd;">&lt;</span> My Campus
                 </a>
             </div>
@@ -144,7 +144,7 @@
                             <img src="{% static "/svg/comment.svg" %}"/>
                             <div>{{ post.comments.all.count }}</div>
                         </div>
-                        <div class="post__share" id="current_url">
+                        <div class="post__share" id="current_url" onclick="shareUrl()">
                             <img src="{% static '/svg/share.svg' %}" alt="">
                             <div>Share</div>
                         </div>
@@ -198,7 +198,7 @@
                             </div>
                             <button type="submit" class="reset-button comment__write">
                                 <img src="{% static "/svg/comment.svg" %}"/>
-                                comment
+                                reply
                             </button>
                         </div>
                     </form>
@@ -234,7 +234,7 @@
                                         <button type="button" class="reset-button" name="{{ comment.pk }}"
                                                 onclick="clickNestedComment({{ comment.pk }})">
                                             <img src="{% static "/svg/comment.svg" %}"/>
-                                            comment
+                                            reply
                                         </button>
                                     </div>
                                 </div>
@@ -569,7 +569,7 @@
               </div>
               <button type="submit" class="reset-button comment__write" id="comment_write_${commentPk}">
                 <img src="{% static "/svg/comment.svg" %}"/>
-                comment
+                reply
               </button>
             </div>
             <input type="hidden" name="parent_id" value="${commentPk}">
@@ -618,7 +618,7 @@
     */
 
     // share
-    document.querySelector("#current_url").addEventListener("click", function () {
+    function shareUrl () {
       let tempElem = document.createElement('textarea');
       tempElem.value = window.location.href;
       document.body.appendChild(tempElem);
@@ -628,15 +628,15 @@
       document.execCommand("copy");
       document.body.removeChild(tempElem);
       alert('URL successfully copied.')
-    });
+    }
 
-      document.getElementById('h_click').onclick = () =>{
-        var drop = document.getElementById("h_h");
-        if(drop.style.display == 'none'){
-            drop.style.display = 'flex';
-        } else {
-            drop.style.display = 'none';
-        }
+    document.getElementById('h_click').onclick = () =>{
+      var drop = document.getElementById("h_h");
+      if(drop.style.display == 'none'){
+          drop.style.display = 'flex';
+      } else {
+          drop.style.display = 'none';
+      }
     };
   </script>
 
