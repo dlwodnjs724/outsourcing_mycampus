@@ -7,6 +7,8 @@ app_name = 'board'
 urlpatterns = [
     path("", views.main, name="main_board"),
 
+    path('notification/', views.notification, name='notification'),
+
     path('create/', views.post_create, name='post_create'),
     path('<str:category_name>/', views.category_board, name='category_board'),
 

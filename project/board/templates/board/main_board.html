@@ -193,11 +193,6 @@
             <div class="pannel__right__category">
                 <p>Category</p>
                 <ul class="right__category__list">
-                      <a href="{% url 'core:board:category_create' url_name %}" style="color: white;">
-                    <li class="c_d">
-                    +
-                    </li>
-                    </a>
                     {% for category in categories %}
                         <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
                             <a id="category__a"
@@ -208,6 +203,11 @@
                             </a>
                         </li>
                     {% endfor %}
+                    <a href="{% url 'core:board:category_create' url_name %}" style="color: white;">
+                      <li class="c_d">
+                          +
+                      </li>
+                    </a>
                 </ul>
             </div>
         </div>

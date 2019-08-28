@@ -190,7 +190,7 @@
 }
 
 .post__top__author {
-    font-size: 0.8rem
+    font-size: 0.8rem;
 }
 
 .post__mid {
@@ -277,6 +277,10 @@
     width: 1.2rem;
     text-align: left;
     margin-right: 0.6rem;
+}
+
+.post__bottom__comment > img {
+    margin-right: 0.5rem;
 }
 
 .post__bottom__right {
