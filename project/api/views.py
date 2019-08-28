@@ -242,12 +242,17 @@ def report_content(request):
     reporter_pk = request.POST.get('reporter')
     reporter = User.objects.get(pk=reporter_pk)
     abuser = target.author
+    if request.user == abuser:
+            return JsonResponse({
+            "err": "You can't report yourself"
+        })
 
     if target_type == 'p':
         report_content = ReportedContent(origin_post=target, content=target.content)
         report_content.title = target.title
     else:
         report_content = ReportedContent(origin_comment=target, content=target.content)
+        report_content.title = target.content
 
     report_content.save()
     report_paper = Report(target_type=target_type, target_content=report_content, report_type=abuse_type, abuser=abuser, reporter=reporter)

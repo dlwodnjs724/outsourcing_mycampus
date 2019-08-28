@@ -323,3 +323,16 @@
     object-fit: cover;
     overflow: hidden;
 }
+
+.pannel__top__category_pc {
+    width: 20%;
+    margin-right: 22%;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background-color: #9cd0c1;
+    font-size: 1.3rem;
+    color:#fff;
+}

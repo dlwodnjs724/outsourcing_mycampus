@@ -91,6 +91,13 @@
                 {% endif %}
             </a>
         </div>
+        {% if selected_category %}
+        <div class="pannel__top__category_pc">
+            {{ selected_category }}
+        </div>
+        {% else %}
+            
+        {% endif %}
     </div>
 
 
@@ -193,11 +200,6 @@
             <div class="pannel__right__category">
                 <p>Category</p>
                 <ul class="right__category__list">
-                      <a href="{% url 'core:board:category_create' url_name %}" style="color: white;">
-                    <li class="c_d">
-                    +
-                    </li>
-                    </a>
                     {% for category in categories %}
                         <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
                             <a id="category__a"
@@ -208,6 +210,11 @@
                             </a>
                         </li>
                     {% endfor %}
+                      <a href="{% url 'core:board:category_create' url_name %}" style="color: white;">
+                    <li class="c_d">
+                    +
+                    </li>
+                    </a>
                 </ul>
             </div>
         </div>
@@ -234,7 +241,7 @@
         </div>
 
         <div class="pannel__top__category" id="show_drop_category">
-        <a href="{% url 'core:board:category_create' url_name %}" id="m_category_a">
+        <a href="#" id="m_category_a">
             <img src="{% static "/svg/category.svg" %}" id="m_category" alt="">
             </a>
             <div class="top__category__face">
