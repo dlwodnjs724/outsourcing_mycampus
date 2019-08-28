@@ -3,7 +3,6 @@ const sb = new SendBird({
 });
 const ChannelHandler = new sb.ChannelHandler();
 ChannelHandler.onMessageReceived = async function (channel, message) {
-
     try {
         if (((chat_box.getAttribute('url') == channel.url) || (chat_box_m.getAttribute('url') == channel.url)) && (((chat_box.getAttribute('anon') == 'true') == (channel.customType == "anon"))||((chat_box_m.getAttribute('anon') == 'true') == (channel.customType == "anon")))) {
             chat_box.innerHTML += strfy(message)
@@ -16,12 +15,13 @@ ChannelHandler.onMessageReceived = async function (channel, message) {
         await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
 
     } catch (e) {
-        if (e.message == "chat_box is not defined" || e.message == "chat_box_m is not defined") alert('got new msg')
+        if (e.message == "chat_box is not defined" || e.message == "chat_box_m is not defined") {
+            if(channel.unreadMessageCount == 1) alert('got new msg')
+        }
         else alert(e)
         
     }
 };
-
 ChannelHandler.onUserReceivedInvitation = async function (groupChannel, inviter, invitees) {
     if (sb.currentUser.userId == inviter.userId) return
     try {
