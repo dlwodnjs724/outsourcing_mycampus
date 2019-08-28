@@ -123,3 +123,18 @@ def mypage(request, url_name):
         return HttpResponseBadRequest(content="Not allowed method")
 
 
+def guideline(request, url_name):
+    univ = request.user.univ
+    return render(request, 'accounts/guideline.html', {
+        'univ': univ,
+        'url_name': url_name
+    })
+
+
+def policy(request, url_name):
+    univ = request.user.univ
+    return render(request, 'accounts/policy.html', {
+        'univ': univ,
+        'url_name': url_name
+    })
+

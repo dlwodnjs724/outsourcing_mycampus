@@ -112,8 +112,6 @@
         window.history.back();
     }
 
-    if("{{match}}" != "None") console.log("{{match}}")
-
     sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
         try{
@@ -149,7 +147,7 @@
 
     chat_text_btn.addEventListener('click', async (e) => {
         let msg = chat_text.value
-        if (sb.currentUser.userId == "adm" && chat_text.value.split('/').length > 1 && chat_text.value.split('/')[0] == "invite"){
+        if (sb.currentUser.userId == env.ADMID && chat_text.value.split('/').length > 1 && chat_text.value.split('/')[0] == "invite"){
             const user = chat_text.value.split('/')[1]
             msg = `<form action="" method="get"><input type="hidden" name="match" value="${user}"><input type="submit" value="match"></form>`
         }
@@ -168,6 +166,24 @@
             })
         }
     })
+    chat_search.addEventListener('click', async(e) => {
+        const targetName = chat_search.value
+        let innerHTML = ""
+        if(targetName!= ""){
+            const targetButtons = [...document.getElementsByClassName('ChannelBtn')]
+            targetButtons.forEach(cur => {
+                if (cur.parentElement.parentElement.id=='chat-list' && cur.attributes[2].nodeValue == targetName) innerHTML += `<li>${cur.parentElement.innerHTML}</li>`
+            })
+            chat_list.innerHTML = innerHTML
+        }
+        else {
+            const channels = await loadChatList()
+            await renderChatList(channels, chat_list, chat_header, chat_box)
+        }
+    })
+    chat_search.addEventListener('keypress', async(e) => {
+        if (e.key == 'Enter') chat_search.click()
+    })
 
     <!-- mobile -->
 
@@ -177,7 +193,7 @@
 
     chat_text_btn_m.addEventListener('click', async (e) => {
         let msg = chat_text_m.value
-        if (sb.currentUser.userId == "adm" && chat_text_m.value.split('/').length > 1 && chat_text_m.value.split('/')[0] == "invite"){
+        if (sb.currentUser.userId == env.ADMID && chat_text_m.value.split('/').length > 1 && chat_text_m.value.split('/')[0] == "invite"){
             const user = chat_text_m.value.split('/')[1]
             msg = `<form action="" method="get"><input type="hidden" name="match" value="${user}"><input type="submit" value="match"></form>`
         }
@@ -195,6 +211,24 @@
                 })
             })
         }
+    })
+    chat_search_m.addEventListener('click', async(e) => {
+        const targetName = chat_search_m.value
+        let innerHTML = ""
+        if(targetName!= ""){
+            const targetButtons = [...document.getElementsByClassName('ChannelBtn')]
+            targetButtons.forEach(cur => {
+                if (cur.parentElement.parentElement.id=='chat-list_m' && cur.attributes[2].nodeValue == targetName) innerHTML += `<li>${cur.parentElement.innerHTML}</li>`
+            })
+            chat_list_m.innerHTML = innerHTML
+        }
+        else {
+            const channels = await loadChatList()
+            await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
+        }
+    })
+    chat_search_m.addEventListener('keypress', async(e) => {
+        if (e.key == 'Enter') chat_search_m.click()
     })
 </script>
 {% endblock javascript %}

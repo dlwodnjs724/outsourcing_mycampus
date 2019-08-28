@@ -1,0 +1,76 @@
+{% extends 'login_base.html' %}
+
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" media="(min-width:768px)" href="{% static 'accounts/css/mypage.css' %}">
+  <link rel="stylesheet" media="(max-width:767px)" href="{% static "accounts/css/mypage_mobile.css" %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'accounts/css/guideline.css' %}">
+{% endblock %}
+
+{% block contents %}
+  <div class="mobile__header mypage__mobile__header">
+    <img src="{% static "/svg/side-arrow.svg" %}" alt="" id="back">
+    <p>My Page</p>
+  </div>
+  <div class="container">
+    <div class="guideline">
+      <div>MY CAMPUS Content Policy</div>
+
+      <div>MY CAMPUS is a platform for communities to discuss, connect, and share in an open environment. The nature of
+        this
+        content might be funny, serious, offensive, or anywhere in between. While participating, it’s important to keep
+        in
+        mind this value above all others: show enough respect to others so that we all may continue to enjoy MY CAMPUS
+        for
+        what it is.
+      </div>
+
+      <div>While MY CAMPUS generally provides a lot of leeway in what content is acceptable, here are some guidelines
+        for
+        content that is not. Please keep in mind the spirit in which these were written.
+      </div>
+
+      <div>Prohibited content</div>
+      <div>Is spam</div>
+      <div>Is illegal</div>
+      <div>Is involuntary pornography</div>
+      <div>Is sexual or suggestive content involving minors</div>
+      <div>Encourages or incites violence</div>
+      <div>Threatens, harasses, or bullies or encourages others to do so</div>
+      <div>Is personal and confidential information</div>
+      <div>Impersonates someone in a misleading or deceptive manner</div>
+
+      <div>In addition to not submitting prohibited content, the following behaviors are prohibited on MY CAMPUS</div>
+
+      <div>Prohibited behavior</div>
+      <div>Asking for votes or engaging in vote manipulation</div>
+      <div>Breaking MY CAMPUS or doing anything that interferes with normal use of MY CAMPUS</div>
+
+      <div>We have a variety of ways of enforcing our rules, including, but not limited to</div>
+
+      <div>Enforcement</div>
+      <div>Asking you nicely to knock it off</div>
+      <div>Asking you less nicely</div>
+      <div>Temporary or permanent suspension of accounts</div>
+      <div>Adding restrictions to, accounts</div>
+      <div>Adding restrictions to MY CAMPUS boards</div>
+      <div>Removal of content</div>
+      <div>Banning of MY CAMPUS boards</div>
+
+      <div>We prevent abusive behavior and block abusive content that is reported by other users.</div>
+      <div>So please use our ‘report abuse’ function!</div>
+      <div>If your account is banned, you could not use MY CAMPUS any more, FOREVER!</div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  <script>
+    const back = document.getElementById('back');
+
+    back.onclick = () => {
+      window.history.back();
+    }
+  </script>
+{% endblock %}

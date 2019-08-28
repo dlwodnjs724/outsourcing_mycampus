@@ -109,11 +109,11 @@ class Post(models.Model):
         ti = math.floor(int(now - create) / 60)
 
         if ti < 60:
-            t = f'{ti} minutes ago'
+            t = f'{ti}m'
         elif 60 <= ti < (24 * 60):
-            t = f'{math.floor(ti / 60)} hours ago'
+            t = f'{math.floor(ti / 60)}h'
         else:
-            t = f'{math.floor(ti / (24 * 60))} days ago'
+            t = f'{math.floor(ti / (24 * 60))}d'
         return t
 
     def total_likes(self):
@@ -166,11 +166,11 @@ class Comment(models.Model):
         ti = math.floor(int(now - create) / 60)
 
         if ti < 60:
-            t = f'{ti} minutes ago'
+            t = f'{ti}m'
         elif 60 <= ti < (24 * 60):
-            t = f'{math.floor(ti / 60)} hours ago'
+            t = f'{math.floor(ti / 60)}h'
         else:
-            t = f'{math.floor(ti / (24 * 60))} days ago'
+            t = f'{math.floor(ti / (24 * 60))}d'
         return t
 
     def total_likes(self):

@@ -294,6 +294,8 @@ def post_edit(request, url_name, category_name, post_pk):
             if post.ctgy.is_anonymous:
                 post.is_anonymous = True
             post.save()
+            for image in request.FILES.getlist('images'):
+                Image.objects.create(post=post, image=image)
             return redirect(
                 'core:board:post_detail',
                 url_name, category_name, post_pk
@@ -452,4 +454,24 @@ def category_create(request, url_name):
         'univ': request.user.univ,
         'url_name': url_name,
         'form': form,
+    })
+
+
+def notification(request, url_name):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:notification',
+            params={
+                'to': [url_name],
+                'next': [url_name]
+            }
+        )
+    univ = request.user.univ
+    notifications = Noti.objects.filter(_to=request.user).order_by('-id')
+    print(notifications)
+    return render(request, 'board/notification.html', {
+        'notifications': notifications,
+        'univ': univ,
+        'url_name': url_name,
     })

@@ -176,7 +176,7 @@
                       method="post" class="post__delete__form">
                   {% csrf_token %}
                   <img src="{% static 'svg/delete_btn.svg' %}" alt="">
-                  <button type="submit" class="reset-button">
+                  <button type="submit" class="reset-button" onclick="return confirm('Are you sure you want to delete your post?')">
                     Delete
                   </button>
                 </form>
@@ -694,7 +694,7 @@
                     alert(response["err"]);
                   }
                     modal_r.style.display ="none";
-                    
+                    alert('abuse reported')
                 },
                 error: function (request, status, error) {
                     alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
