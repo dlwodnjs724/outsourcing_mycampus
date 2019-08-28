@@ -235,7 +235,7 @@ def post_detail(request, url_name, category_name, post_pk):
 
     ctx = {
         'univ': univ,
-        'url_name':url_name,
+        'url_name': url_name,
         'post': post,
         'selected_category': selected_category,
         'comments': comments,
@@ -268,8 +268,38 @@ def post_detail(request, url_name, category_name, post_pk):
     return render(request, 'board/post_detail.html', ctx)
 
 
-def post_edit(request):
-    pass
+def post_edit(request, url_name, category_name, post_pk):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:post_detail',
+            params={
+                'to': [url_name],
+                'next': [url_name, category_name, post_pk]
+            }
+        )
+    post = Post.objects.get(pk=post_pk)
+    form = PostForm(request.POST or None, request=request, instance=post)
+    if request.method == 'POST':
+        if form.is_valid():
+            post = form.save()
+            return redirect('core:board:post_detail',)
+    return render(request, 'board/new_post.html', {
+        'form': form,
+    })
+
+
+def post_delete(request, url_name, category_name, post_pk):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:post_detail',
+            params={
+                'to': [url_name],
+                'next': [url_name, category_name, post_pk]
+            }
+        )
+    return None
 
 
 def comment_create(request, url_name, category_name, post_pk):
