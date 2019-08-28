@@ -73,8 +73,18 @@
                 {%csrf_token%}
                 <input type="hidden" id="other_v" name="other"> 
                 <input type="hidden" id="type_v" name="type"> 
-                <div class="modal-button" id="yes">Send a message</div>
-                <div class="modal-button" id="no">Report abuse</div>
+                <div class="modal-button" id="yes">
+                <img src="{% static "/svg/messege box.svg" %}">
+                <div>
+                Send a message
+                </div>
+                </div>
+                <div class="modal-button" id="no">
+                <img src="{% static "/svg/report.svg" %}">
+                <div>
+                Report abuse
+                </div>
+                </div>
                 </form>
                 </div>
             </div>
@@ -292,7 +302,7 @@
     author.addEventListener('click', e => {
       String(type_v.value=('type', "{{post.is_anonymous}}" == "True" ? "anon" : "norm" ))
       String(other_v.value=('other',  "{{post.author.username}}"))
-      modal.querySelector('p').innerText = `wanna chat {{ post.name }}`
+      modal.querySelector('p').innerText = `{{ post.name }}`
       modal.style.display = "block";
     })
     yes_btn.addEventListener('click', async e=>{
@@ -327,7 +337,7 @@
           type_v.value=('type', btn.querySelector('.comment__author').innerText
  == id ? "norm" : "anon" )
           other_v.value=('other', id)
-          modal.querySelector('p').innerText = `wanna chat with ${btn.querySelector('.comment__author').innerText
+          modal.querySelector('p').innerText = `${btn.querySelector('.comment__author').innerText
  == id ? id : "anon"}`
           modal.style.display = "block";
         })
