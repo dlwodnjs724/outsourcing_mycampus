@@ -126,9 +126,10 @@
                                     </div>
                                     <div class="post__mid">
                                         <div class="post__mid__title">
-                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
+                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
                                         </div>
-                                        <div class="post__mid__content">
+                                        <div class="post__mid__content"
+                                        onclick="location.href='{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}'">
                                             {{ post.content|truncatechars:60 }}
                                         </div>
                                     </div>
@@ -246,9 +247,7 @@
             <img src="{% static "/svg/down-arrow.svg" %}" id="m_drop" alt="">
         </div>
         <div class="pannel__top__category_drop" id="hide_drop_category" style="display:none;">
-                <a href="{% url 'core:board:category_create' url_name %}">
             <img src="{% static "/svg/category.svg" %}" id="m_category_drop" alt="">
-            </a>
             <div class="category__face__drop">
                 {% for category in categories %}
                     <div class="top__category__face__drop {% cycle "c_a" "c_b" "c_c" "c_d" %}">
@@ -257,6 +256,12 @@
                         </a>
                     </div>
                 {% endfor %}
+                    <div class="top__category__face__drop c_a" 
+                    onclick="location.href='{% url 'core:board:category_create' url_name %}'">
+                        <a href="{% url 'core:board:category_create' url_name %}">
+                            +
+                        </a>
+                    </div>
             </div>
             <img src="{% static "/svg/down-arrow.svg" %}" id="m_drop_drop" alt="">
         </div>
@@ -304,9 +309,10 @@
                                             {{ post.name }}
                                         </div>
                                     </div>
-                                    <div class="post__mid">
+                                    <div class="post__mid" 
+                                    onclick="location.href='{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}'">
                                         <div class="post__mid__title">
-                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
+                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
                                         </div>
                                         <div class="post__mid__content">
                                             {{ post.content|truncatechars:140 }}

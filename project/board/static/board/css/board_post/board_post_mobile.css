@@ -123,7 +123,7 @@
 
 .board__post__container {
     background-color: #ffffff;
-    height: 180px;
+    /* height: 180px; */
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -181,10 +181,10 @@
 
 .post__top__category {
     border-radius: 10px;
-    border: solid #eff2f4 1px;
+    background-color:#eff2f4;
     padding: 3px 20px 3px 20px;
     font-weight: normal;
-    color: #5d5c5e;
+    color: black;
     text-align: center;
     font-size: 13px;
 }
@@ -196,8 +196,8 @@
 .post__mid {
     display: flex;
     flex-direction: column;
-    margin-top: 5px;
-    height: 100%;
+    margin-top: 10px;
+    /* height: 100%; */
 }
 
 .post__mid__title {
@@ -209,7 +209,7 @@
     margin-bottom: 5px;
     overflow: hidden;
     text-overflow: ellipsis;
-    word-wrap: nowrap;
+    word-break: break-all;
 }
 
 .post__mid__title a {
@@ -227,7 +227,7 @@
     font-family: YDIYGO320;
     text-align: left;
     color: #a6a7a7;
-    height: 60px;
+    height: auto;
 
     word-break: break-all;
 }
@@ -280,11 +280,11 @@
 }
 
 .post__bottom__right {
-    width: 100px;
+    width: 150px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between
+    justify-content: flex-end;
 
 }
 
@@ -464,6 +464,9 @@
 }
 
 .top__category__face__drop a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
     color: white;
 }

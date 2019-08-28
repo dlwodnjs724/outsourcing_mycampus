@@ -307,9 +307,9 @@
             </div>
             <div class="report-radio__wrap">
             <label for="">
-              Racisist remarks
+              Racist remarks
             </label>
-              <input type="radio" name="abuseType" class="report__form-radio" id="racisist" value="racisist">
+              <input type="radio" name="abuseType" class="report__form-radio" id="racist" value="racist">
             </div>
             <div class="report-radio__wrap">
             <label for="">
@@ -647,7 +647,7 @@
         function reportPostContent(pk) {
             {#pk: 댓글 or 게시글 pk#}
             {#targetType: 'c' or 'p' (댓글 or 게시글)#}
-            {#abuseType: (sexual, bully, racisist, illegal, others)#}
+            {#abuseType: (sexual, bully, racist, illegal, others)#}
             {#reporter: 신고 하는 사람 pk#}
             const url = '{% url 'api:report_content' %}';
             var abuseType2 = $('input[name="abuseType"]:checked').val();
