@@ -51,7 +51,7 @@
 
 .board__post__container {
     background-color: #ffffff;
-    height: 140px;
+    height: auto;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -149,7 +149,6 @@
     display: flex;
     flex-direction: column;
     margin-top: 5px;
-    height: 100%;
 }
 
 .post__mid__title {
@@ -161,12 +160,12 @@
     margin-bottom: 5px;
     overflow: hidden;
     text-overflow: ellipsis;
-    word-wrap: nowrap;
+    word-break: break-all;
 }
 
 .post__mid__title a {
     color: #302d2c;
-    /* width:100%; */
+    width:100%;
     text-decoration: none;
 }
 

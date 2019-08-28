@@ -148,6 +148,21 @@
   height: auto;
   margin: 10px 0;
 }
+@media (max-width: 767px) {
+  .post__image img {
+    max-width: 100%!important;
+    height: auto!important;
+    margin: 10px 0!important;
+  }
+  .post__image {
+    display:block!important;
+    width: 100%!important;
+    height: 100%!important;
+    margin-left:0!important;
+  
+  }
+}
+
 
 .post__info {
   width: 70%;

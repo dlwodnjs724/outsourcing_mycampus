@@ -208,7 +208,7 @@ def report_content(request):
     :param request:
     pk: 댓글, 게시글 pk
     targetType: c or p (댓글, 게시글)
-    abuseType: (sexual, bully, racisist, illegal, others)
+    abuseType: (sexual, bully, racist, illegal, others)
     reporter: 신고 하는 사람 pk
 
     :return:
