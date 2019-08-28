@@ -484,8 +484,8 @@
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
-    width: 50%; /* Could be more or less, depending on screen size */ 
-    height: 30%;  
+    width: 30%; /* Could be more or less, depending on screen size */ 
+    height: 35%;  
     display : flex;
     flex-direction: column;
     text-align: center;                       
@@ -494,6 +494,26 @@
     display: flex;
     justify-content: flex-start;
 
+}
+
+.modal-button{
+  color: #E3E3E3;
+  padding: 10px;
+  margin: 0.5em;
+  border-radius: 8px;
+  background-color: #55b8bd;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#no{
+  background-color: #e26b7f;
+}
+
+.modal-button > img {
+  width:30px;
+  height:30px;
 }
 /* The Close Button */
 .close {
