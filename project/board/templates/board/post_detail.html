@@ -220,7 +220,7 @@
                     {% for comment in comments %}
                         <div class="comment__row">
                             <div class="comment__top">
-                                <div class="comment__top__left">
+                                <div class="comment__top__left" onclick="getComment({{ comment.pk }})">
                                     <img src="{% static '/svg/Anon.svg' %}" alt="">
                                     <div class="comment__info">
                                         <div class="comment__author">{{ comment.name }}</div>
@@ -262,7 +262,7 @@
                                 {% for nested_comment in comment|child_comments %}
                                     <div class="comment__row nested_comment__row">
                                         <div class="comment__top">
-                                            <div class="comment__top__left">
+                                            <div class="comment__top__left" onclick="getComment({{ comment.pk }})">
                                                 <img src="{% static '/svg/Anon.svg' %}" alt="">
                                                 <div class="comment__info">
                                                     <div class="comment__author">{{ nested_comment.name }}</div>
@@ -348,6 +348,7 @@
       sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
     });
+    let is_comment = 0;
     const author = document.getElementById('post__author')
     const msg_btn = document.getElementById('post__message')
     const xBtn = document.getElementById('xBtn')
@@ -373,6 +374,7 @@
       String(type_v.value=('type', "{{post.is_anonymous}}" == "True" ? "anon" : "norm" ))
       String(other_v.value=('other',  "{{post.author.username}}"))
       modal.querySelector('p').innerText = `{{ post.name }}`
+      is_comment = 0;
       modal.style.display = "flex";
     })
     yes_btn.addEventListener('click', async e=>{
@@ -388,19 +390,22 @@
       modal.style.display='none';
     })
     no_btn.addEventListener('click', e=>{
-      alert('함부로 신고하지마라임마')
+      reportModal.style.display = 'flex';
       modal.style.display='none';
       e.stopPropagation()
     })
     msg_btn.addEventListener('click', () => {
+      is_comment = 0;
       author.click()
     })
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
+            is_comment = 0;
         }
         if (event.target == modal_r) {
           modal_r.style.display ="none";
+          is_comment = 0;
         }
     }
     for (c in comment_profs) {
@@ -637,7 +642,6 @@
     }
 
       document.getElementById('h_click').onclick = () =>{
-        console.log("helllo");
         var drop = document.getElementById("h_h");
         if(drop.style.display == 'none'){
             drop.style.display = 'flex';
@@ -646,12 +650,18 @@
         }
     };
 
+    function getComment (commentPK) {
+        comment_abuse = commentPK;
+        is_comment = 1;
+    }
+
     // 신고하기 버튼 (포스트)
         const modal_r = document.getElementById('on-report-modal');
         postReportBtn = document.querySelector("#post__report");
         reportModal = document.querySelector('.report-modal');
         postReportBtn.onclick = () => {
             reportModal.style.display = 'flex';
+            is_comment = 0;
         }
         function reportPostContent(pk) {
             {#pk: 댓글 or 게시글 pk#}
@@ -660,7 +670,14 @@
             {#reporter: 신고 하는 사람 pk#}
             const url = '{% url 'api:report_content' %}';
             var abuseType2 = $('input[name="abuseType"]:checked').val();
-            console.log(abuseType2);
+
+            let tT = 'p';
+            if(is_comment == 1){
+              pk = comment_abuse;
+              tT = 'c';
+            }
+
+
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -668,12 +685,14 @@
                     'pk': pk,
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     'abuseType': abuseType2,
-                    'targetType': 'p',
+                    'targetType': tT,
                     'reporter':  '{{request.user.pk}}',
                 },
                 datatype: "json",
                 success: function (response) {
-                    console.log(response);
+                  if(response["err"]){
+                    alert(response["err"]);
+                  }
                     modal_r.style.display ="none";
                     alert('abuse reported')
                 },
