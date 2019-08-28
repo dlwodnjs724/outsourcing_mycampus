@@ -263,19 +263,41 @@
             </div>
         </div>
     </div>
-    <div class="report-modal">
+    <div class="report-modal" id="on-report-modal" style="display: none;">
         <div class="report-form-container">
-            <label for=""><input type="radio" namme="aubseType" class="report__form-radio" id="sexual" value="sexual">
-                Sexual insult</label>
-            <label for=""><input type="radio" namme="aubseType" class="report__form-radio" id="bully" value="bully">
-                Cyber bullying</label>
-            <label for=""><input type="radio" namme="aubseType" class="report__form-radio" id="racisist"
-                                 value="racisist"> Racisist remarks</label>
-            <label for=""><input type="radio" namme="aubseType" class="report__form-radio" id="illegal" value="illegal">
-                Illegal activity</label>
-            <label for=""><input type="radio" namme="aubseType" class="report__form-radio" id="others" value="others">
-                Others</label>
-            <button type="submit" onclick="reportContent()">Report abuse</button>
+            <div class="report-radio__wrap">
+            <label for="">
+              Sexual insult
+            </label>
+              <input type="radio" namme="aubseType" class="report__form-radio" id="sexual" value="sexual">
+            </div>
+            <div class="report-radio__wrap">
+            <label for="">
+              Cyber bullying
+            </label>
+              <input type="radio" namme="aubseType" class="report__form-radio" id="bully" value="bully">
+            </div>
+            <div class="report-radio__wrap">
+            <label for="">
+              Racisist remarks
+            </label>
+              <input type="radio" namme="aubseType" class="report__form-radio" id="racisist" value="racisist">
+            </div>
+            <div class="report-radio__wrap">
+            <label for="">
+                Illegal activity
+            </label>
+                <input type="radio" namme="aubseType" class="report__form-radio" id="illegal" value="illegal">
+            </div>
+            <div class="report-radio__wrap">
+            <label for="">
+                Others
+            </label>
+                <input type="radio" namme="aubseType" class="report__form-radio" id="others" value="others">
+            </div>
+            <button type="submit" onclick="reportContent()" class="report-button">
+            <img src="{% static "/svg/report-white.svg" %}" alt="">Report abuse
+            </button>
         </div>
     </div>
 {% endblock %}
@@ -286,11 +308,12 @@
             crossorigin="anonymous"></script>
     <script>
         // 신고하기 버튼 (포스트)
+        const modal_r = document.getElementById('on-report-modal');
         postReportBtn = document.querySelector("#post__report");
         reportModal = document.querySelector('.report-modal');
-        postReportBtn.onclick(() => {
-            reportModal.classList.add('on-report-modal');
-        });
+        postReportBtn.onclick = () => {
+            reportModal.style.display = 'flex';
+        }
 
         function reportPostContent() {
             {#pk: 댓글 or 게시글 pk#}
@@ -322,6 +345,7 @@
         const no_btn = document.getElementById("no")
         const comment_profs = [...document.getElementsByClassName('comment__top__left')]
         const comment_authors = []
+
 
         {% for comment in comments %}
             comment_authors.push("{{comment.author}}")
@@ -362,6 +386,9 @@
         window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
+            }
+            if (event.target == modal_r) {
+                modal_r.style.display ="none";
             }
         }
 

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="124" height="60" viewBox="0 0 124 60">
+  <g id="그룹_440" data-name="그룹 440" transform="translate(-2582 444)">
+    <path id="사각형_172" data-name="사각형 172" d="M7,0H124a0,0,0,0,1,0,0V60a0,0,0,0,1,0,0H7a7,7,0,0,1-7-7V7A7,7,0,0,1,7,0Z" transform="translate(2706 -384) rotate(180)" fill="#fff"/>
+    <path id="사각형_174" data-name="사각형 174" d="M5,0H122a0,0,0,0,1,0,0V56a0,0,0,0,1,0,0H5a5,5,0,0,1-5-5V5A5,5,0,0,1,5,0Z" transform="translate(2704 -386) rotate(180)" fill="#4fbcbd"/>
+    <text id="Hot" transform="translate(2644 -404)" fill="#fff" font-size="35" font-family="YDIYGO350"><tspan x="-28.84" y="0">Hot</tspan></text>
+  </g>
+</svg>
