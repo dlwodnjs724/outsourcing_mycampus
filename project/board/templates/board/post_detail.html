@@ -60,7 +60,7 @@
   <div class="container">
     <div class="detail__wrapper">
       <div class="detail__post__header">
-        <a href="{% url 'core:board:main_board' univ.url_name %}">
+        <a href="{{ request.META.HTTP_REFERER }}">
           <span style="color: #55b8bd;">&lt;</span> My Campus
         </a>
       </div>
@@ -134,13 +134,14 @@
             {% endfor %}
           </div>
         </div>
-        <div class="post__container__row row__align-center">
-          <div id="post__info">
+        <div class="post__container__row row__align-center flex_direction_column">
+          <div class="post__info">
             <div class="post__like">
               <button type="button" class="like reset-button" name="{{ post.pk }}" value="Like"
                       onclick="likePost({{ post.pk }})">
                 {% if user in post.likes.all %}
-                  <img id="like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
+                  <img id="like_id_{{ post.pk }}" class='clicked'
+                       src="{% static "/svg/like-clicked.svg" %}"/>
                 {% else %}
                   <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
                 {% endif %}
@@ -153,11 +154,31 @@
               <img src="{% static "/svg/comment.svg" %}"/>
               <div>{{ post.comments.all.count }}</div>
             </div>
-            <div class="post__share" id="current_url">
+            <div class="post__share" id="current_url" onclick="shareUrl()">
               <img src="{% static '/svg/share.svg' %}" alt="">
               <div>Share</div>
             </div>
           </div>
+          {% if is_author %}
+          <div id="post__info__bottom">
+            <div class="post__edit">
+                <img src="{% static 'svg/edit_btn.svg' %}" alt="">
+                <a href="{% url 'core:board:post_edit' url_name selected_category post.pk %}">
+                    Edit
+                </a>
+              </div>
+              <div>
+                <form action="{% url 'core:board:post_delete' url_name selected_category post.pk %}"
+                      method="post" class="post__delete__form">
+                  {% csrf_token %}
+                  <img src="{% static 'svg/delete_btn.svg' %}" alt="">
+                  <button type="submit" class="reset-button">
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+          {% endif %}
         </div>
       </div>
       <div class="detail__post__comment">
@@ -186,7 +207,7 @@
                             </div>
                             <button type="submit" class="reset-button comment__write">
                                 <img src="{% static "/svg/comment.svg" %}"/>
-                                comment
+                                reply
                             </button>
                         </div>
                     </form>
@@ -222,7 +243,7 @@
                                         <button type="button" class="reset-button" name="{{ comment.pk }}"
                                                 onclick="clickNestedComment({{ comment.pk }})">
                                             <img src="{% static "/svg/comment.svg" %}"/>
-                                            comment
+                                            reply
                                         </button>
                                     </div>
                                 </div>
@@ -549,7 +570,7 @@
               </div>
               <button type="submit" class="reset-button comment__write" id="comment_write_${commentPk}">
                 <img src="{% static "/svg/comment.svg" %}"/>
-                comment
+                reply
               </button>
             </div>
             <input type="hidden" name="parent_id" value="${commentPk}">
@@ -595,7 +616,7 @@
     }
     */
     // share
-    document.querySelector("#current_url").addEventListener("click", function () {
+    function shareUrl () {
       let tempElem = document.createElement('textarea');
       tempElem.value = window.location.href;
       document.body.appendChild(tempElem);
@@ -604,7 +625,8 @@
       document.execCommand("copy");
       document.body.removeChild(tempElem);
       alert('URL successfully copied.')
-    });
+    }
+
       document.getElementById('h_click').onclick = () =>{
         console.log("helllo");
         var drop = document.getElementById("h_h");

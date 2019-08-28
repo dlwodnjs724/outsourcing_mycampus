@@ -94,6 +94,7 @@
 .bottom__top {
   color: #4FBCBD;
   font-size: 28px;
+  text-align: center;
 }
 
 .bottom__univ_list {
@@ -132,6 +133,10 @@
   display: inline-block;
   padding: 0;
   cursor: pointer;
+}
+
+.univ_list__check + label:hover {
+  border: 2px solid black;
 }
 
 .univ_list__check:checked + label {
