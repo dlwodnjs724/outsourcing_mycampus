@@ -294,6 +294,8 @@ def post_edit(request, url_name, category_name, post_pk):
             if post.ctgy.is_anonymous:
                 post.is_anonymous = True
             post.save()
+            for image in request.FILES.getlist('images'):
+                Image.objects.create(post=post, image=image)
             return redirect(
                 'core:board:post_detail',
                 url_name, category_name, post_pk

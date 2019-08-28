@@ -37,7 +37,7 @@
 }
 
 .post__top__author {
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 .board__pannel__left {
@@ -138,11 +138,11 @@
 .post__top__category {
     background-color: #eff2f4;
     border-radius: 4px;
-    padding: 1px 20px 3px 20px;
-    font-weight: normal;
+    padding: 2px 20px 2px 20px;
     color: #5d5c5e;
     text-align: center;
     font-size: 13px;
+    font-weight: normal;
 }
 
 .post__mid {
