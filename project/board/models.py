@@ -33,17 +33,17 @@ class Report(models.Model):
         ('post', 'p')
     )
 
-    report_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    target_type = models.CharField(max_length=1, choices=TARGET_CHOICES)
+    report_type = models.CharField(max_length=10, choices=TYPE_CHOICES, null=True)
+    target_type = models.CharField(max_length=1, choices=TARGET_CHOICES, null=True)
     reporter = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='reporting', null=True)
-    abuser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reported')
-    target_content = models.OneToOneField('ReportedContent', on_delete=models.PROTECT, related_name='report_paper')
+    abuser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reported',null=True)
+    target_content = models.OneToOneField('ReportedContent', on_delete=models.PROTECT, related_name='report_paper',null=True)
 
-    accepted = models.BooleanField(default=False)
-    is_handled = models.BooleanField(default=False)
+    accepted = models.BooleanField(default=False, null=True)
+    is_handled = models.BooleanField(default=False, null=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
 
 class ReportedContent(models.Model):

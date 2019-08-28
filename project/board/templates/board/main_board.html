@@ -78,16 +78,16 @@
         <div class="pannel__top__state">
             <a href="{{ url }}?state=new">
                 {% if state == 'new' %}
-                    <img src="{% static "/svg/new-green.svg" %}">
+                    <img src="{% static "/svg/web-new-selected.svg" %}">
                 {% else %}
-                    <img src="{% static "/svg/new-white.svg" %}">
+                    <img src="{% static "/svg/web-new.svg" %}">
                 {% endif %}
             </a>
             <a href="{{ url }}?state=hot">
                 {% if state == 'hot' %}
-                    <img src="{% static "/svg/hot-green.svg" %}">
+                    <img src="{% static "/svg/web-hot-selected.svg" %}">
                 {% else %}
-                    <img src="{% static "/svg/hot-white.svg" %}">
+                    <img src="{% static "/svg/web-hot.svg" %}">
                 {% endif %}
             </a>
         </div>
@@ -217,16 +217,16 @@
             <div class="testtest">
             <a href="{{ url }}?state=new">
                 {% if state == 'new' %}
-                    <img src="{% static "/svg/new-green.svg" %}">
+                    <img src="{% static "/svg/app-new-selected.svg" %}">
                 {% else %}
-                    <img src="{% static "/svg/new-white.svg" %}">
+                    <img src="{% static "/svg/app-new.svg" %}">
                 {% endif %}
             </a>
             <a href="{{ url }}?state=hot" id="hothot">
                 {% if state == 'hot' %}
-                    <img src="{% static "/svg/hot-green.svg" %}">
+                    <img src="{% static "/svg/app-hot-selected.svg" %}">
                 {% else %}
-                    <img src="{% static "/svg/hot-white.svg" %}">
+                    <img src="{% static "/svg/app-hot.svg" %}">
                 {% endif %}
             </a>
             </div>
