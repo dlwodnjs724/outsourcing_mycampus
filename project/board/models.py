@@ -24,7 +24,7 @@ class Report(models.Model):
     TYPE_CHOICES = (
         ('sexual','Sexual insult'),
         ('bully','Cyber bullying'),
-        ('racisist','Racist remarks'),
+        ('racist','Racist remarks'),
         ('illegal', 'Illegal activity'),
         ('others', 'Others')
     )

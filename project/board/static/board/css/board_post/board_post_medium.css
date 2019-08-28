@@ -40,7 +40,7 @@
 
 .board__post__container {
     background-color: #ffffff;
-    height: 180px;
+    height: auto;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -79,6 +79,7 @@
 
 .post__text {
     width: 65%;
+    height: auto;
     display: flex;
     flex-direction: column;
 }
@@ -131,7 +132,6 @@
     display: flex;
     flex-direction: column;
     margin-top: 5px;
-    height: 100%;
 }
 
 .post__mid__title {
@@ -142,13 +142,12 @@
     text-align: left;
     margin-bottom: 5px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    word-wrap: nowrap;
+    word-break: break-all;
 }
 
 .post__mid__title a {
     color: #302d2c;
-    /* width:100%; */
+    width:100%;
     text-decoration: none;
 }
 
@@ -226,7 +225,7 @@
 }
 
 .pannel__right__create p {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: normal;
     font-style: normal;
     font-stretch: normal;
