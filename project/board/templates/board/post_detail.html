@@ -310,17 +310,9 @@
 {% endblock %}
 
 {% block javascript %}
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous"></script>
-    <script>
-        // 신고하기 버튼 (포스트)
-        const modal_r = document.getElementById('on-report-modal');
-        postReportBtn = document.querySelector("#post__report");
-        reportModal = document.querySelector('.report-modal');
-        postReportBtn.onclick = () => {
-            reportModal.style.display = 'flex';
-        }
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+          integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+          crossorigin="anonymous"></script>
 
   <script>
       sb.connect("{{ user.username }}", async function (user, error) {
@@ -337,7 +329,6 @@
     const no_btn = document.getElementById("no")
     const comment_profs = [...document.getElementsByClassName('comment__top__left')]
     const comment_authors = []
-
     {% for comment in comments %}
     comment_authors.push("{{comment.author}}")
     {% for child in comment|child_comments %}
@@ -348,7 +339,6 @@
     xBtn.addEventListener('click', e=>{
       modal.style.display='none';
     })
-
     author.addEventListener('click', e => {
       String(type_v.value=('type', "{{post.is_anonymous}}" == "True" ? "anon" : "norm" ))
       String(other_v.value=('other',  "{{post.author.username}}"))
@@ -378,41 +368,11 @@
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
-        function reportPostContent(pk) {
-            {#pk: 댓글 or 게시글 pk#}
-            {#targetType: 'c' or 'p' (댓글 or 게시글)#}
-            {#abuseType: (sexual, bully, racisist, illegal, others)#}
-            {#reporter: 신고 하는 사람 pk#}
-            const url = '{% url 'api:report_content' %}';
-            var abuseType2 = $('input[name="abuseType"]:checked').val();
-            console.log(abuseType2);
-
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {
-                    'pk': pk,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                    'abuseType': abuseType2,
-                    'targetType': 'p',
-                    'reporter':  '{{request.user.pk}}',
-                },
-                datatype: "json",
-                success: function (response) {
-                    console.log(response);
-                    modal_r.style.display ="none";
-                },
-                error: function (request, status, error) {
-                    alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-                }
-            });
-
-
-
-            {# return response: anonymous 유저의 경우 univ_url이 넘어옴 -> 리다이렉트 #}
-            {# 로그인 된 유저인 경우 200 ok ("message": "Reporting is success")가 넘어옴 #}
         }
-
+        if (event.target == modal_r) {
+          modal_r.style.display ="none";
+        }
+    }
     for (c in comment_profs) {
       ( (btn, id) => {
         btn.addEventListener('click', e=>{
@@ -422,148 +382,94 @@
           modal.querySelector('p').innerText = `${btn.querySelector('.comment__author').innerText
  == id ? id : "anon"}`
           modal.style.display = "block";
-
         })
-
-        author.addEventListener('click', e => {
-            String(type_v.value = ('type', "{{post.is_anonymous}}" == "True" ? "anon" : "norm"))
-            String(other_v.value = ('other', "{{post.author.username}}"))
-            modal.querySelector('p').innerText = `wanna chat {{ post.name }}`
-            modal.style.display = "block";
-        })
-        yes_btn.addEventListener('click', async e => {
-            try {
-                await openAChat(other_v.value, type_v.value)
-                mdl_f.submit()
-            } catch (_e) {
-                if (_e.message == 1) mdl_f.submit()
-                else alert(_e)
-                e.stopPropagation()
-            }
-            modal.style.display = 'none';
-        })
-        no_btn.addEventListener('click', e => {
-            alert('함부로 신고하지마라임마')
-            modal.style.display = 'none';
-            e.stopPropagation()
-        })
-        msg_btn.addEventListener('click', () => {
-            author.click()
-        })
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-            if (event.target == modal_r) {
-                modal_r.style.display ="none";
-            }
+      })(comment_profs[c], comment_authors[c])
+    }
+    // 북마크
+    function bookmark(postPk) {
+      let bookmark_img = document.getElementById(`saved_id_${postPk}`);
+      if (!(bookmark_img.classList.contains('bookmark_clicked'))) {
+        bookmark_img.src = '{% static 'svg/bookmark.svg' %}';
+        bookmark_img.classList.add('bookmark_clicked', 'post__bookmark');
+      } else {
+        bookmark_img.src = '{% static 'svg/scrap.svg' %}';
+        bookmark_img.classList.remove('bookmark_clicked');
+      }
+      const url = '{% url 'api:post_bookmark' %}';
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          'pk': postPk,
+          'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        datatype: "json",
+        success: function (response) {
+          if (response['univ_url']) {
+            location.href = "{% url 'core:accounts:login' 'univ_url' %}".replace('univ_url', response['univ_url']);
+            return;
+          }
+        },
+        error: function (request, status, error) {
+          alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
         }
-
-        for (c in comment_profs) {
-            ((btn, id) => {
-                btn.addEventListener('click', e => {
-                    type_v.value = ('type', btn.querySelector('.comment__author').innerText
-                    == id ? "norm" : "anon")
-                    other_v.value = ('other', id)
-                    modal.querySelector('p').innerText = `wanna chat with ${btn.querySelector('.comment__author').innerText
-                    == id ? id : "anon"}`
-                    modal.style.display = "block";
-                })
-            })(comment_profs[c], comment_authors[c])
+      })
+    }
+    // 게시글 좋아요
+    function likePost(postPk) {
+      let like_img = document.getElementById(`like_id_${postPk}`);
+      // console.log(like_img.classList.contains('clicked'));
+      if (!(like_img.classList.contains('clicked'))) {
+        like_img.src = '{% static 'svg/like-clicked.svg' %}';
+        like_img.setAttribute('class', 'clicked');
+      } else {
+        like_img.src = '{% static 'svg/like.svg' %}';
+        like_img.removeAttribute('class', 'clicked');
+      }
+      const url = '{% url 'api:post_like' %}';
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          'pk': postPk,
+          'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        datatype: "json",
+        success: function (response) {
+          $(`#post_${response['pk']}`).text(response['likes_count']);
+        },
+        error: function (request, status, error) {
+          alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
         }
-
-
-        // 북마크
-        function bookmark(postPk) {
-            let bookmark_img = document.getElementById(`saved_id_${postPk}`);
-            if (!(bookmark_img.classList.contains('bookmark_clicked'))) {
-                bookmark_img.src = '{% static 'svg/bookmark.svg' %}';
-                bookmark_img.classList.add('bookmark_clicked', 'post__bookmark');
-            } else {
-                bookmark_img.src = '{% static 'svg/scrap.svg' %}';
-                bookmark_img.classList.remove('bookmark_clicked');
-            }
-            const url = '{% url 'api:post_bookmark' %}';
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {
-                    'pk': postPk,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                },
-                datatype: "json",
-                success: function (response) {
-                    if (response['univ_url']) {
-                        location.href = "{% url 'core:accounts:login' 'univ_url' %}".replace('univ_url', response['univ_url']);
-                        return;
-                    }
-                },
-                error: function (request, status, error) {
-                    alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-                }
-            })
+      })
+    }
+    // 댓글 좋아요
+    function likeComment(commentPk) {
+      const url = '{% url 'api:comment_like' %}';
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+          'pk': commentPk,
+          'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        datatype: "json",
+        success: function (response) {
+          if (response['univ_url']) {
+            location.href = "{% url 'core:accounts:login' 'univ_url' %}".replace('univ_url', response['univ_url']);
+            return;
+          }
+          $(`#comment_${response['pk']}`).text(response['likes_count']);
+        },
+        error: function (request, status, error) {
+          alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
         }
-
-        // 게시글 좋아요
-        function likePost(postPk) {
-            let like_img = document.getElementById(`like_id_${postPk}`);
-            // console.log(like_img.classList.contains('clicked'));
-            if (!(like_img.classList.contains('clicked'))) {
-                like_img.src = '{% static 'svg/like-clicked.svg' %}';
-                like_img.setAttribute('class', 'clicked');
-            } else {
-                like_img.src = '{% static 'svg/like.svg' %}';
-                like_img.removeAttribute('class', 'clicked');
-            }
-            const url = '{% url 'api:post_like' %}';
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {
-                    'pk': postPk,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                },
-                datatype: "json",
-                success: function (response) {
-                    $(`#post_${response['pk']}`).text(response['likes_count']);
-                },
-                error: function (request, status, error) {
-                    alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-                }
-            })
-        }
-
-
-        // 댓글 좋아요
-        function likeComment(commentPk) {
-            const url = '{% url 'api:comment_like' %}';
-
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {
-                    'pk': commentPk,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                },
-                datatype: "json",
-                success: function (response) {
-                    if (response['univ_url']) {
-                        location.href = "{% url 'core:accounts:login' 'univ_url' %}".replace('univ_url', response['univ_url']);
-                        return;
-                    }
-                    $(`#comment_${response['pk']}`).text(response['likes_count']);
-                },
-                error: function (request, status, error) {
-                    alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-                }
-            })
-        }
-
-
-        // 댓글 작성
-        /*
-        function writeComment() {
-          const url = '{% url 'core:board:comment_create' 'url_name' 'category' 0 %}'
+      })
+    }
+    // 댓글 작성
+    /*
+    function writeComment() {
+      const url = '{% url 'core:board:comment_create' 'url_name' 'category' 0 %}'
           .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
       $.ajax({
         type: 'POST',
@@ -589,7 +495,6 @@
               <div class="nested_comment">
                 <div class="nested_comment_form" id="nested_comment_form_${el['pk']}"></div>
                 <div class="nested_comment_list" id="nested_comment_list_${el['pk']}" style="margin-left: 50px;">
-
                 </div>
               </div>
               <br>
@@ -604,29 +509,29 @@
       })
     }
     */
-
-        // 대댓글 버튼 클릭
-        function clickNestedComment(commentPk) {
-            let nestedCommentBox = document.querySelector(`#nested_comment_form_${commentPk}`);
-            let anon = '{{ anon }}';
-            let anonCheck = '';
-            console.log(anonCheck);
-            if (anon !== 'False') {
-                anonCheck = `
+    // 대댓글 버튼 클릭
+    function clickNestedComment(commentPk) {
+      let nestedCommentBox = document.querySelector(`#nested_comment_form_${commentPk}`);
+      let anon = '{{ anon }}';
+      let anonCheck = '';
+      console.log(anonCheck);
+      if (anon !== 'False') {
+        anonCheck = `
         <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
                        id="comment__is_anonymous_${commentPk}" checked onclick="return false;">
         `
-            } else {
-                anonCheck = `
+      }
+      else {
+        anonCheck = `
         <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
                        id="comment__is_anonymous_${commentPk}" checked>
         `
-            }
-            let commentForm;
-            if (nestedCommentBox.innerHTML)
-                commentForm = '';
-            else
-                commentForm = `
+      }
+      let commentForm;
+      if (nestedCommentBox.innerHTML)
+        commentForm = '';
+      else
+        commentForm = `
         <div class="comment__form__row">
           <form action="{% url 'core:board:comment_nest_create' univ.url_name selected_category.name post.pk %}"
                 method="post" class="comment__form">
@@ -651,14 +556,12 @@
           </form>
         </div>
         `;
-            nestedCommentBox.innerHTML = commentForm;
-        }
-
-
-        /*
-        // 대댓글 작성
-        function writeNestedComment(commentPk) {
-          const url = '{% url 'core:board:comment_nest_create' 'url_name' 'category' 0 %}'
+      nestedCommentBox.innerHTML = commentForm;
+    }
+    /*
+    // 대댓글 작성
+    function writeNestedComment(commentPk) {
+      const url = '{% url 'core:board:comment_nest_create' 'url_name' 'category' 0 %}'
           .replace('url_name', "{{ univ.url_name }}").replace('category', "{{ selected_category.name }}").replace('0', "{{ post.pk }}");
       $.ajax({
         type: 'POST',
@@ -691,21 +594,19 @@
       })
     }
     */
-
     // share
     document.querySelector("#current_url").addEventListener("click", function () {
       let tempElem = document.createElement('textarea');
       tempElem.value = window.location.href;
       document.body.appendChild(tempElem);
-
       tempElem.select();
       tempElem.setSelectionRange(0, 9999);
       document.execCommand("copy");
       document.body.removeChild(tempElem);
       alert('URL successfully copied.')
     });
-
       document.getElementById('h_click').onclick = () =>{
+        console.log("helllo");
         var drop = document.getElementById("h_h");
         if(drop.style.display == 'none'){
             drop.style.display = 'flex';
@@ -713,6 +614,48 @@
             drop.style.display = 'none';
         }
     };
-  </script>
 
+    // 신고하기 버튼 (포스트)
+        const modal_r = document.getElementById('on-report-modal');
+        postReportBtn = document.querySelector("#post__report");
+        reportModal = document.querySelector('.report-modal');
+        postReportBtn.onclick = () => {
+            reportModal.style.display = 'flex';
+        }
+        function reportPostContent(pk) {
+            {#pk: 댓글 or 게시글 pk#}
+            {#targetType: 'c' or 'p' (댓글 or 게시글)#}
+            {#abuseType: (sexual, bully, racisist, illegal, others)#}
+            {#reporter: 신고 하는 사람 pk#}
+            const url = '{% url 'api:report_content' %}';
+            var abuseType2 = $('input[name="abuseType"]:checked').val();
+            console.log(abuseType2);
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'pk': pk,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'abuseType': abuseType2,
+                    'targetType': 'p',
+                    'reporter':  '{{request.user.pk}}',
+                },
+                datatype: "json",
+                success: function (response) {
+                    console.log(response);
+                    modal_r.style.display ="none";
+                },
+                error: function (request, status, error) {
+                    alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                }
+            });
+            {# return response: anonymous 유저의 경우 univ_url이 넘어옴 -> 리다이렉트 #}
+            {# 로그인 된 유저인 경우 200 ok ("message": "Reporting is success")가 넘어옴 #}
+        }
+
+
+
+
+
+  </script>
 {% endblock %}
