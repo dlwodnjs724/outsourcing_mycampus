@@ -17,7 +17,6 @@ from board.models import Category, Post, Image, Comment, Report, Noti
 from django.contrib.contenttypes.models import ContentType
 from core.models import Univ
 from core.utils.url_controll import redirect_with_next
-from .forms import ReportForm
 
 
 def make_posts_set(category, univ, state, term=""):
@@ -66,6 +65,7 @@ def can_use(request, url_name, ck_category=False, ck_anon=False, ck_univ_url=Fal
         raise Exception('others')
 
     return [univ, state, term, selected_category]
+
 
 @api_view(('POST', 'GET'))
 @renderer_classes((JSONRenderer, TemplateHTMLRenderer))
@@ -116,6 +116,15 @@ def main(request, url_name):
 
 
 def post_create(request, url_name):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:post_create',
+            params={
+                'to': [url_name],
+                'next': [url_name]
+            }
+        )
     try:
         can_use(request, url_name, ck_univ_url=True, ck_anon=True)
         univ = get_object_or_404(Univ, url_name=url_name)
@@ -123,7 +132,7 @@ def post_create(request, url_name):
         if request.method == 'POST':
             if form.is_valid():
                 post = form.save(commit=False)
-                if not post.ctgy.is_anonymous:
+                if post.ctgy.is_anonymous:
                     post.is_anonymous = True
                 post.save()
                 for image in request.FILES.getlist('images'):
@@ -355,25 +364,6 @@ def comment_nest_create(request, url_name, category_name, post_pk):
     # return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
 
-def report_send(request, pk, content_type):
-    if content_type == 'comment':
-        q = get_object_or_404(Comment, pk=pk)
-    elif content_type == 'post':
-        q = get_object_or_404(Post, pk=pk)
-
-    if request.method == 'POST':
-        form = ReportForm(request.POST)
-        if form.is_valid():
-            r = form.save(commit=False)
-            r = Report(content_object=q)
-            r.save()
-            return
-    else:
-        form = ReportForm()
-
-    return
-
-
 def category_create(request, url_name):
     if request.user.is_anonymous:
         return redirect_with_next(
@@ -392,7 +382,11 @@ def category_create(request, url_name):
             suggest.suggested_by = request.user
             suggest.univ = request.user.univ
             suggest.save()
-            return redirect('core:board:main_board', url_name)
+            return render(request, 'board/category_success.html', {
+                'univ': request.user.univ,
+                'url_name': url_name,
+                'category_name': suggest.name,
+            })
     return render(request, 'board/category_new.html', {
         'univ': request.user.univ,
         'url_name': url_name,

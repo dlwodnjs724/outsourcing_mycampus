@@ -47,7 +47,8 @@ Don't post names, phone numbers, etc
 Make beautiful communication
 """
         self.fields['content'].widget.attrs.update({
-            'placeholder': content_placeholder
+            'placeholder': content_placeholder,
+            'onfocus': "this.placeholder=''",
 
         })
         self.fields['is_anonymous'].widget.attrs.update({
@@ -80,9 +81,3 @@ class SuggestForm(forms.ModelForm):
     class Meta:
         model = Suggested
         fields = ('name', 'dscrp')
-
-
-class ReportForm(forms.ModelForm):
-    class Meta:
-        model = Report
-        fields = ('what',)

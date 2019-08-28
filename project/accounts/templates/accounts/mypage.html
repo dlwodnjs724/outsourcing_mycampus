@@ -9,7 +9,7 @@
 {% block contents %}
     
     <div class="mobile__header mypage__mobile__header">
-    <img src="{% static "/svg/흰색.svg" %}" alt="" id="back">
+    <img src="{% static "/svg/side-arrow.svg" %}" alt="" id="back">
 
         <p>My Page</p>
     </div>
@@ -84,7 +84,7 @@
                                 </h4>
                             </div>
                             <button class="body-component__button"
-                                    onclick="location.href='{% url 'core:accounts:logout' url_name %}'">
+                                    onclick="logOut()">
                                 Log out
                             </button>
                         </div>
@@ -144,6 +144,11 @@
     back.onclick = () => {
         window.history.back();
     }
-    
+
+    function logOut() {
+      if (confirm('Do you want to log out?'))
+        location.href = '{% url 'core:accounts:logout' url_name %}'
+    }
+
 </script>
 {% endblock %}
