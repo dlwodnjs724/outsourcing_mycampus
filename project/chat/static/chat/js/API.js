@@ -1,5 +1,5 @@
 const sb = new SendBird({
-    appId: 'A0DB6C4C-7F09-4D64-B43C-0823B2B35256'
+    appId: env.SB_API_KEY
 });
 const ChannelHandler = new sb.ChannelHandler();
 ChannelHandler.onMessageReceived = async function (channel, message) {
@@ -19,7 +19,6 @@ ChannelHandler.onMessageReceived = async function (channel, message) {
             if(channel.unreadMessageCount == 1) alert('got new msg')
         }
         else alert(e)
-        
     }
 };
 ChannelHandler.onUserReceivedInvitation = async function (groupChannel, inviter, invitees) {
@@ -33,7 +32,6 @@ ChannelHandler.onUserReceivedInvitation = async function (groupChannel, inviter,
     } catch (e) {
         alert(`${groupChannel.customType =="anon" ? "anon" : inviter.userId} invited you to chat.`)
     }
-
 };
 
 sb.addChannelHandler(0, ChannelHandler);
