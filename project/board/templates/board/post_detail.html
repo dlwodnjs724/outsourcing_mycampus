@@ -66,29 +66,33 @@
       </div>
       <div class="detail__post__container">
       <div id="myModal" class="modal">
-              <div class="modal-content">
-                <span id ='xBtn'>&times;</span>
-                <img src="{% static '/svg/Anon.svg' %}" alt="">
-                <p></p>
-                <form action = "{% url 'core:chat:index' univ.url_name %}" method="post" id="mdl_f">
-                {%csrf_token%}
-                <input type="hidden" id="other_v" name="other"> 
-                <input type="hidden" id="type_v" name="type"> 
-                <div class="modal-button" id="yes">
-                <img src="{% static "/svg/messege box.svg" %}">
-                <div>
+        <div class="modal-content">
+          <div>
+            <span id='xBtn'>
+              <img src="{% static 'svg/cancel.svg' %}" alt="">
+            </span>
+          </div>
+          <img src="{% static '/svg/Anon.svg' %}" alt="" class="modal_anon">
+          <p></p>
+          <form action = "{% url 'core:chat:index' univ.url_name %}" method="post" id="mdl_f">
+            {% csrf_token %}
+            <input type="hidden" id="other_v" name="other">
+            <input type="hidden" id="type_v" name="type">
+            <div class="modal-button" id="yes">
+              <img src="{% static "svg/content-message.svg" %}">
+              <div>
                 Send a message
-                </div>
-                </div>
-                <div class="modal-button" id="no">
-                <img src="{% static "/svg/report.svg" %}">
-                <div>
-                Report abuse
-                </div>
-                </div>
-                </form>
-                </div>
+              </div>
             </div>
+            <div class="modal-button" id="no">
+              <img src="{% static "svg/content-report.svg" %}">
+              <div>
+                Report abuse
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
         <div class="post__container__row">
           <div id="post__category">{{ selected_category.name }}</div>
           <div class="post__function">
@@ -294,34 +298,39 @@
     <div class="report-modal" id="on-report-modal" style="display: none;">
         <div class="report-form-container">
             <div class="report-radio__wrap">
-            <label for="">
-              Sexual insult
-            </label>
-              <input type="radio" name="abuseType" class="report__form-radio" id="sexual" value="sexual">
+                <div class="report__name">
+                    Sexual insult
+                </div>
+                <input type="radio" name="abuseType" class="report__form-radio" id="sexual" value="sexual">
+                <label for="sexual"></label>
             </div>
             <div class="report-radio__wrap">
-            <label for="">
-              Cyber bullying
-            </label>
-              <input type="radio" name="abuseType" class="report__form-radio" id="bully" value="bully">
+                <div class="report__name">
+                    Cyber bullying
+                </div>
+                <input type="radio" name="abuseType" class="report__form-radio" id="bully" value="bully">
+                <label for="bully"></label>
             </div>
             <div class="report-radio__wrap">
-            <label for="">
-              Racist remarks
-            </label>
-              <input type="radio" name="abuseType" class="report__form-radio" id="racist" value="racist">
+                <div class="report__name">
+                    Racist remarks
+                </div>
+                <input type="radio" name="abuseType" class="report__form-radio" id="racist" value="racist">
+                <label for="racist"></label>
             </div>
             <div class="report-radio__wrap">
-            <label for="">
-                Illegal activity
-            </label>
+                <div class="report__name">
+                    Illegal activity
+                </div>
                 <input type="radio" name="abuseType" class="report__form-radio" id="illegal" value="illegal">
+                <label for="illegal"></label>
             </div>
             <div class="report-radio__wrap">
-            <label for="">
-                Others
-            </label>
+                <div class="report__name">
+                    Others
+                </div>
                 <input type="radio" name="abuseType" class="report__form-radio" id="others" value="others">
+                <label for="others"></label>
             </div>
             <button type="submit" onclick="reportPostContent({{ post.pk }})" class="report-button">
             <img src="{% static "/svg/report-white.svg" %}" alt="">Report abuse
@@ -356,7 +365,7 @@
     comment_authors.push("{{child.author}}")
     {% endfor %}
     {% endfor %}
-    
+
     xBtn.addEventListener('click', e=>{
       modal.style.display='none';
     })
@@ -364,7 +373,7 @@
       String(type_v.value=('type', "{{post.is_anonymous}}" == "True" ? "anon" : "norm" ))
       String(other_v.value=('other',  "{{post.author.username}}"))
       modal.querySelector('p').innerText = `{{ post.name }}`
-      modal.style.display = "block";
+      modal.style.display = "flex";
     })
     yes_btn.addEventListener('click', async e=>{
       try{
@@ -373,7 +382,7 @@
       }
       catch (_e) {
         if(_e.message==1) mdl_f.submit()
-        else alert(_e) 
+        else alert(_e)
         e.stopPropagation()
       }
       modal.style.display='none';
@@ -395,14 +404,14 @@
         }
     }
     for (c in comment_profs) {
-      ( (btn, id) => {
+      ( (btn, id) => {modal.style.display
         btn.addEventListener('click', e=>{
           type_v.value=('type', btn.querySelector('.comment__author').innerText
  == id ? "norm" : "anon" )
           other_v.value=('other', id)
           modal.querySelector('p').innerText = `${btn.querySelector('.comment__author').innerText
  == id ? id : "anon"}`
-          modal.style.display = "block";
+          modal.style.display = "flex";
         })
       })(comment_profs[c], comment_authors[c])
     }

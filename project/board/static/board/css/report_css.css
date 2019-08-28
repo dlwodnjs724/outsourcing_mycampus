@@ -20,7 +20,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 50%;
+    justify-content: center;
+    width: 500px;
     height: 50%;
     border-radius: 12px;
     padding: 30px 0;
@@ -39,6 +40,28 @@
     padding: 10px 30px;
     border-radius: 8px;
     margin: 2.5px 0;
+}
+
+.report__form-radio {
+    display: none;
+}
+
+.report__form-radio + label {
+    margin-right: 5px;
+    border: 1px solid #4fbcbd;
+    height: 16px;
+    width: 16px;
+    display: inline-block;
+    padding: 0;
+    cursor: pointer;
+}
+
+.report__form-radio + label:hover {
+  border: 2px solid black;
+}
+
+.report__form-radio:checked + label {
+  background-color: #4fbcbd;
 }
 
 .report-button {
@@ -75,11 +98,11 @@
         background-color: white;
     }
     .report-radio__wrap {
-        width: 70%;
+        width: 80%;
         display: flex;
         justify-content: space-between;
         background-color:#e8e8e8;
-        padding: 10px 30px;
+        padding: 10px;
         border-radius: 8px;
         margin: 2.5px 0;
     }
@@ -87,7 +110,7 @@
         border: none;
         color: #fff;
         background-color:#e26b7f;
-        width: 70%;
+        width: 80%;
         padding: 10px 30px;
         border-radius: 8px;
         margin-top:5px;
