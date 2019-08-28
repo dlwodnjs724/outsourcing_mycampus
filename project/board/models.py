@@ -21,20 +21,20 @@ class Noti(models.Model):
 
 class Report(models.Model):
     TYPE_CHOICES = (
-        ('Sexual insult', 'sexual'),
-        ('Cyber bullying', 'bully'),
-        ('Racist remarks', 'racisist'),
-        ('Illegal activity', 'illegal'),
-        ('Others', 'others')
+        ('sexual','Sexual insult'),
+        ('bully','Cyber bullying'),
+        ('racisist','Racist remarks'),
+        ('illegal', 'Illegal activity'),
+        ('others', 'Others')
     )
 
     TARGET_CHOICES = (
-        ('comment', 'c'),
-        ('post', 'p')
+        ('c', 'comment'),
+        ('p', 'post')
     )
 
-    report_type = models.CharField(max_length=10, choices=TYPE_CHOICES, null=True)
-    target_type = models.CharField(max_length=1, choices=TARGET_CHOICES, null=True)
+    report_type = models.CharField(max_length=20, choices=TYPE_CHOICES, null=True)
+    target_type = models.CharField(max_length=5, choices=TARGET_CHOICES, null=True)
     reporter = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='reporting', null=True)
     abuser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reported',null=True)
     target_content = models.OneToOneField('ReportedContent', on_delete=models.PROTECT, related_name='report_paper',null=True)
@@ -47,8 +47,8 @@ class Report(models.Model):
 
 
 class ReportedContent(models.Model):
-    origin_comment = models.ForeignKey('Comment', on_delete=models.SET_NULL, related_name='reported_copy', null=True)
-    origin_post = models.ForeignKey('Post', on_delete=models.SET_NULL, related_name='reported_copy', null=True)
+    origin_comment = models.ForeignKey('Comment', on_delete=models.SET_NULL, related_name='reported_copy', null=True, blank=True)
+    origin_post = models.ForeignKey('Post', on_delete=models.SET_NULL, related_name='reported_copy', null=True, blank=True)
     content = models.TextField(blank=False, null=False)
     title = models.CharField(max_length=100, null=True)
 

@@ -267,33 +267,33 @@
             <label for="">
               Sexual insult
             </label>
-              <input type="radio" namme="aubseType" class="report__form-radio" id="sexual" value="sexual">
+              <input type="radio" name="abuseType" class="report__form-radio" id="sexual" value="sexual">
             </div>
             <div class="report-radio__wrap">
             <label for="">
               Cyber bullying
             </label>
-              <input type="radio" namme="aubseType" class="report__form-radio" id="bully" value="bully">
+              <input type="radio" name="abuseType" class="report__form-radio" id="bully" value="bully">
             </div>
             <div class="report-radio__wrap">
             <label for="">
               Racisist remarks
             </label>
-              <input type="radio" namme="aubseType" class="report__form-radio" id="racisist" value="racisist">
+              <input type="radio" name="abuseType" class="report__form-radio" id="racisist" value="racisist">
             </div>
             <div class="report-radio__wrap">
             <label for="">
                 Illegal activity
             </label>
-                <input type="radio" namme="aubseType" class="report__form-radio" id="illegal" value="illegal">
+                <input type="radio" name="abuseType" class="report__form-radio" id="illegal" value="illegal">
             </div>
             <div class="report-radio__wrap">
             <label for="">
                 Others
             </label>
-                <input type="radio" namme="aubseType" class="report__form-radio" id="others" value="others">
+                <input type="radio" name="abuseType" class="report__form-radio" id="others" value="others">
             </div>
-            <button type="submit" onclick="reportContent()" class="report-button">
+            <button type="submit" onclick="reportPostContent({{ post.pk }})" class="report-button">
             <img src="{% static "/svg/report-white.svg" %}" alt="">Report abuse
             </button>
         </div>
@@ -313,13 +313,36 @@
             reportModal.style.display = 'flex';
         }
 
-        function reportPostContent() {
+        function reportPostContent(pk) {
             {#pk: 댓글 or 게시글 pk#}
             {#targetType: 'c' or 'p' (댓글 or 게시글)#}
             {#abuseType: (sexual, bully, racisist, illegal, others)#}
             {#reporter: 신고 하는 사람 pk#}
+            const url = '{% url 'api:report_content' %}';
+            var abuseType2 = $('input[name="abuseType"]:checked').val();
+            console.log(abuseType2);
 
-            {# url: "api:report_content" #}
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'pk': pk,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'abuseType': abuseType2,
+                    'targetType': 'p',
+                    'reporter':  '{{request.user.pk}}',
+                },
+                datatype: "json",
+                success: function (response) {
+                    console.log(response);
+                    modal_r.style.display ="none";
+                },
+                error: function (request, status, error) {
+                    alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                }
+            });
+
+
 
             {# return response: anonymous 유저의 경우 univ_url이 넘어옴 -> 리다이렉트 #}
             {# 로그인 된 유저인 경우 200 ok ("message": "Reporting is success")가 넘어옴 #}
