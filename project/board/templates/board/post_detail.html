@@ -66,29 +66,33 @@
       </div>
       <div class="detail__post__container">
       <div id="myModal" class="modal">
-              <div class="modal-content">
-                <span id ='xBtn'>&times;</span>
-                <img src="{% static '/svg/Anon.svg' %}" alt="">
-                <p></p>
-                <form action = "{% url 'core:chat:index' univ.url_name %}" method="post" id="mdl_f">
-                {%csrf_token%}
-                <input type="hidden" id="other_v" name="other">
-                <input type="hidden" id="type_v" name="type">
-                <div class="modal-button" id="yes">
-                <img src="{% static "/svg/messege box.svg" %}">
-                <div>
+        <div class="modal-content">
+          <div>
+            <span id='xBtn'>
+              <img src="{% static 'svg/cancel.svg' %}" alt="">
+            </span>
+          </div>
+          <img src="{% static '/svg/Anon.svg' %}" alt="" class="modal_anon">
+          <p></p>
+          <form action = "{% url 'core:chat:index' univ.url_name %}" method="post" id="mdl_f">
+            {% csrf_token %}
+            <input type="hidden" id="other_v" name="other">
+            <input type="hidden" id="type_v" name="type">
+            <div class="modal-button" id="yes">
+              <img src="{% static "svg/content-message.svg" %}">
+              <div>
                 Send a message
-                </div>
-                </div>
-                <div class="modal-button" id="no">
-                <img src="{% static "/svg/report.svg" %}">
-                <div>
-                Report abuse
-                </div>
-                </div>
-                </form>
-                </div>
+              </div>
             </div>
+            <div class="modal-button" id="no">
+              <img src="{% static "svg/content-report.svg" %}">
+              <div>
+                Report abuse
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
         <div class="post__container__row">
           <div id="post__category">{{ selected_category.name }}</div>
           <div class="post__function">
@@ -369,7 +373,7 @@
       String(type_v.value=('type', "{{post.is_anonymous}}" == "True" ? "anon" : "norm" ))
       String(other_v.value=('other',  "{{post.author.username}}"))
       modal.querySelector('p').innerText = `{{ post.name }}`
-      modal.style.display = "block";
+      modal.style.display = "flex";
     })
     yes_btn.addEventListener('click', async e=>{
       try{
@@ -400,14 +404,14 @@
         }
     }
     for (c in comment_profs) {
-      ( (btn, id) => {
+      ( (btn, id) => {modal.style.display
         btn.addEventListener('click', e=>{
           type_v.value=('type', btn.querySelector('.comment__author').innerText
  == id ? "norm" : "anon" )
           other_v.value=('other', id)
           modal.querySelector('p').innerText = `${btn.querySelector('.comment__author').innerText
  == id ? id : "anon"}`
-          modal.style.display = "block";
+          modal.style.display = "flex";
         })
       })(comment_profs[c], comment_authors[c])
     }
