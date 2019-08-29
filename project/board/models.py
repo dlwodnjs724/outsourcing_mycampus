@@ -13,11 +13,58 @@ from imagekit.processors import Thumbnail
 
 
 class Noti(models.Model):
+    NOTI_CHOICES = (
+        ('c_l', 'comment_like'),
+        ('c_c', 'nest_comment'),
+        ('c','comment'),
+        ('p_l','post_like')
+    )
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
     object_id = models.PositiveIntegerField(db_column='object_id')
     content_object = GenericForeignKey('content_type', 'object_id')
-    _from = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="_from")
-    _to = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="_to")
+    from_n = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="_from")
+    to_n = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="_to")
+    noti_type = models.CharField(max_length=5, choices=NOTI_CHOICES, null=True)
+    is_read = models.PositiveIntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    def time_interval(self):
+        now = arrow.now().timestamp
+        # now = utc.localize(datetime.datetime.utcnow())
+        create = self.created_at.timestamp()
+        ti = math.floor(int(now - create) / 60)
+
+        if ti < 60:
+            t = f'{ti}m'
+        elif 60 <= ti < (24 * 60):
+            t = f'{math.floor(ti / 60)}h'
+        else:
+            t = f'{math.floor(ti / (24 * 60))}d'
+        return t
+
+    def get_context(self):
+        tn = ""
+        notiType = self.noti_type
+        if notiType == "c_l":
+            tn = "likes your comment."
+        elif notiType == "c_c":
+            tn = "commented on your comment."
+        elif notiType == "c":
+            tn = "commented on your post."
+        elif notiType == "p_l":
+            tn = "likes your post."
+        return tn
+
+    def get_category(self):
+        q = ""
+        content = self.content_type
+        str(content)
+        if str(content) == "post":
+            q = Post.objects.get(pk = self.object_id).ctgy.name
+        elif str(content) == "comment":
+            q = Comment.objects.get(pk = self.object_id).post.ctgy.name
+        return q
 
 
 class Report(models.Model):

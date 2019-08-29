@@ -44,7 +44,8 @@
         <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page
       </div>
     </a>
-    <div class="header__drop__notification">
+    <div class="header__drop__notification"
+    onclick="location.href='{% url 'core:board:notification' univ.url_name %}'">
       <img src="{% static "/svg/알림.svg" %}" alt="">Notification
     </div>
     <div class="header__drop__search">

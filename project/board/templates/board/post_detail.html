@@ -37,23 +37,23 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="header__dropdown mobile__header pd__drop" id="h_h" style="display: none;">
-    <a href="{% url 'core:accounts:mypage' univ.url_name %}">
-      <div class="header__drop__mypage">
-        <img src="{% static "/svg/mypage-green.svg" %}" alt="">My Page
-      </div>
-    </a>
-    <div class="header__drop__notification">
-      <img src="{% static "/svg/alarm-green.svg" %}" alt="">Notification
-    </div>
-    <div class="header__drop__search">
-      <form action="" method="get">
-        <button type="submit" value="search">
-          <img src="{% static "/svg/search-green.svg" %}">
-        </button>
-        <input type="text" placeholder="Search" name="search" value="{{ search }}">
-      </form>
+    <div class="header__dropdown mobile__header pd__drop"  id="h_h"  style="display: none;">
+     <a href="{% url 'core:accounts:mypage' univ.url_name %}">
+        <div class="header__drop__mypage">
+            <img src="{% static "/svg/mypage-green.svg" %}" alt="">My Page
+        </div>
+        </a>
+        <div class="header__drop__notification"
+        onclick="location.href='{% url 'core:board:notification' univ.url_name %}'">
+            <img src="{% static "/svg/alarm-green.svg" %}" alt="">Notification</div>
+        <div class="header__drop__search">
+            <form action="" method="get">
+                <button type="submit" value="search">
+                    <img src="{% static "/svg/search-green.svg" %}">
+                </button>
+                <input type="text" placeholder="Search" name="search" value="{{ search }}">
+            </form>
+        </div>
     </div>
   </div>
 

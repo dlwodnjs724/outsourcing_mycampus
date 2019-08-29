@@ -8,6 +8,9 @@ urlpatterns = [
     path("", views.main, name="main_board"),
 
     path('notification/', views.notification, name='notification'),
+    path('notiJson/', views.notificationJson, name='notificationJson'),
+    path('get_oject/', views.getObjectNoti, name='getObjectNoti'),
+
 
     path('create/', views.post_create, name='post_create'),
     path('<str:category_name>/', views.category_board, name='category_board'),
