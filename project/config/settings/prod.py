@@ -2,4 +2,14 @@ from .common import *
 
 
 DEBUG = False
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['54.180.105.194', 'mycampus.site']
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': 'localhost',
+        'NAME': 'mycampus',
+        'USER': 'mycampus',
+        'PASSWORD': 'mycampus123',
+    }
+}
