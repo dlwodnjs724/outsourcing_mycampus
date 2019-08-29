@@ -42,8 +42,8 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = '__all__'
 
-class NotiSerializer(serializers.ModelSerializer):
 
+class NotiSerializer(serializers.ModelSerializer):
     class Meta:
         model = Noti
         fields = '__all__'

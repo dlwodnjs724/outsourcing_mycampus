@@ -507,9 +507,11 @@ def notification(request, url_name):
             }
         )
 
-    
     univ = request.user.univ
-    notifications = Noti.objects.filter(to_n=request.user).order_by('-id')
+    notifications = Noti.objects.prefetch_related(
+        'from_n__comment_set__post',
+        'from_n__posts__ctgy',
+    ).filter(to_n=request.user).order_by('-id')
     
     return render(request, 'board/notification.html', {
         'notifications': notifications,
@@ -526,16 +528,17 @@ def notificationJson(request, url_name):
 
     return JsonResponse(data)
 
+
 def getObjectNoti(request, url_name):
     univ = request.user.univ
     content_type = request.GET.get('contentType')
     object_id = request.GET.get('objectId')
 
     if content_type == 10:
-        content = Post.objects.get(pk = object_id)
+        content = Post.objects.get(pk=object_id)
         serializer = PostSerializer(content)
     else:
-        content = Comment.objects.get(pk = object_id)
+        content = Comment.objects.get(pk=object_id)
         serializer = CommentSerializer(content)
 
     data = {'content': serializer.data}
