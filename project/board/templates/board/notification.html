@@ -79,7 +79,7 @@
 <div class="noti__main">
   <ul class="noti__ul">
     {% for notification in notifications %}
-      <li>
+      <li onclick="location.href='{% url 'core:board:post_detail' univ.url_name notification.get_category notification.get_post %}'">
       <div class="noti__each">
       <img class="noti__img" src="{% static "/svg/notification.svg" %}">
       <div class="noti__content">

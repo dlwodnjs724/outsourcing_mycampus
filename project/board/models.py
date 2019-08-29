@@ -66,6 +66,16 @@ class Noti(models.Model):
             q = Comment.objects.get(pk = self.object_id).post.ctgy.name
         return q
 
+    def get_post(self):
+        q = ""
+        content = self.content_type
+        str(content)
+        if str(content) == "post":
+            q = self.object_id
+        elif str(content) == "comment":
+            q = Comment.objects.get(pk = self.object_id).post.pk
+        return q
+
 
 class Report(models.Model):
     TYPE_CHOICES = (
