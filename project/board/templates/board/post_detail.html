@@ -297,6 +297,11 @@
     </div>
     <div class="report-modal" id="on-report-modal" style="display: none;">
         <div class="report-form-container">
+            <div id="report-from__close">
+              <img src="{% static 'svg/cancel.svg' %}" alt=""
+                onclick="closeReportModal()">
+            </div>
+          <div class="report-radio__list">
             <div class="report-radio__wrap">
                 <div class="report__name">
                     Sexual insult
@@ -331,6 +336,7 @@
                 </div>
                 <input type="radio" name="abuseType" class="report__form-radio" id="others" value="others">
                 <label for="others"></label>
+            </div>
             </div>
             <button type="submit" onclick="reportPostContent({{ post.pk }})" class="report-button">
             <img src="{% static "/svg/report-white.svg" %}" alt="">Report abuse
@@ -692,6 +698,8 @@
                 success: function (response) {
                   if(response["err"]){
                     alert(response["err"]);
+                    modal_r.style.display ="none";
+                    return;
                   }
                     modal_r.style.display ="none";
                     alert('abuse reported')
@@ -704,7 +712,10 @@
             {# 로그인 된 유저인 경우 200 ok ("message": "Reporting is success")가 넘어옴 #}
         }
 
-
+    const closeReportModal = () => {
+          const modal = document.querySelector(".report-modal");
+            modal.style.display = "none";
+        }
 
 
 

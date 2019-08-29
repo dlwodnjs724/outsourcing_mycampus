@@ -155,6 +155,15 @@ def post_create(request, url_name):
 
 
 def category_board(request, url_name, category_name):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:category_board',
+            params={
+                'to': [url_name],
+                'next': [url_name, category_name]
+            }
+        )
     try:
         [univ, state, term, selected_category] = can_use(request, url_name, ck_univ_url=True, ck_anon=True,
                                                          use_category=category_name)
@@ -224,7 +233,7 @@ def post_detail(request, url_name, category_name, post_pk):
     )
     comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
         .select_related('author', 'parent', 'post', 'post__author')\
-        .filter(post=post, parent=None)
+        .filter(post=post, parent=None).order_by('created_at')
     is_author = True if request.user == post.author else False
     # post.viewed_by.add(request.user)
     # post.views_double_check.add(request.user)

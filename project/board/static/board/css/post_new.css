@@ -107,6 +107,11 @@
   width: 85px;
   height: 28px;
   background: white;
+  cursor: pointer;
+}
+
+.form__bottom__left > input {
+  cursor: pointer;
 }
 
 .form__bottom__right {

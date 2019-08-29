@@ -52,7 +52,7 @@ def send_mail(request):
         univ_domain = Univ.objects.get(url_name=univ).domain
 
         if univ_domain != email_domain:
-            raise Exception("Not allowed Email domain")
+            raise Exception(f'Invalid email format. Please enter it according to your school email format. e.g. @{univ_domain}')
 
         token = get_token(email)
 
