@@ -38,6 +38,10 @@
     flex-direction: column;
 }
 
+.signup__verification-form {
+    font-size: 25px !important;
+}
+
 .signup-form__input input {
     margin: 0.1rem 0 0.4rem 0;
     font-size: 2rem;
@@ -47,7 +51,7 @@
 
 .signup-form__input input::placeholder {
     color: #A7ABAD;
-    font-size: 2rem;
+    font-size: 25px !important;
     font-weight: 100;
 }
 
