@@ -12,7 +12,7 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 
 from board.forms import PostForm, SuggestForm
-from board.serializers import PostSerializer
+from board.serializers import PostSerializer, NotiSerializer, CommentSerializer
 from board.models import Category, Post, Image, Comment, Report, Noti
 from django.contrib.contenttypes.models import ContentType
 from core.models import Univ
@@ -354,7 +354,7 @@ def comment_create(request, url_name, category_name, post_pk):
             content=request.POST.get('content', ''),
             is_anonymous=is_anonymous
         )
-        Noti.objects.create(_from=request.user, _to=Post.objects.get(pk=post_pk).author, object_id=post_pk, content_type=ContentType.objects.get(app_label='board', model='post'))
+        Noti.objects.create(from_n=request.user,noti_type='c', to_n=Post.objects.get(pk=post_pk).author, object_id=post_pk, content_type=ContentType.objects.get(app_label='board', model='post'))
         return redirect('core:board:post_detail', url_name, category_name, post_pk)
     # if request.method == 'POST':
     #     is_anonymous = True if request.POST.get('comment_is_anonymous', '') == 'true' else False
@@ -399,7 +399,7 @@ def comment_nest_create(request, url_name, category_name, post_pk):
             is_anonymous=is_anonymous,
             parent_id=request.POST.get('parent_id')
         )
-        Noti.objects.create(_from=request.user, _to=Comment.objects.get(pk=request.POST.get('parent_id')).author, object_id=request.POST.get('parent_id'), content_type=ContentType.objects.get(app_label='board', model='comment'))
+        Noti.objects.create(from_n=request.user,noti_type='c_c', to_n=Comment.objects.get(pk=request.POST.get('parent_id')).author, object_id=request.POST.get('parent_id'), content_type=ContentType.objects.get(app_label='board', model='comment'))
 
         return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
@@ -467,11 +467,38 @@ def notification(request, url_name):
                 'next': [url_name]
             }
         )
+
+    
     univ = request.user.univ
-    notifications = Noti.objects.filter(_to=request.user).order_by('-id')
-    print(notifications)
+    notifications = Noti.objects.filter(to_n=request.user).order_by('-id')
+    
     return render(request, 'board/notification.html', {
         'notifications': notifications,
         'univ': univ,
         'url_name': url_name,
     })
+
+
+def notificationJson(request, url_name):
+    univ = request.user.univ
+    notifications = Noti.objects.filter(to_n=request.user).order_by('-id')[:5]
+    serializer = NotiSerializer(notifications, many=True)
+    data = {'noti': serializer.data}
+
+    return JsonResponse(data)
+
+def getObjectNoti(request, url_name):
+    univ = request.user.univ
+    content_type = request.GET.get('contentType')
+    object_id = request.GET.get('objectId')
+
+    if content_type == 10:
+        content = Post.objects.get(pk = object_id)
+        serializer = PostSerializer(content)
+    else:
+        content = Comment.objects.get(pk = object_id)
+        serializer = CommentSerializer(content)
+
+    data = {'content': serializer.data}
+
+    return JsonResponse(data)

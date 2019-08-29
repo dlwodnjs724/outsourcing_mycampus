@@ -40,9 +40,7 @@
                 <div class="board__header__right pc__header">
                 {% if request.user.is_authenticated %}
                     <ul class="board__buttons">
-                        <a href="{% url 'core:board:notification' univ.url_name %}">
-                          <li><img src="{% static "/svg/alarm.svg" %}"></li>
-                        </a>
+                          <li><img src="{% static "/svg/alarm.svg" %}" id="noti_button"></li>
                         <a href="{% url 'core:chat:index' univ.url_name %}">
                             <li><img src="{% static "/svg/messege box.svg" %}"></li>
                         </a>
@@ -53,6 +51,15 @@
                             <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
                         </a>
                     </ul>
+                    <div id="point" style="display:none;"></div>
+                    <div class="top__noti" id="noti__drop" style="display:none;">
+                        <div class="noti__top">Notifications</div>
+                        <hr>
+                        <div class="noti__main" id="noti__drop__main"></div>
+                        <hr>
+                        <div class="noti__bottom"
+                        onclick="location.href='{% url 'core:board:notification' univ.url_name %}'">Read & See All</div>
+                    </div>
                 {% else %}
                 <a href="{% url 'core:accounts:login' univ.url_name %}" id="board__header__a">
                     <img src="{% static "/svg/login-signup.svg" %}">
@@ -69,6 +76,104 @@
     <script src="{% static 'chat/js/env.js' %}"></script>
     <script src="{% static 'chat/js/API.js' %}"></script>
     <script src="{% static 'chat/js/chatUtil.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+    <script>
+    const notiBtn = document.getElementById('noti_button');
+    const notiDrop = document.getElementById('noti__drop');
+    const notiMain = document.getElementById('noti__drop__main');
+    const point = document.getElementById('point');
+
+    notiBtn.onclick = () => {
+            if( notiDrop.style.display == 'flex'){
+                notiDrop.style.display = 'none';
+                point.style.display = 'none';
+                notiMain.innerHTML="";
+            } else {
+                point.style.display = 'block';
+                notiDrop.style.display = 'flex';
+                getNoti();
+            }
+    }
+
+
+
+    
+    function notiTypeSelect(notis) {
+        const noti = notis.noti_type;
+        if(noti == 'c_l'){
+            ntPrint = 'new like at comment';
+        } else if(noti == 'c_c') {
+            ntPrint = 'new reply';
+        } else if (noti == 'c') {
+            ntPrint = 'new comment at post';
+        } else if (noti == 'p_l') {
+            ntPrint = 'new like at post';
+        } else {
+            ntPrint ='null';
+        }
+    }
+    
+    function writeNoti(nt) {
+            if(nt.content_type == 10) {
+                ntct = 'post';
+            } else {
+                ntct = 'comment';
+            }
+            notiTypeSelect(nt);
+            notiMain.innerHTML += `<p>${ntPrint}</p>`;
+    }
+    function getNoti() {
+        const url = '{% url 'core:board:notificationJson' url_name %}';
+
+        $.ajax({
+                type: 'GET',
+                url: url,
+                data: {
+                    'user':  '{{request.user.pk}}',
+                },
+                datatype: "json",
+                success: function (response) {
+                  if(response["noti"]){
+                    for (nt of response["noti"]) {
+                        writeNoti(nt);
+                    }
+
+                  }
+                },
+                error: function (request, status, error) {
+                    alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                }
+            });
+    }
+    
+
+    function getObject(contentType, objectId) {
+        const url = '{% url 'core:board:getObjectNoti' url_name %}';
+        $.ajax({
+            type:'GET',
+            url: url,
+            data: {
+                'contentType':contentType,
+                'objectId':objectId,
+            },
+            datatype: "json",
+            success: function (response) {
+                if(contentType == 12) {
+                    notiCate = response.content.post.ctgy.name;
+                } else {
+                    notiCate = response.content.ctgy.name;
+                }
+            },
+            error: function (request, status, error) {
+                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+    }
+
+    </script>
     {% block javascript %}
     {% endblock %}
 </body>

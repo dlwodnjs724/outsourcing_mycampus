@@ -31,3 +31,59 @@ body {
     font-family: LOTTEMART_BOLD;
     src: url("../../fonts/LOTTEMART_BOLD.ttf") format('truetype');
 }
+
+/* notification pop up */
+
+
+.top__noti {
+    position: absolute;
+    flex-direction: column;
+    width: 15rem;
+    height: auto;
+    top: 4.3rem;
+    background-color: #fff;
+    z-index: 1;
+    transform:translateX(-44%);
+    border-radius: 12px;
+    -webkit-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+    -moz-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+    -ms-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+    -o-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+    
+}
+
+#point {
+    position: absolute;
+    transform: rotate( 45deg ) translateX(-43%) translateY(-7%);
+    width: 3rem;
+    height: 3rem;
+    background-color: white;
+    z-index: 1;
+    top: 4.6rem;
+    /* box-shadow: 0px 0px 10px 5px #E3E3E3; */
+}
+
+.top__noti > div {
+    padding: 10px 15px;
+}
+
+.noti__bottom:hover {
+    cursor: pointer;
+}
+
+#noti_button:hover {
+    cursor: pointer;
+}
+
+.top__noti > hr {
+    margin: 0;
+    padding: 0px;
+    border: solid 1.5px #E3E3E3;
+
+}
+
+.noti__main > p {
+    height: 2rem;
+
+}

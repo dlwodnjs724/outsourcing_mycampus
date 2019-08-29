@@ -43,7 +43,8 @@
             <img src="{% static "/svg/mypage-green.svg" %}" alt="">My Page
         </div>
         </a>
-        <div class="header__drop__notification">
+        <div class="header__drop__notification"
+        onclick="location.href='{% url 'core:board:notification' univ.url_name %}'">
             <img src="{% static "/svg/alarm-green.svg" %}" alt="">Notification</div>
         <div class="header__drop__search">
             <form action="" method="get">
