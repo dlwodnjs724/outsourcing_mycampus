@@ -9,5 +9,5 @@ register = template.Library()
 def child_comments(parent):
     comments = Comment.objects.prefetch_related('comment_likes')\
         .select_related('author', 'parent', 'post', 'post__author')\
-        .filter(parent=parent)
+        .filter(parent=parent).order_by('created_at')
     return comments

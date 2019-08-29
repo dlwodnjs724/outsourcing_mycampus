@@ -299,9 +299,9 @@
                             {{ nested_comment.total_likes }}
                           </div>
                         </div>
-                        {% if comment.author == user %}
+                        {% if nested_comment.author == user %}
                           <div>
-                            <form action="{% url 'core:board:comment_delete' url_name selected_category post.pk comment.pk %}"
+                            <form action="{% url 'core:board:comment_delete' url_name selected_category post.pk nested_comment.pk %}"
                                   method="post">
                               {% csrf_token %}
                               <button type="submit" class="reset-button"
