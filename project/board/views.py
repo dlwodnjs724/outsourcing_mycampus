@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
@@ -37,7 +39,11 @@ def make_posts_set(category, univ, state, term=""):
         ret = ret.filter(Q(title__icontains=term) | Q(content__icontains=term))
 
     if state == "hot":
-        ret = ret.order_by('-num_likes', '-created_at')
+        gte_5 = ret.filter(num_likes__gte=5).order_by('-created_at')
+        lt_5 = ret.exclude(pk__in=gte_5).order_by('-num_likes', '-created_at')
+        # ret = gte_5 | lt_5
+        ret = list(chain(gte_5, lt_5))
+        # ret = ret.order_by('-num_likes', '-created_at')
     else:
         ret = ret.order_by('-created_at')
 
@@ -231,7 +237,7 @@ def post_detail(request, url_name, category_name, post_pk):
     anon = True if selected_category.is_anonymous else False
     post = get_object_or_404(
         Post.objects.select_related('author')
-            .prefetch_related('likes', 'saved', 'comments'),
+            .prefetch_related('likes', 'saved', 'comments', 'images'),
         ctgy=selected_category, pk=post_pk
     )
     comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
@@ -437,6 +443,27 @@ def comment_nest_create(request, url_name, category_name, post_pk):
     #     }
     #     return JsonResponse(context)
     # return redirect('core:board:post_detail', url_name, category_name, post_pk)
+
+
+def comment_delete(request, url_name, category_name, post_pk, comment_pk):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:post_detail',
+            params={
+                'to': [url_name],
+                'next': [url_name, category_name, post_pk]
+            }
+        )
+
+    if request.method == 'POST':
+        comment = Comment.objects.get(pk=comment_pk)
+        if request.user != comment.author:
+            return redirect('core:board:post_detail', url_name, category_name, post_pk)
+        comment.content = '(deleted reply)'
+        comment.save()
+        return redirect('core:board:post_detail', url_name, category_name, post_pk)
+    return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
 
 def category_create(request, url_name):
