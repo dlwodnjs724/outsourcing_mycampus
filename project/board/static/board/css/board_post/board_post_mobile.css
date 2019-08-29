@@ -462,9 +462,10 @@
     align-items: center;
     justify-content: center;
     color: white;
-    height: 1.5rem;
+    height: 1.7rem;
     border-radius: 3px;
     margin: 5px 0;
+    cursor: pointer;
 }
 
 .top__category__face__drop a{
