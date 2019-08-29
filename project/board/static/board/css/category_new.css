@@ -88,6 +88,23 @@
   width: 10%;
 }
 
+.category__form__button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.category__form__button > button {
+  font-family: YDIYGO320;
+  width: 100%;
+  font-size: 25px;
+  color: white;
+  background-color: #4fbcbd;
+  border-radius: 8px;
+  padding: 5px 0;
+}
+
 #id_name {
   margin-left: 3%;
   width: 87%;
@@ -118,6 +135,7 @@
   font-size: 15px;
   padding: 15px;
   height: 120px;
+  resize: none;
 }
 
 @media (max-width: 767px) {
@@ -146,5 +164,4 @@
   #id_name, #id_dscrp {
     border: 1px solid #cecece;
   }
-
 }

@@ -475,6 +475,15 @@
     color: white;
 }
 
+
+#top__category__face__drop__plus {
+    background-color: #55b8bd;
+}
+
+#top__category__face__drop__plus img {
+    width: 15px;
+}
+
 #m_category_drop {
     margin-top:1%;
     height: 20px;

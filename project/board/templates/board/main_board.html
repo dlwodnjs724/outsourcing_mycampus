@@ -210,11 +210,11 @@
                             </a>
                         </li>
                     {% endfor %}
-                      <a href="{% url 'core:board:category_create' url_name %}" style="color: white;">
-                    <li class="c_d">
-                    +
+                    <li style="background-color: #55b8bd">
+                      <a href="{% url 'core:board:category_create' url_name %}">
+                        <img src="{% static 'svg/category_plus.svg' %}" alt="">
+                      </a>
                     </li>
-                    </a>
                 </ul>
             </div>
         </div>
@@ -263,10 +263,10 @@
                         </a>
                     </div>
                 {% endfor %}
-                    <div class="top__category__face__drop c_a" 
+                    <div class="top__category__face__drop" id="top__category__face__drop__plus"
                     onclick="location.href='{% url 'core:board:category_create' url_name %}'">
                         <a href="{% url 'core:board:category_create' url_name %}">
-                            +
+                            <img src="{% static 'svg/category_plus.svg' %}" alt="">
                         </a>
                     </div>
             </div>
