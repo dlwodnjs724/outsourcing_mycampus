@@ -75,6 +75,7 @@ def main(request, url_name):
         [univ, state, term, selected_category] = can_use(request, url_name, True, True, True)
 
         post_sets = make_posts_set(None, univ, state, term)
+        is_post = False if post_sets else True
 
         post_paginator = Paginator(post_sets, 15).page
         posts = post_paginator(1)
@@ -100,7 +101,8 @@ def main(request, url_name):
                 'posts': posts.object_list,
                 'state': state,
                 'url': url,
-                'has_next': posts.has_next()
+                'has_next': posts.has_next(),
+                'is_post': is_post,
             })
     except Univ.DoesNotExist as e:
         raise Http404(e)
@@ -155,12 +157,21 @@ def post_create(request, url_name):
 
 
 def category_board(request, url_name, category_name):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:category_board',
+            params={
+                'to': [url_name],
+                'next': [url_name, category_name]
+            }
+        )
     try:
         [univ, state, term, selected_category] = can_use(request, url_name, ck_univ_url=True, ck_anon=True,
                                                          use_category=category_name)
 
         post_sets = make_posts_set(selected_category, univ, state, term)
-
+        is_post = False if post_sets else True
         current_page = 1
 
         post_paginator = Paginator(post_sets, 15).page
@@ -190,7 +201,8 @@ def category_board(request, url_name, category_name):
                 'state': state,
                 'posts': posts.object_list,
                 'url': url,
-                'has_next': posts.has_next()
+                'has_next': posts.has_next(),
+                'is_post': is_post,
             })
 
     except Exception as e:
@@ -224,7 +236,7 @@ def post_detail(request, url_name, category_name, post_pk):
     )
     comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
         .select_related('author', 'parent', 'post', 'post__author')\
-        .filter(post=post, parent=None)
+        .filter(post=post, parent=None).order_by('created_at')
     is_author = True if request.user == post.author else False
     # post.viewed_by.add(request.user)
     # post.views_double_check.add(request.user)

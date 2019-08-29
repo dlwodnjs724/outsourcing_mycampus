@@ -34,16 +34,7 @@ class PostForm(forms.ModelForm):
         self.fields['title'].widget.attrs.update({
             'placeholder': 'Please enter the title.',
         })
-        p = "<Before You Post>\n"
-        la = "- content Policy -\n\n"
-        c = "1. No harassment\n"
-        e = "No illegal activity, No racism, No bullying\n\n"
-        h = "2. No personal information\n"
-        o = "Don't post names, phone numbers, etc\n\n"
-        ld = "3. Keep Positive\n"
-        er = "Make beautiful communication"
-
-        content_placeholder = p + la + c + e + h + o + ld + er
+        content_placeholder = ":( NO harassment & Keep positive :)"
         self.fields['content'].widget.attrs.update({
             'placeholder': content_placeholder,
             'onfocus': "this.placeholder=''",
