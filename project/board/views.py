@@ -75,6 +75,7 @@ def main(request, url_name):
         [univ, state, term, selected_category] = can_use(request, url_name, True, True, True)
 
         post_sets = make_posts_set(None, univ, state, term)
+        is_post = False if post_sets else True
 
         post_paginator = Paginator(post_sets, 15).page
         posts = post_paginator(1)
@@ -100,7 +101,8 @@ def main(request, url_name):
                 'posts': posts.object_list,
                 'state': state,
                 'url': url,
-                'has_next': posts.has_next()
+                'has_next': posts.has_next(),
+                'is_post': is_post,
             })
     except Univ.DoesNotExist as e:
         raise Http404(e)
@@ -169,7 +171,7 @@ def category_board(request, url_name, category_name):
                                                          use_category=category_name)
 
         post_sets = make_posts_set(selected_category, univ, state, term)
-
+        is_post = False if post_sets else True
         current_page = 1
 
         post_paginator = Paginator(post_sets, 15).page
@@ -199,7 +201,8 @@ def category_board(request, url_name, category_name):
                 'state': state,
                 'posts': posts.object_list,
                 'url': url,
-                'has_next': posts.has_next()
+                'has_next': posts.has_next(),
+                'is_post': is_post,
             })
 
     except Exception as e:

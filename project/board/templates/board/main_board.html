@@ -393,6 +393,10 @@
             crossorigin="anonymous"></script>
     <script src="{% static "board/js/scroll.js" %}"></script>
     <script>
+      {% if is_post %}
+        alert('There is no post yet. Write your first post!');
+      {% endif %}
+
         window.onload = function () {
             var isMobile = window.innerWidth < 769;
             var USER = {{ request.user.pk }};
