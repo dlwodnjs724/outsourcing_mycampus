@@ -27,7 +27,11 @@
               </a>
             </div>
         {% else %}
-            <div class="base__logo"><img src="{% static 'svg/logo.svg' %}" alt=""></div>
+            <div class="base__logo">
+                <a href="{% url 'main' %}">
+                    <img src="{% static 'svg/logo.svg' %}" alt="">
+                </a>
+            </div>
         {% endif %}
             {% block header %}
             {% endblock %}
