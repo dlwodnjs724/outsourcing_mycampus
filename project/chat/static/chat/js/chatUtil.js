@@ -12,12 +12,12 @@ const strfy = (message) => {
  * @param {channel} channel sb.GroupChannel 인스턴스?
  * @return {String} 포매팅 된 10개의 채팅 로그
  */
-const loadLog = (url, length) => {
+const loadLog = (url) => {
     return new Promise((res, rej) => {
         sb.GroupChannel.getChannel(url, (groupChannel, error) => {
             if (error) return
             const log = groupChannel.createPreviousMessageListQuery()
-            log.limit = length;
+            log.limit = 200;
             log.reverse = false;
             log.load((messages, error) => {
                 if (error) rej(error);
@@ -107,7 +107,8 @@ const setChannelBtn = async (button, chat_header, chat_box) => {
         chat_box.setAttribute('url', button.getAttribute('url'))
         chat_box.setAttribute('with', `${button.querySelector('.partner').innerHTML}`)
         chat_box.setAttribute('anon', button.getAttribute('with') == 'anon' ? true : false)
-        chat_box.innerHTML = await loadLog(button.getAttribute('url'), 10)
+        chat_box.innerHTML = await loadLog(button.getAttribute('url')
+        )
         chat_box.scrollTop = chat_box.scrollHeight;
         sb.GroupChannel.getChannel(button.getAttribute('url'), async (groupChannel, error) => {
             if (error) return
