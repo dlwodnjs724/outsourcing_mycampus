@@ -22,4 +22,5 @@ urlpatterns = [
     path('<str:category_name>/<int:post_pk>/delete/', views.post_delete, name='post_delete'),
     path('<str:category_name>/<int:post_pk>/comment/', views.comment_create, name='comment_create'),
     path('<str:category_name>/<int:post_pk>/nested-comment/', views.comment_nest_create, name='comment_nest_create'),
+    path('<str:category_name>/<int:post_pk>/comment/<int:comment_pk>/delete', views.comment_delete, name='comment_delete'),
 ]

@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
@@ -37,7 +39,11 @@ def make_posts_set(category, univ, state, term=""):
         ret = ret.filter(Q(title__icontains=term) | Q(content__icontains=term))
 
     if state == "hot":
-        ret = ret.order_by('-num_likes', '-created_at')
+        gte_5 = ret.filter(num_likes__gte=5).order_by('-created_at')
+        lt_5 = ret.exclude(pk__in=gte_5).order_by('-num_likes', '-created_at')
+        # ret = gte_5 | lt_5
+        ret = list(chain(gte_5, lt_5))
+        # ret = ret.order_by('-num_likes', '-created_at')
     else:
         ret = ret.order_by('-created_at')
 
@@ -75,6 +81,7 @@ def main(request, url_name):
         [univ, state, term, selected_category] = can_use(request, url_name, True, True, True)
 
         post_sets = make_posts_set(None, univ, state, term)
+        is_post = False if post_sets else True
 
         post_paginator = Paginator(post_sets, 15).page
         posts = post_paginator(1)
@@ -100,7 +107,8 @@ def main(request, url_name):
                 'posts': posts.object_list,
                 'state': state,
                 'url': url,
-                'has_next': posts.has_next()
+                'has_next': posts.has_next(),
+                'is_post': is_post,
             })
     except Univ.DoesNotExist as e:
         raise Http404(e)
@@ -155,12 +163,21 @@ def post_create(request, url_name):
 
 
 def category_board(request, url_name, category_name):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:category_board',
+            params={
+                'to': [url_name],
+                'next': [url_name, category_name]
+            }
+        )
     try:
         [univ, state, term, selected_category] = can_use(request, url_name, ck_univ_url=True, ck_anon=True,
                                                          use_category=category_name)
 
         post_sets = make_posts_set(selected_category, univ, state, term)
-
+        is_post = False if post_sets else True
         current_page = 1
 
         post_paginator = Paginator(post_sets, 15).page
@@ -190,7 +207,8 @@ def category_board(request, url_name, category_name):
                 'state': state,
                 'posts': posts.object_list,
                 'url': url,
-                'has_next': posts.has_next()
+                'has_next': posts.has_next(),
+                'is_post': is_post,
             })
 
     except Exception as e:
@@ -219,12 +237,12 @@ def post_detail(request, url_name, category_name, post_pk):
     anon = True if selected_category.is_anonymous else False
     post = get_object_or_404(
         Post.objects.select_related('author')
-            .prefetch_related('likes', 'saved', 'comments'),
+            .prefetch_related('likes', 'saved', 'comments', 'images'),
         ctgy=selected_category, pk=post_pk
     )
     comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
         .select_related('author', 'parent', 'post', 'post__author')\
-        .filter(post=post, parent=None)
+        .filter(post=post, parent=None).order_by('created_at')
     is_author = True if request.user == post.author else False
     # post.viewed_by.add(request.user)
     # post.views_double_check.add(request.user)
@@ -425,6 +443,27 @@ def comment_nest_create(request, url_name, category_name, post_pk):
     #     }
     #     return JsonResponse(context)
     # return redirect('core:board:post_detail', url_name, category_name, post_pk)
+
+
+def comment_delete(request, url_name, category_name, post_pk, comment_pk):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:post_detail',
+            params={
+                'to': [url_name],
+                'next': [url_name, category_name, post_pk]
+            }
+        )
+
+    if request.method == 'POST':
+        comment = Comment.objects.get(pk=comment_pk)
+        if request.user != comment.author:
+            return redirect('core:board:post_detail', url_name, category_name, post_pk)
+        comment.content = '(deleted reply)'
+        comment.save()
+        return redirect('core:board:post_detail', url_name, category_name, post_pk)
+    return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
 
 def category_create(request, url_name):

@@ -11,32 +11,31 @@
 {% endblock %}
 
 {% block contents %}
-    <div class="base__header mobile__header">
-        <div class="base__header__used-space container">
-            <div class="header__wrap">
-                <div class="header__main">
-                    <div class="header__ham" id="h_click">
-                        <img src="{% static "/svg/ham-white.svg" %}" alt="">
-                    </div>
-                    <div class="header__logo">
-                    <a href="{% url 'core:board:main_board' url_name %}">
-                        <img src="{% static "/svg/box-logo.svg" %}">
-                        <img src="{{ univ.logo_mobile.url }}">
-                    </a>
-                    </div>
-                    <div class="board__header__right">
-                        <ul class="board__buttons">
-                            <a href="{% url 'core:chat:index' univ.url_name %}">
-                                <li><img src="{% static "/svg/messege box.svg" %}"></li>
-                            </a>
-                            <a href="{% url 'core:board:post_create' univ.url_name %}">
-                                <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
-                            </a>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+  <div class="base__header mobile__header">
+    <div class="base__header__used-space container">
+      <div class="header__wrap">
+        <div class="header__main">
+          <div class="header__ham" id="h_click">
+            <img src="{% static "/svg/ham-white.svg" %}" alt="">
+          </div>
+          <div class="header__logo">
+            <a href="{% url 'core:board:main_board' url_name %}">
+              <img src="{% static "/svg/box-logo.svg" %}">
+              <img src="{{ univ.logo_mobile.url }}">
+            </a>
+          </div>
+          <div class="board__header__right">
+            <ul class="board__buttons">
+              <a href="{% url 'core:chat:index' univ.url_name %}">
+                <li><img src="{% static "/svg/messege box.svg" %}"></li>
+              </a>
+              <a href="{% url 'core:board:post_create' univ.url_name %}">
+                <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
+              </a>
+            </ul>
+          </div>
         </div>
+      </div>
     </div>
     <div class="header__dropdown mobile__header pd__drop"  id="h_h"  style="display: none;">
      <a href="{% url 'core:accounts:mypage' univ.url_name %}">
@@ -56,6 +55,7 @@
             </form>
         </div>
     </div>
+  </div>
 
 
   <div class="container">
@@ -66,34 +66,34 @@
         </a>
       </div>
       <div class="detail__post__container">
-      <div id="myModal" class="modal">
-        <div class="modal-content">
-          <div>
+        <div id="myModal" class="modal">
+          <div class="modal-content">
+            <div>
             <span id='xBtn'>
               <img src="{% static 'svg/cancel.svg' %}" alt="">
             </span>
+            </div>
+            <img src="{% static '/svg/Anon.svg' %}" alt="" class="modal_anon">
+            <p></p>
+            <form action="{% url 'core:chat:index' univ.url_name %}" method="post" id="mdl_f">
+              {% csrf_token %}
+              <input type="hidden" id="other_v" name="other">
+              <input type="hidden" id="type_v" name="type">
+              <div class="modal-button" id="yes">
+                <img src="{% static "svg/content-message.svg" %}">
+                <div>
+                  Send a message
+                </div>
+              </div>
+              <div class="modal-button" id="no">
+                <img src="{% static "svg/content-report.svg" %}">
+                <div>
+                  Report abuse
+                </div>
+              </div>
+            </form>
           </div>
-          <img src="{% static '/svg/Anon.svg' %}" alt="" class="modal_anon">
-          <p></p>
-          <form action = "{% url 'core:chat:index' univ.url_name %}" method="post" id="mdl_f">
-            {% csrf_token %}
-            <input type="hidden" id="other_v" name="other">
-            <input type="hidden" id="type_v" name="type">
-            <div class="modal-button" id="yes">
-              <img src="{% static "svg/content-message.svg" %}">
-              <div>
-                Send a message
-              </div>
-            </div>
-            <div class="modal-button" id="no">
-              <img src="{% static "svg/content-report.svg" %}">
-              <div>
-                Report abuse
-              </div>
-            </div>
-          </form>
         </div>
-      </div>
         <div class="post__container__row">
           <div id="post__category">{{ selected_category.name }}</div>
           <div class="post__function">
@@ -165,11 +165,11 @@
             </div>
           </div>
           {% if is_author %}
-          <div id="post__info__bottom">
-            <div class="post__edit">
+            <div id="post__info__bottom">
+              <div class="post__edit">
                 <img src="{% static 'svg/edit_btn.svg' %}" alt="">
                 <a href="{% url 'core:board:post_edit' url_name selected_category post.pk %}">
-                    Edit
+                  Edit
                 </a>
               </div>
               <div>
@@ -177,7 +177,8 @@
                       method="post" class="post__delete__form">
                   {% csrf_token %}
                   <img src="{% static 'svg/delete_btn.svg' %}" alt="">
-                  <button type="submit" class="reset-button" onclick="return confirm('Are you sure you want to delete your post?')">
+                  <button type="submit" class="reset-button"
+                          onclick="return confirm('Are you sure you want to delete your post?')">
                     Delete
                   </button>
                 </form>
@@ -194,150 +195,188 @@
             <div class="comment__form__top">
               <textarea name="content" cols="40" rows="10"
                         placeholder="Please leave a comment."></textarea>
-                        </div>
-                        <div class="comment__form__bottom">
-                            <div class="comment__checkbox__wrapper">
-                                {% if not anon %}
-                                    <input type="checkbox" name="is_anonymous" class="comment__checkbox"
-                                           id="comment__is_anonymous" checked>
-                                    <label for="comment__is_anonymous">
-                                    </label>
-                                {% else %}
-                                    <input type="checkbox" name="is_anonymous" class="comment__checkbox"
-                                           id="comment__is_anonymous" checked onclick="return false;">
-                                    <label for="comment__is_anonymous">
-                                    </label>
-                                {% endif %}
-                                anon
-                            </div>
-                            <button type="submit" class="reset-button comment__write">
-                                <img src="{% static "/svg/comment.svg" %}"/>
-                                reply
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div class="comment_list">
-                    {% for comment in comments %}
-                        <div class="comment__row">
-                            <div class="comment__top">
-                                <div class="comment__top__left" onclick="getComment({{ comment.pk }})">
-                                    <img src="{% static '/svg/Anon.svg' %}" alt="">
-                                    <div class="comment__info">
-                                        <div class="comment__author">{{ comment.name }}</div>
-                                        <div class="comment__created_at">{{ comment.time_interval }}</div>
-                                    </div>
-                                </div>
-                                <div class="comment__top__right">
-                                    <div class="comment__like">
-                                        <button type="button" class="like reset-button" name="{{ comment.pk }}"
-                                                value="Like"
-                                                onclick="likeComment({{ comment.pk }})">
-                                            {% if user in comment.likes.all %}
-                                                <img id="like_id_{{ comment.pk }}" class='clicked'
-                                                     src="{% static "/svg/like-clicked.svg" %}"/>
-                                            {% else %}
-                                                <img id="like_id_{{ comment.pk }}" src="{% static "/svg/like.svg" %}"/>
-                                            {% endif %}
-                                        </button>
-                                        <div id="comment_{{ comment.pk }}">
-                                            {{ comment.total_likes }}
-                                        </div>
-                                    </div>
-                                    <div class="comment__comment">
-                                        <button type="button" class="reset-button" name="{{ comment.pk }}"
-                                                onclick="clickNestedComment({{ comment.pk }})">
-                                            <img src="{% static "/svg/comment.svg" %}"/>
-                                            reply
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="comment__bottom">
-                                {{ comment.content }}
-                            </div>
-                        </div>
-                        <div class="nested_comment">
-                            <div class="nested_comment_form" id="nested_comment_form_{{ comment.pk }}"></div>
-                            <div class="nested_comment_list" id="nested_comment_list_{{ comment.pk }}">
-                                {% for nested_comment in comment|child_comments %}
-                                    <div class="comment__row nested_comment__row">
-                                        <div class="comment__top">
-                                            <div class="comment__top__left" onclick="getComment({{ comment.pk }})">
-                                                <img src="{% static '/svg/Anon.svg' %}" alt="">
-                                                <div class="comment__info">
-                                                    <div class="comment__author">{{ nested_comment.name }}</div>
-                                                    <div class="comment__created_at">{{ nested_comment.time_interval }}</div>
-                                                </div>
-                                            </div>
-                                            <div class="comment__top__right nest_comment__top__right">
-                                                <div class="comment__like">
-                                                    <button type="button" class="like reset-button"
-                                                            name="{{ comment.pk }}" value="Like"
-                                                            onclick="likeComment({{ nested_comment.pk }})">
-                                                        <img id="like_id_{{ nested_comment.pk }}"
-                                                             src="{% static "/svg/like.svg" %}"/>
-                                                    </button>
-                                                    <div id="comment_{{ nested_comment.pk }}">
-                                                        {{ nested_comment.total_likes }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="comment__bottom">
-                                            {{ nested_comment.content }}
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
             </div>
+            <div class="comment__form__bottom">
+              <div class="comment__checkbox__wrapper">
+                {% if not anon %}
+                  <input type="checkbox" name="is_anonymous" class="comment__checkbox"
+                         id="comment__is_anonymous" checked>
+                  <label for="comment__is_anonymous">
+                  </label>
+                {% else %}
+                  <input type="checkbox" name="is_anonymous" class="comment__checkbox"
+                         id="comment__is_anonymous" checked onclick="return false;">
+                  <label for="comment__is_anonymous">
+                  </label>
+                {% endif %}
+                anon
+              </div>
+              <button type="submit" class="reset-button comment__write">
+                <img src="{% static "/svg/comment.svg" %}"/>
+                reply
+              </button>
+            </div>
+          </form>
         </div>
-    </div>
-    <div class="report-modal" id="on-report-modal" style="display: none;">
-        <div class="report-form-container">
-            <div class="report-radio__wrap">
-                <div class="report__name">
-                    Sexual insult
+        <div class="comment_list">
+          {% for comment in comments %}
+            <div class="comment__row">
+              <div class="comment__top">
+                <div class="comment__top__left" onclick="getComment({{ comment.pk }})">
+                  <img src="{% static '/svg/Anon.svg' %}" alt="">
+                  <div class="comment__info">
+                    <div class="comment__author">{{ comment.name }}</div>
+                    <div class="comment__created_at">{{ comment.time_interval }}</div>
+                  </div>
                 </div>
-                <input type="radio" name="abuseType" class="report__form-radio" id="sexual" value="sexual">
-                <label for="sexual"></label>
-            </div>
-            <div class="report-radio__wrap">
-                <div class="report__name">
-                    Cyber bullying
+                <div class="comment__top__right">
+                  <div class="comment__like">
+                    <button type="button" class="like reset-button" name="{{ comment.pk }}"
+                            value="Like"
+                            onclick="likeComment({{ comment.pk }})">
+                      {% if user in comment.likes.all %}
+                        <img id="like_id_{{ comment.pk }}" class='clicked'
+                             src="{% static "/svg/like-clicked.svg" %}"/>
+                      {% else %}
+                        <img id="like_id_{{ comment.pk }}" src="{% static "/svg/like.svg" %}"/>
+                      {% endif %}
+                    </button>
+                    <div id="comment_{{ comment.pk }}">
+                      {{ comment.total_likes }}
+                    </div>
+                  </div>
+                  <div class="comment__comment">
+                    <button type="button" class="reset-button" name="{{ comment.pk }}"
+                            onclick="clickNestedComment({{ comment.pk }})">
+                      <img src="{% static "/svg/comment.svg" %}"/>
+                      reply
+                    </button>
+                  </div>
+                  <div>
+                    {% if comment.author == user %}
+                      <form action="{% url 'core:board:comment_delete' url_name selected_category post.pk comment.pk %}"
+                            method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="reset-button"
+                                onclick="return confirm('Are you sure you want to delete your reply?');">
+                          <img src="{% static 'svg/delete_btn.svg' %}" alt="" class="comment_delete">
+                        </button>
+                      </form>
+                    {% else %}
+                      <div class="comment__report">
+                        <img src="{% static 'svg/report.svg' %}" alt="">
+                      </div>
+                    {% endif %}
+                  </div>
                 </div>
-                <input type="radio" name="abuseType" class="report__form-radio" id="bully" value="bully">
-                <label for="bully"></label>
+              </div>
+              <div class="comment__bottom">
+                {{ comment.content }}
+              </div>
             </div>
-            <div class="report-radio__wrap">
-                <div class="report__name">
-                    Racist remarks
-                </div>
-                <input type="radio" name="abuseType" class="report__form-radio" id="racist" value="racist">
-                <label for="racist"></label>
+            <div class="nested_comment">
+              <div class="nested_comment_form" id="nested_comment_form_{{ comment.pk }}"></div>
+              <div class="nested_comment_list" id="nested_comment_list_{{ comment.pk }}">
+                {% for nested_comment in comment|child_comments %}
+                  <div class="comment__row nested_comment__row">
+                    <div class="comment__top">
+                      <div class="comment__top__left" onclick="getComment({{ comment.pk }})">
+                        <img src="{% static '/svg/Anon.svg' %}" alt="">
+                        <div class="comment__info">
+                          <div class="comment__author">{{ nested_comment.name }}</div>
+                          <div class="comment__created_at">{{ nested_comment.time_interval }}</div>
+                        </div>
+                      </div>
+                      <div class="comment__top__right nest_comment__top__right">
+                        <div class="comment__like">
+                          <button type="button" class="like reset-button"
+                                  name="{{ comment.pk }}" value="Like"
+                                  onclick="likeComment({{ nested_comment.pk }})">
+                            <img id="like_id_{{ nested_comment.pk }}"
+                                 src="{% static "/svg/like.svg" %}"/>
+                          </button>
+                          <div id="comment_{{ nested_comment.pk }}">
+                            {{ nested_comment.total_likes }}
+                          </div>
+                        </div>
+                        {% if comment.author == user %}
+                          <div>
+                            <form action="{% url 'core:board:comment_delete' url_name selected_category post.pk comment.pk %}"
+                                  method="post">
+                              {% csrf_token %}
+                              <button type="submit" class="reset-button"
+                                      onclick="return confirm('Are you sure you want to delete your reply?');">
+                                <img src="{% static 'svg/delete_btn.svg' %}" alt="" class="comment_delete">
+                              </button>
+                            </form>
+                          </div>
+                        {% else %}
+                          <div class="comment__report">
+                            <img src="{% static 'svg/report.svg' %}" alt="">
+                          </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="comment__bottom">
+                      {{ nested_comment.content }}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
             </div>
-            <div class="report-radio__wrap">
-                <div class="report__name">
-                    Illegal activity
-                </div>
-                <input type="radio" name="abuseType" class="report__form-radio" id="illegal" value="illegal">
-                <label for="illegal"></label>
-            </div>
-            <div class="report-radio__wrap">
-                <div class="report__name">
-                    Others
-                </div>
-                <input type="radio" name="abuseType" class="report__form-radio" id="others" value="others">
-                <label for="others"></label>
-            </div>
-            <button type="submit" onclick="reportPostContent({{ post.pk }})" class="report-button">
-            <img src="{% static "/svg/report-white.svg" %}" alt="">Report abuse
-            </button>
+          {% endfor %}
         </div>
+      </div>
     </div>
+  </div>
+  <div class="report-modal" id="on-report-modal" style="display: none;">
+    <div class="report-form-container">
+      <div id="report-from__close">
+        <img src="{% static 'svg/cancel.svg' %}" alt=""
+             onclick="closeReportModal()">
+      </div>
+      <div class="report-radio__list">
+        <div class="report-radio__wrap">
+          <div class="report__name">
+            Sexual insult
+          </div>
+          <input type="radio" name="abuseType" class="report__form-radio" id="sexual" value="sexual">
+          <label for="sexual"></label>
+        </div>
+        <div class="report-radio__wrap">
+          <div class="report__name">
+            Cyber bullying
+          </div>
+          <input type="radio" name="abuseType" class="report__form-radio" id="bully" value="bully">
+          <label for="bully"></label>
+        </div>
+        <div class="report-radio__wrap">
+          <div class="report__name">
+            Racist remarks
+          </div>
+          <input type="radio" name="abuseType" class="report__form-radio" id="racist" value="racist">
+          <label for="racist"></label>
+        </div>
+        <div class="report-radio__wrap">
+          <div class="report__name">
+            Illegal activity
+          </div>
+          <input type="radio" name="abuseType" class="report__form-radio" id="illegal" value="illegal">
+          <label for="illegal"></label>
+        </div>
+        <div class="report-radio__wrap">
+          <div class="report__name">
+            Others
+          </div>
+          <input type="radio" name="abuseType" class="report__form-radio" id="others" value="others">
+          <label for="others"></label>
+        </div>
+      </div>
+      <button type="submit" onclick="reportPostContent({{ post.pk }})" class="report-button">
+        <img src="{% static "/svg/report-white.svg" %}" alt="">Report abuse
+      </button>
+    </div>
+  </div>
 {% endblock %}
 
 {% block javascript %}
@@ -693,6 +732,8 @@
                 success: function (response) {
                   if(response["err"]){
                     alert(response["err"]);
+                    modal_r.style.display ="none";
+                    return;
                   }
                     modal_r.style.display ="none";
                     alert('abuse reported')
@@ -705,7 +746,10 @@
             {# 로그인 된 유저인 경우 200 ok ("message": "Reporting is success")가 넘어옴 #}
         }
 
-
+    const closeReportModal = () => {
+          const modal = document.querySelector(".report-modal");
+            modal.style.display = "none";
+        }
 
 
 

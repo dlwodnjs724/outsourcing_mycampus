@@ -199,7 +199,6 @@ class Comment(models.Model):
     # 대댓글
     parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
 
-    report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='comments')
     noti = GenericRelation(Noti, object_id_field='object_id', content_type_field='content_type', related_query_name='comments')
 
     class Meta:

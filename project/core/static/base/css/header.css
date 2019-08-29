@@ -35,3 +35,12 @@
     font-weight: 900;
     color: #fff;
 }
+
+@media (max-width: 768px) {
+    .base__header__used-space {
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+}

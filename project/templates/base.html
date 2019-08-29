@@ -21,9 +21,17 @@
     <div class="base__header pc__header">
         <div class="base__header__used-space container">
         {% if univ.logo %}
-            <div class="base__logo"><img src="{{ univ.logo.url }}"></div>
+            <div class="base__logo">
+              <a href="{% url 'core:board:main_board' univ.url_name %}">
+                <img src="{{ univ.logo.url }}">
+              </a>
+            </div>
         {% else %}
-            <div class="base__logo"><img src="{% static 'svg/logo.svg' %}" alt=""></div>
+            <div class="base__logo">
+                <a href="{% url 'main' %}">
+                    <img src="{% static 'svg/logo.svg' %}" alt="">
+                </a>
+            </div>
         {% endif %}
             {% block header %}
             {% endblock %}

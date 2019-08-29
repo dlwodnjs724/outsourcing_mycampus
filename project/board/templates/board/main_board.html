@@ -211,11 +211,11 @@
                             </a>
                         </li>
                     {% endfor %}
-                      <a href="{% url 'core:board:category_create' url_name %}" style="color: white;">
-                    <li class="c_d">
-                    +
+                    <li style="background-color: #55b8bd">
+                      <a href="{% url 'core:board:category_create' url_name %}">
+                        <img src="{% static 'svg/category_plus.svg' %}" alt="">
+                      </a>
                     </li>
-                    </a>
                 </ul>
             </div>
         </div>
@@ -264,10 +264,10 @@
                         </a>
                     </div>
                 {% endfor %}
-                    <div class="top__category__face__drop c_a" 
+                    <div class="top__category__face__drop" id="top__category__face__drop__plus"
                     onclick="location.href='{% url 'core:board:category_create' url_name %}'">
                         <a href="{% url 'core:board:category_create' url_name %}">
-                            +
+                            <img src="{% static 'svg/category_plus.svg' %}" alt="">
                         </a>
                     </div>
             </div>
@@ -389,11 +389,12 @@
 {% endblock %}
 
 {% block javascript %}
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous"></script>
     <script src="{% static "board/js/scroll.js" %}"></script>
     <script>
+      {% if is_post %}
+        alert('There is no post yet. Write your first post!');
+      {% endif %}
+
         window.onload = function () {
             var isMobile = window.innerWidth < 769;
             var USER = {{ request.user.pk }};
