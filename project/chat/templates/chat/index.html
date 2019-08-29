@@ -181,8 +181,12 @@
             await renderChatList(channels, chat_list, chat_header, chat_box)
         }
     })
-    chat_search.addEventListener('keypress', async(e) => {
+    chat_search.addEventListener('keydown', async(e) => {
         if (e.key == 'Enter') chat_search.click()
+        else if (e.key = 'Backspace' && chat_search.value.length == 1){
+            const channels = await loadChatList()
+            await renderChatList(channels, chat_list, chat_header, chat_box)
+        }
     })
 
     <!-- mobile -->
@@ -227,8 +231,12 @@
             await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
         }
     })
-    chat_search_m.addEventListener('keypress', async(e) => {
+    chat_search_m.addEventListener('keydown', async(e) => {
         if (e.key == 'Enter') chat_search_m.click()
+        else if (e.key = 'Backspace' && chat_search_m.value.length == 1){
+            const channels = await loadChatList()
+            await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
+        }
     })
 </script>
 {% endblock javascript %}
