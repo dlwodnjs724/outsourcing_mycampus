@@ -20,7 +20,6 @@
 }
 
 .pannel__top__state {
-    width: 37%;
     height: 98%;
     display: flex;
     justify-content: flex-start;
@@ -31,9 +30,9 @@
     align-items: center;
     justify-content: space-between;
     background-color: white;
-    width: 62%;
+    flex-grow: 1;
     height: 100%;
-    margin-left: auto;
+    margin-left: 0.25rem;
     margin-right: auto;
     border-radius: 5px;
 }
@@ -95,22 +94,7 @@
         height: 100%;
         width: auto;
     }
-
-    .board__pannel__top img {
-        height:100%;
-    }
 }
-
-@media (max-width: 360px) {
-    .board__pannel__top a {
-        margin-top: 3px;
-    }
-    .board__pannel__top img {
-        width: 55px;
-    }
-}
-
-
 
 .board__pannel__left {
     display: flex;
@@ -506,14 +490,6 @@
     margin-bottom:auto;
 
 
-}
-
-
-.testest {
-    display:flex;
-    justify-content: center;
-    flex-direction: row;
-    align-items: center;
 }
 
 #hothot {

@@ -223,7 +223,6 @@
 
     <div class="board__pannel__top container mobile__board">
         <div class="pannel__top__state">
-            <div class="testtest">
             <a href="{{ url }}?state=new">
                 {% if state == 'new' %}
                     <img src="{% static "/svg/app-new-selected.svg" %}">
@@ -238,12 +237,11 @@
                     <img src="{% static "/svg/app-hot.svg" %}">
                 {% endif %}
             </a>
-            </div>
         </div>
 
         <div class="pannel__top__category" id="show_drop_category">
-        <a href="#" id="m_category_a">
-            <img src="{% static "/svg/category.svg" %}" id="m_category" alt="">
+            <a href="#" id="m_category_a">
+                <img src="{% static "/svg/category.svg" %}" id="m_category" alt="">
             </a>
             <div class="top__category__face">
                 {% if selected_category %}
