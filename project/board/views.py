@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
@@ -37,7 +39,11 @@ def make_posts_set(category, univ, state, term=""):
         ret = ret.filter(Q(title__icontains=term) | Q(content__icontains=term))
 
     if state == "hot":
-        ret = ret.order_by('-num_likes', '-created_at')
+        gte_5 = ret.filter(num_likes__gte=5).order_by('-created_at')
+        lt_5 = ret.exclude(pk__in=gte_5).order_by('-num_likes', '-created_at')
+        # ret = gte_5 | lt_5
+        ret = list(chain(gte_5, lt_5))
+        # ret = ret.order_by('-num_likes', '-created_at')
     else:
         ret = ret.order_by('-created_at')
 
