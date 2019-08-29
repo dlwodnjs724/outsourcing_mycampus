@@ -3,7 +3,7 @@
 
 {% block css %}
 <link rel="stylesheet" media="(min-width:768px)" href="{% static "chat/css/index.css" %}" type="text/css">
-<link rel="stylesheet " media="(max-width:768px)" href="{% static "chat/css/mobile_chat.css" %}" type="text/css">
+<link rel="stylesheet " media="(max-width:767px)" href="{% static "chat/css/mobile_chat.css" %}" type="text/css">
 
 {% endblock %}
 {% block contents %}
@@ -36,9 +36,9 @@
 </div>
 
 <div class="container chat-container mobile_chat">
-    <img src="{% static "/svg/흰색.svg" %}" alt="" id="chat_back">
+    <img src="{% static "/svg/side-arrow.svg" %}" alt="" id="chat_back">
     
-    <img src="{% static "/svg/흰색.svg" %}" alt="" id="back">
+    <img src="{% static "/svg/side-arrow.svg" %}" alt="" id="back" style="display:none;">
 
         <div id="chat-list-container_m">
             <div id="chat-list-header_m">
@@ -91,7 +91,7 @@
     const back = document.getElementById('back');
 
     let flag = 'norm'
-
+    console.log("{{user.is_staff}}")
     chat_back.onclick = () => {
         if (chat_a.style.display == 'none'){
             chat_a.style.display = 'block';
@@ -103,6 +103,10 @@
             chat_m.style.display = 'flex';
         }
     };
+    if(chat_back.style.display == 'block'){
+        back.style.display = 'none';
+    }
+
 
     back.onclick = () => {
         window.history.back();
@@ -110,61 +114,47 @@
 
     sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
+        try{
+            if("{{match}}" != "None") await openAChat("{{match}}", 'anon')
+        }
+        catch (e) {
+            if(e.message == 1) {}
+        }
         const channels = await loadChatList()
-        const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
-        if(first_btn) first_btn.click()
+        const btns = await renderChatList(channels, chat_list, chat_header, chat_box)
+        const btns_m = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
+        const users = await loadUsers()
+        if(window.innerWidth > 768){
+            if("{{match}}" != "None"){
+                const btn = findChatBtn(btns, users,"{{match}}","anon")
+                btn.click()
+            }
+            else {
+                const btn = findChatBtn(btns, users,"{{other}}","{{type}}")
+                btn.click()
+            }
+        }
+        else if ("{{match}}" != "None"){
+            const btn = findChatBtn(btns_m, users,"{{match}}","anon")
+            btn.click()
+        }
     });
 
-    chat_search.addEventListener('keypress', async (e) => {
-        if (e.key == "Enter" && chat_search.value != "") {
-            flag = 'norm'
-            try {
-                await openAChat(chat_search.value, flag)
-                const channels = await loadChatList()
-                const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
-                first_btn.click()
-            } catch (e) {
-                console.log(e)
-                alert('check username')
-            }
-        }
-    })
-    chat_search.addEventListener('click', async (e) => {
-        if (chat_search.value != "") {
-            flag = 'anon'
-            try {
-                await openAChat(chat_search.value, flag)
-                const channels = await loadChatList()
-                const first_btn = await renderChatList(channels, chat_list, chat_header, chat_box)
-                first_btn.click()
-            } catch (e) {
-                console.log(e)
-                alert('check username')
-            }
-        }
-    })
+
     chat_text.addEventListener('keypress', async (e) => {
-        if (e.key == 'Enter' && chat_box.getAttribute('url') != 'none' && chat_text.value != "") {
-            sb.GroupChannel.getChannel(chat_box.getAttribute('url'), async (groupChannel, error) => {
-                if (error) return
-                groupChannel.sendUserMessage(chat_text.value, async (message, error) => {
-                    if (error) return
-                    chat_box.innerHTML += strfy(message, groupChannel.customType)
-                    chat_box.scrollTop = chat_box.scrollHeight;
-                    chat_text.value = ""
-                    const channels = await loadChatList()
-                    await renderChatList(channels, chat_list,
-                        chat_header, chat_box)
-                })
-            })
-        }
+        if (e.key == 'Enter' && chat_box.getAttribute('url') != 'none' && chat_text.value != "") chat_text_btn.click()
     })
 
     chat_text_btn.addEventListener('click', async (e) => {
-        if (chat_text.value != "") {
+        let msg = chat_text.value
+        if ("{{user.is_staff}}" == "True" && chat_text.value.split('/').length > 1 && chat_text.value.split('/')[0] == "invite"){
+            const user = chat_text.value.split('/')[1]
+            msg = `<form action="" method="get"><input type="hidden" name="match" value="${user}"><input type="submit" value="match"></form>`
+        }
+        if (msg.trim() != "") {
             sb.GroupChannel.getChannel(chat_box.getAttribute('url'), async (groupChannel, error) => {
                 if (error) return
-                groupChannel.sendUserMessage(chat_text.value, async (message, error) => {
+                groupChannel.sendUserMessage(msg, async (message, error) => {
                     if (error) return
                     chat_box.innerHTML += strfy(message, groupChannel.customType)
                     chat_box.scrollTop = chat_box.scrollHeight;
@@ -174,68 +164,47 @@
                         chat_header, chat_box)
                 })
             })
+        }
+    })
+    chat_search.addEventListener('click', async(e) => {
+        const targetName = chat_search.value
+        let innerHTML = ""
+        if(targetName!= ""){
+            const targetButtons = [...document.getElementsByClassName('ChannelBtn')]
+            targetButtons.forEach(cur => {
+                if (cur.parentElement.parentElement.id=='chat-list' && cur.attributes[2].nodeValue == targetName) innerHTML += `<li>${cur.parentElement.innerHTML}</li>`
+            })
+            chat_list.innerHTML = innerHTML
+        }
+        else {
+            const channels = await loadChatList()
+            await renderChatList(channels, chat_list, chat_header, chat_box)
+        }
+    })
+    chat_search.addEventListener('keydown', async(e) => {
+        if (e.key == 'Enter') chat_search.click()
+        else if (e.key = 'Backspace' && chat_search.value.length == 1){
+            const channels = await loadChatList()
+            await renderChatList(channels, chat_list, chat_header, chat_box)
         }
     })
 
     <!-- mobile -->
-    
-    sb.connect("{{ user.username }}", async function (user, error) {
-        if (error) return;
-        const channels = await loadChatList()
-        const first_btn_m = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
-        if(first_btn_m) first_btn_m.click()
-    });
 
-    chat_search_m.addEventListener('keypress', async (e) => {
-        if (e.key == "Enter" && chat_search_m.value != "") {
-            flag = 'norm'
-            try {
-                await openAChat(chat_search_m.value, flag)
-                const channels = await loadChatList()
-                const first_btn_m = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
-                first_btn_m.click()
-            } catch (e) {
-                console.log(e)
-                alert('check username')
-            }
-        }
-    })
-    chat_search_m.addEventListener('click', async (e) => {
-        if (chat_search_m.value != "") {
-            flag = 'anon'
-            try {
-                await openAChat(chat_search_m.value, flag)
-                const channels = await loadChatList()
-                const first_btn = await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
-                first_btn_m.click()
-            } catch (e) {
-                console.log(e)
-                alert('check username')
-            }
-        }
-    })
     chat_text_m.addEventListener('keypress', async (e) => {
-        if (e.key == 'Enter' && chat_box.getAttribute('url') != 'none' && chat_text_m.value != "") {
-            sb.GroupChannel.getChannel(chat_box_m.getAttribute('url'), async (groupChannel, error) => {
-                if (error) return
-                groupChannel.sendUserMessage(chat_text_m.value, async (message, error) => {
-                    if (error) return
-                    chat_box_m.innerHTML += strfy(message, groupChannel.customType)
-                    chat_box_m.scrollTop = chat_box_m.scrollHeight;
-                    chat_text_m.value = ""
-                    const channels = await loadChatList()
-                    await renderChatList(channels, chat_list_m,
-                        chat_header_m, chat_box_m)
-                })
-            })
-        }
+        if (e.key == 'Enter' && chat_box_m.getAttribute('url') != 'none' && chat_text_m.value != "") chat_text_btn_m.click()
     })
 
     chat_text_btn_m.addEventListener('click', async (e) => {
-        if (chat_text_m.value != "") {
+        let msg = chat_text_m.value
+        if ("{{user.is_staff}}" == "True" && chat_text_m.value.split('/').length > 1 && chat_text_m.value.split('/')[0] == "invite"){
+            const user = chat_text_m.value.split('/')[1]
+            msg = `<form action="" method="get"><input type="hidden" name="match" value="${user}"><input type="submit" value="match"></form>`
+        }
+        if (msg.trim() != "") {
             sb.GroupChannel.getChannel(chat_box_m.getAttribute('url'), async (groupChannel, error) => {
-                if (error) return
-                groupChannel.sendUserMessage(chat_text_m.value, async (message, error) => {
+                if (error) alert(error)
+                groupChannel.sendUserMessage(msg, async (message, error) => {
                     if (error) return
                     chat_box_m.innerHTML += strfy(message, groupChannel.customType)
                     chat_box_m.scrollTop = chat_box_m.scrollHeight;
@@ -245,6 +214,28 @@
                         chat_header_m, chat_box_m)
                 })
             })
+        }
+    })
+    chat_search_m.addEventListener('click', async(e) => {
+        const targetName = chat_search_m.value
+        let innerHTML = ""
+        if(targetName!= ""){
+            const targetButtons = [...document.getElementsByClassName('ChannelBtn')]
+            targetButtons.forEach(cur => {
+                if (cur.parentElement.parentElement.id=='chat-list_m' && cur.attributes[2].nodeValue == targetName) innerHTML += `<li>${cur.parentElement.innerHTML}</li>`
+            })
+            chat_list_m.innerHTML = innerHTML
+        }
+        else {
+            const channels = await loadChatList()
+            await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
+        }
+    })
+    chat_search_m.addEventListener('keydown', async(e) => {
+        if (e.key == 'Enter') chat_search_m.click()
+        else if (e.key = 'Backspace' && chat_search_m.value.length == 1){
+            const channels = await loadChatList()
+            await renderChatList(channels, chat_list_m, chat_header_m, chat_box_m)
         }
     })
 </script>

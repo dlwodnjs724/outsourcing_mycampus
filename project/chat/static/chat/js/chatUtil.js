@@ -4,7 +4,6 @@
  * @returns string 
  */
 const strfy = (message) => {
-    const time = new Date(message.createdAt).toISOString()
     if (message._sender.userId == sb.currentUser.userId) return `<div class="chat me"> ${message.message}</div>`
     return `<div class="chat other"> ${message.message}</div>`
 }
@@ -13,12 +12,12 @@ const strfy = (message) => {
  * @param {channel} channel sb.GroupChannel 인스턴스?
  * @return {String} 포매팅 된 10개의 채팅 로그
  */
-const loadLog = (url, length) => {
+const loadLog = (url) => {
     return new Promise((res, rej) => {
         sb.GroupChannel.getChannel(url, (groupChannel, error) => {
             if (error) return
             const log = groupChannel.createPreviousMessageListQuery()
-            log.limit = length;
+            log.limit = 200;
             log.reverse = false;
             log.load((messages, error) => {
                 if (error) rej(error);
@@ -51,18 +50,19 @@ const getTimePassed = (ms) => {
  * @returns element html양식의 문자열.
  */
 const createChannelBtn = (channel) => {
+    if(channel.members.length < 2) return ''
     const _with = channel.members.filter(v => v.userId != sb.currentUser.userId)[0]
     const flag = channel.customType == 'anon' ? true : false
     const html = `
     <li>
         <div class="url ChannelBtn" url="${channel.url}" with="${flag? "anon" : _with.userId}" anonKey="${_with.metaData.anonKey}">
             <div class="prof">
-                ${flag? '<img src="{% static "/svg/Anon.svg" %}" >' :"<img src="+_with.profileUrl+">"}
+                <img src="/static/svg/Anon.svg" >
             </div>
             <div class="two-line">
                 <div class="fst">
                     <div class="partner">
-                        ${flag? `anon${_with.metaData.anonKey}` : _with.userId}
+                        ${flag? `anon` : _with.userId}
                     </div>
                     <div class="last-time">
                         ${channel.lastMessage==null ? "" : getTimePassed(channel.lastMessage.createdAt)}
@@ -102,12 +102,18 @@ const setChannelBtn = async (button, chat_header, chat_box) => {
         chat_a.style.display = 'none';
         chat_m.style.display = 'flex';
         chat_back.style.display = 'block';
+        back.style.display = 'none';
         chat_header.innerHTML = `<span>${button.querySelector('.partner').innerHTML}</span>`
         chat_box.setAttribute('url', button.getAttribute('url'))
         chat_box.setAttribute('with', `${button.querySelector('.partner').innerHTML}`)
         chat_box.setAttribute('anon', button.getAttribute('with') == 'anon' ? true : false)
-        chat_box.innerHTML = await loadLog(button.getAttribute('url'), 10)
+        chat_box.innerHTML = await loadLog(button.getAttribute('url')
+        )
         chat_box.scrollTop = chat_box.scrollHeight;
+        sb.GroupChannel.getChannel(button.getAttribute('url'), async (groupChannel, error) => {
+            if (error) return
+            groupChannel.markAsRead();
+        })
     })
 }
 
@@ -148,7 +154,7 @@ const renderChatList = async (channels, chat_list, chat_header, chat_box, last) 
         buttons.forEach(async cur => {
             await setChannelBtn(cur, chat_header, chat_box)
         })
-        return buttons[0]
+        return buttons
     }
 }
 
@@ -172,7 +178,7 @@ const customCreateChannel = (other, type) => {
                 })(groupChannel)
                 rej('no such user')
             }
-            res(groupChannel)
+            else res(groupChannel)
         })
     })
 }
@@ -185,12 +191,36 @@ const customCreateChannel = (other, type) => {
  * @returns {channel} 생선된 채널
  */
 const openAChat = async (other, type) => {
-    if (other == sb.currentUser.userId) throw new Error('param err')
-    const channels = await loadChatList(other)
+    if (other == sb.currentUser.userId) throw new Error('self inviting is not allowed')
+    const channels = await loadChatList()
     const targets = channels.filter(cur => {
         if (cur.members.filter(_cur => _cur.userId == other).length) return cur
     })
-    if (targets.length == 2) throw new Error('already 2 chat')
-    else if (targets.length == 1 && targets[0].customType == type) throw new Error(`already existing ${type} chat`)
-    return await customCreateChannel(other, type)
+    if (targets.length == 2 || (targets.length == 1 && targets[0].customType == type) ) throw new Error(1)
+    else return await customCreateChannel(other, type)
 }
+
+const findChatBtn = (btns, users, other, type) => {
+    if (type != 'norm' && type != 'anon') return btns[0]
+    const arr = btns.filter( cur => {
+        if(type == 'norm'){
+            return (cur.getAttribute('with') == other) 
+        }
+        else {
+            return ((users.filter(cur => cur.userId == other)[0].metaData["anonKey"] == cur.getAttribute('anonkey')) && cur.getAttribute('with') != users.filter(cur => cur.userId == other)[0].userId)
+        }
+    })
+    return arr[0]
+
+}
+
+const loadUsers = async () => {
+    return new Promise ((res,rej) => {
+        const UserQ = sb.createApplicationUserListQuery()
+        UserQ.next((users, err) => {
+            if (err) rej('no users')
+            else res(users)
+        })
+    })
+    
+} 

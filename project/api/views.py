@@ -10,9 +10,11 @@ import random
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.contenttypes.models import ContentType
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
-
-from board.models import Post, Comment, Noti
+from accounts.models import User
+from board.models import Post, Comment, Noti, ReportedContent, Report
 from core.models import Univ
 from .models import Token
 
@@ -50,7 +52,7 @@ def send_mail(request):
         univ_domain = Univ.objects.get(url_name=univ).domain
 
         if univ_domain != email_domain:
-            raise Exception("Not allowed Email domain")
+            raise Exception(f'Invalid email format. Please enter it according to your school email format. e.g. @{univ_domain}')
 
         token = get_token(email)
 
@@ -95,6 +97,13 @@ def activate(request):
 
 
 def post_bookmark(request):
+    if request.user.is_anonymous:
+        post = Post.objects.select_related('author', 'author__univ').get(pk=request.POST.get('pk', None))
+        univ_url = post.author.univ.url_name
+        return JsonResponse({
+            'univ_url': univ_url,
+        })
+
     try:
         if not request.user.is_authenticated:
             raise Exception("User is not authenticated")
@@ -122,6 +131,13 @@ def post_bookmark(request):
 
 
 def post_like(request):
+    if request.user.is_anonymous:
+        post = Post.objects.select_related('author', 'author__univ').get(pk=request.POST.get('pk', None))
+        univ_url = post.author.univ.url_name
+        return JsonResponse({
+            'univ_url': univ_url,
+        })
+
     try:
         if not request.user.is_authenticated:
             raise Exception("User is not authenticated")
@@ -139,7 +155,7 @@ def post_like(request):
             post.likes.remove(user)
         else:
             post.likes.add(user)
-            Noti.objects.create(_from=request.user, _to=post.author, object_id=post.pk, content_type=ContentType.objects.get(app_label='board', model='post'))
+            Noti.objects.create(from_n=request.user,noti_type = 'p_l', to_n=post.author, object_id=post.pk, content_type=ContentType.objects.get(app_label='board', model='post'))
             
         context = {
             'pk': post.pk,
@@ -151,6 +167,13 @@ def post_like(request):
 
 
 def comment_like(request):
+    if request.user.is_anonymous:
+        comment = Comment.objects.select_related('author', 'author__univ').get(pk=request.POST.get('pk', None))
+        univ_url = comment.author.univ.url_name
+        return JsonResponse({
+            'univ_url': univ_url,
+        })
+
     try:
         if not request.user.is_authenticated:
             raise Exception("User is not authenticated")
@@ -168,7 +191,7 @@ def comment_like(request):
             comment.comment_likes.remove(user)
         else:
             comment.comment_likes.add(user)
-            Noti.objects.create(_from=request.user, _to=comment.author, object_id=comment.pk, content_type=ContentType.objects.get(app_label='board', model='comment'))
+            Noti.objects.create(from_n=request.user, noti_type='c_l', to_n=comment.author, object_id=comment.pk, content_type=ContentType.objects.get(app_label='board', model='comment'))
 
         context = {
             'pk': comment.pk,
@@ -178,3 +201,66 @@ def comment_like(request):
 
     except Exception as e:
         return HttpResponseBadRequest(content="Bad request: " + str(e))
+
+
+def report_content(request):
+    """
+    :param request:
+    pk: 댓글, 게시글 pk
+    targetType: c or p (댓글, 게시글)
+    abuseType: (sexual, bully, racist, illegal, others)
+    reporter: 신고 하는 사람 pk
+
+    :return:
+    로그인 안 한 유저는 univ_url
+    한 유저는 200 ok
+    """
+    if not request.is_ajax():
+        return JsonResponse({
+            "err": "Only for api"
+        })
+
+    if not request.method == 'POST':
+        return JsonResponse({
+            "err": "Not allowed request method"
+        })
+
+    pk = request.POST.get('pk')
+    target_type = request.POST.get('targetType')
+    target = None
+
+    if not request.user.is_anonymous:
+        if target_type == 'c':
+            target = Comment.objects.select_related('author', 'author__univ').get(pk=pk)
+            url_name = target.author.univ.url_name
+        else:
+            target = Post.objects.select_related('author', 'author__univ').get(pk=pk)
+            url_name = target.author.univ.url_name
+        
+
+    abuse_type = request.POST.get('abuseType')
+    reporter_pk = request.POST.get('reporter')
+    reporter = User.objects.get(pk=reporter_pk)
+    abuser = target.author
+    if request.user == abuser:
+            return JsonResponse({
+            "err": "You can't report yourself"
+        })
+
+    if target_type == 'p':
+        report_content = ReportedContent(origin_post=target, content=target.content)
+        report_content.title = target.title
+    else:
+        report_content = ReportedContent(origin_comment=target, content=target.content)
+        report_content.title = target.content
+
+    report_content.save()
+    report_paper = Report(target_type=target_type, target_content=report_content, report_type=abuse_type, abuser=abuser, reporter=reporter)
+    report_paper.save()
+
+    abuser.is_reported = True
+    abuser.save()
+
+    return JsonResponse({
+        "message": "Reporting is success"
+    })

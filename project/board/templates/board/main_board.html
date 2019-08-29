@@ -4,11 +4,10 @@
 
 
 
-
 {% block css %}
-    <link rel="stylesheet" media="(max-width:768px)"
+    <link rel="stylesheet" media="(max-width:767px)"
           href="{% static "board/css/board_header/board_header_mobile.css" %}" type="text/css">
-    <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_post/board_post_mobile.css" %}"
+    <link rel="stylesheet" media="(max-width:767px)" href="{% static "board/css/board_post/board_post_mobile.css" %}"
           type="text/css">
     <link rel="stylesheet" media="(min-width:768px)" href="{% static "board/css/board_post/board_post_small.css" %}"
           type="text/css">
@@ -25,15 +24,17 @@
             <div class="header__wrap">
                 <div class="header__main">
                     <div class="header__ham" id="h_click">
-                        <img src="{% static "/svg/햄버거.svg" %}" alt="">
+                        <img src="{% static "/svg/ham-white.svg" %}" alt="">
                     </div>
                     <div class="header__logo">
                         <a href="{% url 'core:board:main_board' univ.url_name %}">
-                            <img src="{% static "/svg/box logo.svg" %}">
+                            <img src="{% static "/svg/box-logo.svg" %}">
                             <img src="{{ univ.logo_mobile.url }}">
                         </a>
                     </div>
                     <div class="board__header__right">
+                        {% if request.user.is_authenticated %}
+
                         <ul class="board__buttons">
                             <a href="{% url 'core:chat:index' univ.url_name %}">
                             <li><img src="{% static "/svg/messege box.svg" %}"></li>
@@ -42,6 +43,11 @@
                                 <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
                             </a>
                         </ul>
+                        {% else %}
+                            <a href="{% url 'core:accounts:login' univ.url_name %}" class="board__header__a_m">
+                                <img src="{% static "/svg/signup.svg" %}" alt="">
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -51,16 +57,17 @@
     <div class="header__dropdown mobile__header" id="h_h" style="display: none;">
      <a href="{% url 'core:accounts:mypage' univ.url_name %}">
         <div class="header__drop__mypage">
-            <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page
+            <img src="{% static "/svg/mypage-green.svg" %}" alt="">My Page
         </div>
         </a>
-        <div class="header__drop__notification">
-            <img src="{% static "/svg/알림.svg" %}" alt="">Notification
+        <div class="header__drop__notification"
+        onclick="location.href='{% url 'core:board:notification' univ.url_name %}'">
+            <img src="{% static "/svg/alarm-green.svg" %}" alt="">Notification
         </div>
         <div class="header__drop__search">
             <form action="" method="get">
                 <button type="submit" value="search">
-                    <img src="{% static "/svg/검색.svg" %}">
+                    <img src="{% static "/svg/search-green.svg" %}">
                 </button>
                 <input type="text" placeholder="Search" name="search" value="{{ search }}">
             </form>
@@ -72,19 +79,26 @@
         <div class="pannel__top__state">
             <a href="{{ url }}?state=new">
                 {% if state == 'new' %}
-                    <img src="{% static "/svg/버튼2.svg" %}">
+                    <img src="{% static "/svg/web-new-selected.svg" %}">
                 {% else %}
-                    <img src="{% static "/svg/버튼3.svg" %}">
+                    <img src="{% static "/svg/web-new.svg" %}">
                 {% endif %}
             </a>
             <a href="{{ url }}?state=hot">
                 {% if state == 'hot' %}
-                    <img src="{% static "/svg/버튼4.svg" %}">
+                    <img src="{% static "/svg/web-hot-selected.svg" %}">
                 {% else %}
-                    <img src="{% static "/svg/버튼1.svg" %}">
+                    <img src="{% static "/svg/web-hot.svg" %}">
                 {% endif %}
             </a>
         </div>
+        {% if selected_category %}
+        <div class="pannel__top__category_pc">
+            {{ selected_category }}
+        </div>
+        {% else %}
+            
+        {% endif %}
     </div>
 
 
@@ -96,7 +110,8 @@
                         <li class="board__post__container">
                             <div class="board__post__like">
                                 <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
-                                <button type="button" class="like" name="{{ post.pk }}" value="Like">
+                                <button type="button" class="like" name="{{ post.pk }}" value="Like"
+                                        onclick="likePost({{ post.pk }})">
                                     {% if user in post.likes.all %}
                                         <img id="like_id_{{ post.pk }}" class='clicked'
                                              src="{% static "/svg/like-clicked.svg" %}"/>
@@ -108,18 +123,21 @@
                             <div class="board__post__content">
                                 <div class="post__text">
                                     <div class="post__top">
+                                        <a href="{% url 'core:board:category_board' univ.url_name post.ctgy.name %}" style="text-decoration:none;">
                                         <div class="post__top__category">
                                             {{ post.ctgy.name }}
                                         </div>
+                                        </a>
                                         <div class="post__top__author">
                                             {{ post.name }}
                                         </div>
                                     </div>
                                     <div class="post__mid">
                                         <div class="post__mid__title">
-                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
+                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
                                         </div>
-                                        <div class="post__mid__content">
+                                        <div class="post__mid__content"
+                                        onclick="location.href='{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}'">
                                             {{ post.content|truncatechars:60 }}
                                         </div>
                                     </div>
@@ -158,9 +176,9 @@
                                 </div>
 
                                 <div class="post__image">
-                                    {% for img in post.images.all %}
-                                        <img src="{{ img.image_thumbnail.url }}" alt="">
-                                    {% endfor %}
+                                    <img src="{{ post.images.all.0.image_thumbnail.url }}" alt="">
+{#                                    {% for img in post.images.all %}#}
+{#                                    {% endfor %}#}
                                 </div>
                             </div>
                         </li>
@@ -176,14 +194,13 @@
         <div class="board__pannel__right">
             <a href="{% url 'core:board:post_create' univ.url_name %}">
                 <div class="pannel__right__create">
-                    <img src="{% static "svg/create post.svg/" %}" alt="">
+                    <img src="{% static "svg/create-post.svg" %}" alt="">
                     <p>Create Post</p>
                 </div>
             </a>
             <div class="pannel__right__category">
                 <p>Category</p>
                 <ul class="right__category__list">
-                    <li class="c_d">+</li>
                     {% for category in categories %}
                         <li class="{% cycle "c_a" "c_b" "c_c" "c_d" %}">
                             <a id="category__a"
@@ -194,6 +211,11 @@
                             </a>
                         </li>
                     {% endfor %}
+                    <li style="background-color: #55b8bd">
+                      <a href="{% url 'core:board:category_create' url_name %}">
+                        <img src="{% static 'svg/category_plus.svg' %}" alt="">
+                      </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -201,25 +223,26 @@
 
     <div class="board__pannel__top container mobile__board">
         <div class="pannel__top__state">
-
             <a href="{{ url }}?state=new">
                 {% if state == 'new' %}
-                    <img src="{% static "/svg/버튼2.svg" %}">
+                    <img src="{% static "/svg/app-new-selected.svg" %}">
                 {% else %}
-                    <img src="{% static "/svg/버튼3.svg" %}">
+                    <img src="{% static "/svg/app-new.svg" %}">
                 {% endif %}
             </a>
-            <a href="" {{ url }}?state=hot"">
+            <a href="{{ url }}?state=hot" id="hothot">
                 {% if state == 'hot' %}
-                    <img src="{% static "/svg/버튼4.svg" %}">
+                    <img src="{% static "/svg/app-hot-selected.svg" %}">
                 {% else %}
-                    <img src="{% static "/svg/버튼1.svg" %}">
+                    <img src="{% static "/svg/app-hot.svg" %}">
                 {% endif %}
             </a>
         </div>
 
         <div class="pannel__top__category" id="show_drop_category">
-            <img src="{% static "/svg/category.svg" %}" id="m_category" alt="">
+            <a href="#" id="m_category_a">
+                <img src="{% static "/svg/category.svg" %}" id="m_category" alt="">
+            </a>
             <div class="top__category__face">
                 {% if selected_category %}
                     {{ selected_category }}
@@ -227,7 +250,7 @@
                     Category
                 {% endif %}
             </div>
-            <img src="{% static "/svg/회색.svg" %}" id="m_drop" alt="">
+            <img src="{% static "/svg/down-arrow.svg" %}" id="m_drop" alt="">
         </div>
         <div class="pannel__top__category_drop" id="hide_drop_category" style="display:none;">
             <img src="{% static "/svg/category.svg" %}" id="m_category_drop" alt="">
@@ -239,14 +262,20 @@
                         </a>
                     </div>
                 {% endfor %}
+                    <div class="top__category__face__drop" id="top__category__face__drop__plus"
+                    onclick="location.href='{% url 'core:board:category_create' url_name %}'">
+                        <a href="{% url 'core:board:category_create' url_name %}">
+                            <img src="{% static 'svg/category_plus.svg' %}" alt="">
+                        </a>
+                    </div>
             </div>
-            <img src="{% static "/svg/회색.svg" %}" id="m_drop_drop" alt="">
+            <img src="{% static "/svg/down-arrow.svg" %}" id="m_drop_drop" alt="">
         </div>
 
         {% comment %} <div class="board__pannel__right">
             <a href="{% url 'core:board:post_create' univ.url_name %}">
                 <div class="pannel__right__create">
-                    <img src="{% static "svg/create post.svg/" %}" alt="">
+                    <img src="{% static "svg/create-post.svg/" %}" alt="">
                     <p>Create Post</p>
                 </div>
             </a>
@@ -277,16 +306,19 @@
                             <div class="board__post__content">
                                 <div class="post__text">
                                     <div class="post__top">
+                                        <a href="{% url 'core:board:category_board' univ.url_name post.ctgy.name %}" style="text-decoration:none;">
                                         <div class="post__top__category">
                                             {{ post.ctgy.name }}
                                         </div>
+                                        </a>
                                         <div class="post__top__author">
                                             {{ post.name }}
                                         </div>
                                     </div>
-                                    <div class="post__mid">
+                                    <div class="post__mid" 
+                                    onclick="location.href='{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}'">
                                         <div class="post__mid__title">
-                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title|truncatechars:30 }}</a>
+                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
                                         </div>
                                         <div class="post__mid__content">
                                             {{ post.content|truncatechars:140 }}
@@ -305,7 +337,8 @@
                                             </div>
 
                                             <div class="s_con post__bottom__like">
-                                                <button type="button" class="like" name="{{ post.pk }}" value="Like">
+                                                <button type="button" class="like" name="{{ post.pk }}" value="Like"
+                                                        onclick="likePost({{ post.pk }})">
                                                     {% if user in post.likes.all %}
                                                         <img id="m_like_id_{{ post.pk }}" class='clicked'
                                                              src="{% static "/svg/like-clicked.svg" %}"/>
@@ -354,11 +387,12 @@
 {% endblock %}
 
 {% block javascript %}
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous"></script>
     <script src="{% static "board/js/scroll.js" %}"></script>
     <script>
+      {% if is_post %}
+        alert('There is no post yet. Write your first post!');
+      {% endif %}
+
         window.onload = function () {
             var isMobile = window.innerWidth < 769;
             var USER = {{ request.user.pk }};
@@ -454,6 +488,7 @@
                             postFields.likes.length,
                             postPk,
                             postPk,
+                            postPk,
                             isClicked,
                             like_icon_will_use,
                             postFields.ctgy.name,
@@ -535,6 +570,60 @@
             })(user)
         });
 
+        function likePost(postPK) {
+            var pk = postPK;
+            var like_img = document.getElementById(`like_id_${pk}`);
+            var m_like_img = document.getElementById(`m_like_id_${pk}`);
+
+            // console.log(like_img.classList.contains('clicked'));
+            if (like_img) {
+              if (!(like_img.classList.contains('clicked'))) {
+                like_img.src = "/static/svg/like-clicked.svg";
+                like_img.setAttribute('class', 'clicked');
+              } else {
+                like_img.src = "/static/svg/like.svg";
+                like_img.removeAttribute('class', 'clicked');
+              }
+            }
+            if (m_like_img) {
+              if (!(m_like_img.classList.contains('clicked'))) {
+                  m_like_img.src = "/static/svg/like-clicked.svg";
+                  m_like_img.setAttribute('class', 'clicked');
+              } else {
+                  m_like_img.src = "/static/svg/like.svg";
+                  m_like_img.removeAttribute('class', 'clicked');
+              }
+            }
+
+
+            const univUrlName = "{{ univ.url_name }}";
+            const url = '{% url 'api:post_like' %}';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'pk': postPK,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    url_name: univUrlName
+                },
+                datatype: "json",
+                success: function (response) {
+                  if (response['univ_url']) {
+                    location.href = "{% url 'core:accounts:login' 'univ_url' %}".replace('univ_url', response['univ_url']);
+                    return;
+                  }
+
+                    $(`#post_${response['pk']}`).text(response['likes_count']);
+                    $(`#m_post_${response['pk']}`).text(response['likes_count']);
+                },
+                error: function (request, status, error) {
+                    alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                }
+            })
+        }
+
+
+/*
         $('.like').click(function () {
             var pk = $(this).attr('name')
             var like_img = document.getElementById(`like_id_${pk}`);
@@ -577,7 +666,7 @@
                 }
             })
         });
-
+*/
 
         $('.bookmark').click(function () {
             const url = '{% url 'api:post_bookmark' %}';
@@ -616,9 +705,9 @@
                 hide_category.style.display = 'none';
             }
         };
+        var drop = document.getElementById("h_h");
 
         document.getElementById('h_click').onclick = () => {
-            var drop = document.getElementById("h_h");
             if (drop.style.display == 'none') {
                 drop.style.display = 'flex';
             } else {

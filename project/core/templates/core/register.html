@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'core/css/register.css' %}">
+{% endblock %}
+
+
+{% block contents %}
+  <div class="container">
+    <div class="success-modal">
+      <div class="modal-contents">
+        <div class="modal__exit-button">
+          <a href="{% url 'main' %}">
+            <span class="times">&times</span>
+          </a>
+        </div>
+        <form action="{% url 'main_register' %}" method="post">
+          {% csrf_token %}
+          <div class="signup-form">
+            <div class="signup-form__input">
+              <label for="id_full_name" content="Your University" class="signup__form-label">Your Universiy</label>
+              {{ form.full_name }}
+            </div>
+            <div class="signup-form__input">
+              <label for="id_email" class="signup__form-label">Enter your university email</label>
+              {{ form.email }}
+            </div>
+            <div class="signup-form__input signup-form__submit">
+              <button class="signup-form__next-button" type="submit">
+                Next
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

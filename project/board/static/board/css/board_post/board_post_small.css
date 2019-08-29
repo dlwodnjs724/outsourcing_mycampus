@@ -23,7 +23,7 @@
 }
 
 .pannel__top__state {
-    width: 180px;
+    width: 120px;
 }
 
 .board__pannel__top a {
@@ -33,11 +33,11 @@
 }
 
 .board__pannel__top img {
-    width: 80px;
+    width: 50%;
 }
 
 .post__top__author {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
 }
 
 .board__pannel__left {
@@ -51,7 +51,7 @@
 
 .board__post__container {
     background-color: #ffffff;
-    height: 140px;
+    height: auto;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -138,18 +138,17 @@
 .post__top__category {
     background-color: #eff2f4;
     border-radius: 4px;
-    padding: 1px 20px 3px 20px;
-    font-weight: normal;
+    padding: 2px 20px 2px 20px;
     color: #5d5c5e;
     text-align: center;
     font-size: 13px;
+    font-weight: normal;
 }
 
 .post__mid {
     display: flex;
     flex-direction: column;
     margin-top: 5px;
-    height: 100%;
 }
 
 .post__mid__title {
@@ -161,12 +160,12 @@
     margin-bottom: 5px;
     overflow: hidden;
     text-overflow: ellipsis;
-    word-wrap: nowrap;
+    word-break: break-all;
 }
 
 .post__mid__title a {
     color: #302d2c;
-    /* width:100%; */
+    width:100%;
     text-decoration: none;
 }
 
@@ -180,7 +179,7 @@
     font-family: YDIYGO320;
 
     color: #a6a7a7;
-    height: 60px;
+    height: 100%;
 
     word-break: break-all;
 }
@@ -306,7 +305,7 @@
 }
 
 .c_common {
-    font-size: 0.8rem;
+    font-size: 1rem;
     width: 80%;
     font-weight: normal;
     font-style: normal;
@@ -330,4 +329,17 @@
 
 .c_d {
     background-color: #bfdec3;
+}
+
+.pannel__top__category_pc {
+    width: 20%;
+    margin-right: 22%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background-color: #9cd0c1;
+    font-size: 1.3rem;
+    color:#fff;
 }

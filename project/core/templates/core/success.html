@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'core/css/success.css' %}">
+{% endblock %}
+
+
+{% block contents %}
+  <div class="container">
+    <div class="success-modal">
+      <div class="modal-contents">
+        <div class="modal__exit-button">
+          <a href="{% url 'main' %}">
+            <span class="times">&times</span>
+          </a>
+        </div>
+        <div class="success__wrapper">
+          <div class="success__top">
+            Thank you for your application
+          </div>
+          <div class="success__bottom">
+            <div class="bottom_img">
+              <img src="{% static 'svg/box-logo.svg' %}" alt="">
+            </div>
+            <div class="bottom_sentence">
+              <div>
+                We will let you
+              </div>
+              <div>
+                when <span>'{{ univ_name }} MY CAMPUS'</span> is ready!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

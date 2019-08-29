@@ -15,7 +15,7 @@ class User(AbstractUser):
     class_of = models.IntegerField(null=True, blank=False)
     terms_acceptance = models.BooleanField(default=False, blank=False)
     univ = models.ForeignKey(Univ, on_delete=models.SET_NULL, null=True, blank=False)
-    email = models.EmailField(blank=False, null=False)
+    email = models.EmailField(blank=False, null=False, unique=True)
 
     is_validated = models.BooleanField(default=False)
     is_suspended = models.BooleanField(default=False)

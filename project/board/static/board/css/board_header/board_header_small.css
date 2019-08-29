@@ -63,3 +63,11 @@
 .board__header__search button img {
     width: 18px;
 }
+
+#board__header__a{
+    width: 100%;
+}
+
+#board__header__a img {
+    width:100%;
+}

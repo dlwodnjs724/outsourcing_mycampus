@@ -44,9 +44,13 @@
     border: 1pt solid #aeb0b3;
 }
 
+.signup__verification-form {
+    font-size: 18px !important;
+}
+
 .signup-form__input input::placeholder {
     color: #A7ABAD;
-    font-size: 1rem;
+    font-size: 18px;
     font-weight: 100;
 }
 

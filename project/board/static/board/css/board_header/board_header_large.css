@@ -68,3 +68,11 @@
 .base__logo{
     width: 100px!important;
 } */
+
+#board__header__a{
+    width: 100%;
+}
+
+#board__header__a img {
+    width:100%;
+}

@@ -1,3 +1,4 @@
+from django import forms
 from django.db import models
 import datetime
 from accounts.models import User
@@ -12,21 +13,100 @@ from imagekit.processors import Thumbnail
 
 
 class Noti(models.Model):
+    NOTI_CHOICES = (
+        ('c_l', 'comment_like'),
+        ('c_c', 'nest_comment'),
+        ('c','comment'),
+        ('p_l','post_like')
+    )
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
     object_id = models.PositiveIntegerField(db_column='object_id')
     content_object = GenericForeignKey('content_type', 'object_id')
-    _from = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="_from")
-    _to = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="_to")
+    from_n = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="_from")
+    to_n = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="_to")
+    noti_type = models.CharField(max_length=5, choices=NOTI_CHOICES, null=True)
+    is_read = models.PositiveIntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    def time_interval(self):
+        now = arrow.now().timestamp
+        # now = utc.localize(datetime.datetime.utcnow())
+        create = self.created_at.timestamp()
+        ti = math.floor(int(now - create) / 60)
+
+        if ti < 60:
+            t = f'{ti}m'
+        elif 60 <= ti < (24 * 60):
+            t = f'{math.floor(ti / 60)}h'
+        else:
+            t = f'{math.floor(ti / (24 * 60))}d'
+        return t
+
+    def get_context(self):
+        tn = ""
+        notiType = self.noti_type
+        if notiType == "c_l":
+            tn = "likes your comment."
+        elif notiType == "c_c":
+            tn = "commented on your comment."
+        elif notiType == "c":
+            tn = "commented on your post."
+        elif notiType == "p_l":
+            tn = "likes your post."
+        return tn
+
+    def get_category(self):
+        q = ""
+        content = self.content_type
+        if str(content) == "post":
+            q = Post.objects.select_related('ctgy').get(pk=self.object_id).ctgy.name
+        elif str(content) == "comment":
+            q = Comment.objects.select_related('post', 'post__ctgy').get(pk=self.object_id).post.ctgy.name
+        return q
+
+    def get_post(self):
+        q = ""
+        content = self.content_type
+        if str(content) == "post":
+            q = self.object_id
+        elif str(content) == "comment":
+            q = Comment.objects.select_related('post').get(pk=self.object_id).post.pk
+        return q
 
 
 class Report(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_column='content_type_id')
-    object_id = models.PositiveIntegerField(db_column='object_id')
-    content_object = GenericForeignKey('content_type', 'object_id')
+    TYPE_CHOICES = (
+        ('sexual', 'Sexual insult'),
+        ('bully', 'Cyber bullying'),
+        ('racist', 'Racist remarks'),
+        ('illegal', 'Illegal activity'),
+        ('others', 'Others')
+    )
 
-    reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    TARGET_CHOICES = (
+        ('c', 'comment'),
+        ('p', 'post')
+    )
 
-    what = models.TextField(max_length=500, blank=False)
+    report_type = models.CharField(max_length=20, choices=TYPE_CHOICES, null=True)
+    target_type = models.CharField(max_length=5, choices=TARGET_CHOICES, null=True)
+    reporter = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='reporting', null=True)
+    abuser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reported',null=True)
+    target_content = models.OneToOneField('ReportedContent', on_delete=models.PROTECT, related_name='report_paper',null=True)
+
+    accepted = models.BooleanField(default=False, null=True)
+    is_handled = models.BooleanField(default=False, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
+
+class ReportedContent(models.Model):
+    origin_comment = models.ForeignKey('Comment', on_delete=models.SET_NULL, related_name='reported_copy', null=True, blank=True)
+    origin_post = models.ForeignKey('Post', on_delete=models.SET_NULL, related_name='reported_copy', null=True, blank=True)
+    content = models.TextField(blank=False, null=False)
+    title = models.CharField(max_length=100, null=True)
 
 
 class Category(models.Model):
@@ -35,6 +115,7 @@ class Category(models.Model):
     dscrp = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=True)
+    is_anonymous = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at']
@@ -69,7 +150,7 @@ class Post(models.Model):
 
     saved = models.ManyToManyField(User, related_name='saved', blank=True)
 
-    report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
+    is_reported = models.BooleanField(default=False)
     noti = GenericRelation(Noti, object_id_field='object_id', content_type_field='content_type', related_query_name='posts')
 
     class Meta:
@@ -83,11 +164,11 @@ class Post(models.Model):
         ti = math.floor(int(now - create) / 60)
 
         if ti < 60:
-            t = f'{ti} minutes ago'
+            t = f'{ti}m'
         elif 60 <= ti < (24 * 60):
-            t = f'{math.floor(ti / 60)} hours ago'
+            t = f'{math.floor(ti / 60)}h'
         else:
-            t = f'{math.floor(ti / (24 * 60))} days ago'
+            t = f'{math.floor(ti / (24 * 60))}d'
         return t
 
     def total_likes(self):
@@ -126,7 +207,6 @@ class Comment(models.Model):
     # 대댓글
     parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
 
-    report = GenericRelation(Report, object_id_field='object_id', content_type_field='content_type', related_query_name='comments')
     noti = GenericRelation(Noti, object_id_field='object_id', content_type_field='content_type', related_query_name='comments')
 
     class Meta:
@@ -140,11 +220,11 @@ class Comment(models.Model):
         ti = math.floor(int(now - create) / 60)
 
         if ti < 60:
-            t = f'{ti} minutes ago'
+            t = f'{ti}m'
         elif 60 <= ti < (24 * 60):
-            t = f'{math.floor(ti / 60)} hours ago'
+            t = f'{math.floor(ti / 60)}h'
         else:
-            t = f'{math.floor(ti / (24 * 60))} days ago'
+            t = f'{math.floor(ti / (24 * 60))}d'
         return t
 
     def total_likes(self):
@@ -157,7 +237,7 @@ class Comment(models.Model):
     def name(self):
         if self.is_anonymous:
             if self.author == self.post.author:
-                return 'anon(writer)'
+                return 'anon(OP)'
             return 'anon'
         return self.author.username
         # if self.is_anonymous else self.author.username

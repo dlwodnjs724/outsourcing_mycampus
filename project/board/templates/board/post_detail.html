@@ -5,65 +5,95 @@
 
 {% block css %}
   <link rel="stylesheet" href="{% static 'board/css/post_detail.css' %}">
-  <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_post/board_post_mobile.css" %}" type="text/css">
-  <link rel="stylesheet" media="(max-width:768px)" href="{% static "board/css/board_header/board_header_mobile.css" %}" type="text/css">
+  <link rel="stylesheet" media="(max-width:767px)" href="{% static "board/css/board_post/board_post_mobile.css" %}" type="text/css">
+  <link rel="stylesheet" media="(max-width:767px)" href="{% static "board/css/board_header/board_header_mobile.css" %}" type="text/css">
+  <link rel="stylesheet" href="{% static "board/css/report_css.css" %}">
 {% endblock %}
 
 {% block contents %}
-    <div class="base__header mobile__header">
-        <div class="base__header__used-space container">
-            <div class="header__wrap">
-                <div class="header__main">
-                    <div class="header__ham" id="h_click">
-                        <img src="{% static "/svg/햄버거.svg" %}" alt="">
-                    </div>
-                    <div class="header__logo">
-                    <a href="{% url 'core:board:main_board' url_name %}">
-                        <img src="{% static "/svg/box logo.svg" %}">
-                        <img src="{{ univ.logo_mobile.url }}">
-                        </a>
-                    </div>
-                    <div class="board__header__right">
-                        <ul class="board__buttons">
-                            <a href="{% url 'core:chat:index' univ.url_name %}">
-                            <li><img src="{% static "/svg/messege box.svg" %}"></li>
-                            </a>
-                            <a href="{% url 'core:board:post_create' univ.url_name %}">
-                                <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
-                            </a>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+  <div class="base__header mobile__header">
+    <div class="base__header__used-space container">
+      <div class="header__wrap">
+        <div class="header__main">
+          <div class="header__ham" id="h_click">
+            <img src="{% static "/svg/ham-white.svg" %}" alt="">
+          </div>
+          <div class="header__logo">
+            <a href="{% url 'core:board:main_board' url_name %}">
+              <img src="{% static "/svg/box-logo.svg" %}">
+              <img src="{{ univ.logo_mobile.url }}">
+            </a>
+          </div>
+          <div class="board__header__right">
+            <ul class="board__buttons">
+              <a href="{% url 'core:chat:index' univ.url_name %}">
+                <li><img src="{% static "/svg/messege box.svg" %}"></li>
+              </a>
+              <a href="{% url 'core:board:post_create' univ.url_name %}">
+                <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
+              </a>
+            </ul>
+          </div>
         </div>
+      </div>
     </div>
     <div class="header__dropdown mobile__header pd__drop"  id="h_h"  style="display: none;">
      <a href="{% url 'core:accounts:mypage' univ.url_name %}">
         <div class="header__drop__mypage">
-            <img src="{% static "/svg/마이페이지.svg" %}" alt="">My Page
+            <img src="{% static "/svg/mypage-green.svg" %}" alt="">My Page
         </div>
         </a>
-        <div class="header__drop__notification">
-            <img src="{% static "/svg/알림.svg" %}" alt="">Notification</div>
+        <div class="header__drop__notification"
+        onclick="location.href='{% url 'core:board:notification' univ.url_name %}'">
+            <img src="{% static "/svg/alarm-green.svg" %}" alt="">Notification</div>
         <div class="header__drop__search">
             <form action="" method="get">
                 <button type="submit" value="search">
-                    <img src="{% static "/svg/검색.svg" %}">
+                    <img src="{% static "/svg/search-green.svg" %}">
                 </button>
                 <input type="text" placeholder="Search" name="search" value="{{ search }}">
             </form>
         </div>
     </div>
+  </div>
 
 
   <div class="container">
     <div class="detail__wrapper">
       <div class="detail__post__header">
-        <a href="{% url 'core:board:main_board' univ.url_name %}">
+        <a href="{{ request.META.HTTP_REFERER }}">
           <span style="color: #55b8bd;">&lt;</span> My Campus
         </a>
       </div>
       <div class="detail__post__container">
+        <div id="myModal" class="modal">
+          <div class="modal-content">
+            <div>
+            <span id='xBtn'>
+              <img src="{% static 'svg/cancel.svg' %}" alt="">
+            </span>
+            </div>
+            <img src="{% static '/svg/Anon.svg' %}" alt="" class="modal_anon">
+            <p></p>
+            <form action="{% url 'core:chat:index' univ.url_name %}" method="post" id="mdl_f">
+              {% csrf_token %}
+              <input type="hidden" id="other_v" name="other">
+              <input type="hidden" id="type_v" name="type">
+              <div class="modal-button" id="yes">
+                <img src="{% static "svg/content-message.svg" %}">
+                <div>
+                  Send a message
+                </div>
+              </div>
+              <div class="modal-button" id="no">
+                <img src="{% static "svg/content-report.svg" %}">
+                <div>
+                  Report abuse
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
         <div class="post__container__row">
           <div id="post__category">{{ selected_category.name }}</div>
           <div class="post__function">
@@ -109,13 +139,14 @@
             {% endfor %}
           </div>
         </div>
-        <div class="post__container__row row__align-center">
-          <div id="post__info">
+        <div class="post__container__row row__align-center flex_direction_column">
+          <div class="post__info">
             <div class="post__like">
               <button type="button" class="like reset-button" name="{{ post.pk }}" value="Like"
                       onclick="likePost({{ post.pk }})">
                 {% if user in post.likes.all %}
-                  <img id="like_id_{{ post.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
+                  <img id="like_id_{{ post.pk }}" class='clicked'
+                       src="{% static "/svg/like-clicked.svg" %}"/>
                 {% else %}
                   <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
                 {% endif %}
@@ -128,11 +159,32 @@
               <img src="{% static "/svg/comment.svg" %}"/>
               <div>{{ post.comments.all.count }}</div>
             </div>
-            <div class="post__share" id="current_url">
+            <div class="post__share" id="current_url" onclick="shareUrl()">
               <img src="{% static '/svg/share.svg' %}" alt="">
               <div>Share</div>
             </div>
           </div>
+          {% if is_author %}
+            <div id="post__info__bottom">
+              <div class="post__edit">
+                <img src="{% static 'svg/edit_btn.svg' %}" alt="">
+                <a href="{% url 'core:board:post_edit' url_name selected_category post.pk %}">
+                  Edit
+                </a>
+              </div>
+              <div>
+                <form action="{% url 'core:board:post_delete' url_name selected_category post.pk %}"
+                      method="post" class="post__delete__form">
+                  {% csrf_token %}
+                  <img src="{% static 'svg/delete_btn.svg' %}" alt="">
+                  <button type="submit" class="reset-button"
+                          onclick="return confirm('Are you sure you want to delete your post?')">
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+          {% endif %}
         </div>
       </div>
       <div class="detail__post__comment">
@@ -146,15 +198,22 @@
             </div>
             <div class="comment__form__bottom">
               <div class="comment__checkbox__wrapper">
-                <input type="checkbox" name="is_anonymous" class="comment__checkbox"
-                       id="comment__is_anonymous" checked>
-                <label for="comment__is_anonymous">
-                </label>
+                {% if not anon %}
+                  <input type="checkbox" name="is_anonymous" class="comment__checkbox"
+                         id="comment__is_anonymous" checked>
+                  <label for="comment__is_anonymous">
+                  </label>
+                {% else %}
+                  <input type="checkbox" name="is_anonymous" class="comment__checkbox"
+                         id="comment__is_anonymous" checked onclick="return false;">
+                  <label for="comment__is_anonymous">
+                  </label>
+                {% endif %}
                 anon
               </div>
               <button type="submit" class="reset-button comment__write">
                 <img src="{% static "/svg/comment.svg" %}"/>
-                comment
+                reply
               </button>
             </div>
           </form>
@@ -163,7 +222,7 @@
           {% for comment in comments %}
             <div class="comment__row">
               <div class="comment__top">
-                <div class="comment__top__left">
+                <div class="comment__top__left" onclick="getComment({{ comment.pk }})">
                   <img src="{% static '/svg/Anon.svg' %}" alt="">
                   <div class="comment__info">
                     <div class="comment__author">{{ comment.name }}</div>
@@ -172,10 +231,12 @@
                 </div>
                 <div class="comment__top__right">
                   <div class="comment__like">
-                    <button type="button" class="like reset-button" name="{{ comment.pk }}" value="Like"
+                    <button type="button" class="like reset-button" name="{{ comment.pk }}"
+                            value="Like"
                             onclick="likeComment({{ comment.pk }})">
                       {% if user in comment.likes.all %}
-                        <img id="like_id_{{ comment.pk }}" class='clicked' src="{% static "/svg/like-clicked.svg" %}"/>
+                        <img id="like_id_{{ comment.pk }}" class='clicked'
+                             src="{% static "/svg/like-clicked.svg" %}"/>
                       {% else %}
                         <img id="like_id_{{ comment.pk }}" src="{% static "/svg/like.svg" %}"/>
                       {% endif %}
@@ -188,8 +249,24 @@
                     <button type="button" class="reset-button" name="{{ comment.pk }}"
                             onclick="clickNestedComment({{ comment.pk }})">
                       <img src="{% static "/svg/comment.svg" %}"/>
-                      comment
+                      reply
                     </button>
+                  </div>
+                  <div>
+                    {% if comment.author == user %}
+                      <form action="{% url 'core:board:comment_delete' url_name selected_category post.pk comment.pk %}"
+                            method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="reset-button"
+                                onclick="return confirm('Are you sure you want to delete your reply?');">
+                          <img src="{% static 'svg/delete_btn.svg' %}" alt="" class="comment_delete">
+                        </button>
+                      </form>
+                    {% else %}
+                      <div class="comment__report">
+                        <img src="{% static 'svg/report.svg' %}" alt="" onclick="reportComment({{ comment.pk }})">
+                      </div>
+                    {% endif %}
                   </div>
                 </div>
               </div>
@@ -203,7 +280,7 @@
                 {% for nested_comment in comment|child_comments %}
                   <div class="comment__row nested_comment__row">
                     <div class="comment__top">
-                      <div class="comment__top__left">
+                      <div class="comment__top__left" onclick="getComment({{ comment.pk }})">
                         <img src="{% static '/svg/Anon.svg' %}" alt="">
                         <div class="comment__info">
                           <div class="comment__author">{{ nested_comment.name }}</div>
@@ -212,14 +289,32 @@
                       </div>
                       <div class="comment__top__right nest_comment__top__right">
                         <div class="comment__like">
-                          <button type="button" class="like reset-button" name="{{ comment.pk }}" value="Like"
+                          <button type="button" class="like reset-button"
+                                  name="{{ comment.pk }}" value="Like"
                                   onclick="likeComment({{ nested_comment.pk }})">
-                            <img id="like_id_{{ nested_comment.pk }}" src="{% static "/svg/like.svg" %}"/>
+                            <img id="like_id_{{ nested_comment.pk }}"
+                                 src="{% static "/svg/like.svg" %}"/>
                           </button>
                           <div id="comment_{{ nested_comment.pk }}">
                             {{ nested_comment.total_likes }}
                           </div>
                         </div>
+                        {% if nested_comment.author == user %}
+                          <div>
+                            <form action="{% url 'core:board:comment_delete' url_name selected_category post.pk nested_comment.pk %}"
+                                  method="post">
+                              {% csrf_token %}
+                              <button type="submit" class="reset-button"
+                                      onclick="return confirm('Are you sure you want to delete your reply?');">
+                                <img src="{% static 'svg/delete_btn.svg' %}" alt="" class="comment_delete">
+                              </button>
+                            </form>
+                          </div>
+                        {% else %}
+                          <div class="comment__report">
+                            <img src="{% static 'svg/report.svg' %}" alt="" onclick="reportComment({{ comment.pk }})">
+                          </div>
+                        {% endif %}
                       </div>
                     </div>
                     <div class="comment__bottom">
@@ -234,6 +329,54 @@
       </div>
     </div>
   </div>
+  <div class="report-modal" id="on-report-modal" style="display: none;">
+    <div class="report-form-container">
+      <div id="report-from__close">
+        <img src="{% static 'svg/cancel.svg' %}" alt=""
+             onclick="closeReportModal()">
+      </div>
+      <div class="report-radio__list">
+        <div class="report-radio__wrap">
+          <div class="report__name">
+            Sexual insult
+          </div>
+          <input type="radio" name="abuseType" class="report__form-radio" id="sexual" value="sexual">
+          <label for="sexual"></label>
+        </div>
+        <div class="report-radio__wrap">
+          <div class="report__name">
+            Cyber bullying
+          </div>
+          <input type="radio" name="abuseType" class="report__form-radio" id="bully" value="bully">
+          <label for="bully"></label>
+        </div>
+        <div class="report-radio__wrap">
+          <div class="report__name">
+            Racist remarks
+          </div>
+          <input type="radio" name="abuseType" class="report__form-radio" id="racist" value="racist">
+          <label for="racist"></label>
+        </div>
+        <div class="report-radio__wrap">
+          <div class="report__name">
+            Illegal activity
+          </div>
+          <input type="radio" name="abuseType" class="report__form-radio" id="illegal" value="illegal">
+          <label for="illegal"></label>
+        </div>
+        <div class="report-radio__wrap">
+          <div class="report__name">
+            Others
+          </div>
+          <input type="radio" name="abuseType" class="report__form-radio" id="others" value="others">
+          <label for="others"></label>
+        </div>
+      </div>
+      <button type="submit" onclick="reportPostContent({{ post.pk }})" class="report-button">
+        <img src="{% static "/svg/report-white.svg" %}" alt="">Report abuse
+      </button>
+    </div>
+  </div>
 {% endblock %}
 
 {% block javascript %}
@@ -245,8 +388,16 @@
       sb.connect("{{ user.username }}", async function (user, error) {
         if (error) return;
     });
+    let is_comment = 0;
     const author = document.getElementById('post__author')
     const msg_btn = document.getElementById('post__message')
+    const xBtn = document.getElementById('xBtn')
+    const other_v = document.getElementById('other_v')
+    const type_v = document.getElementById('type_v')
+    const mdl_f = document.getElementById('mdl_f')
+    const modal = document.getElementById('myModal');
+    const yes_btn = document.getElementById("yes")
+    const no_btn = document.getElementById("no")
     const comment_profs = [...document.getElementsByClassName('comment__top__left')]
     const comment_authors = []
     {% for comment in comments %}
@@ -255,44 +406,60 @@
     comment_authors.push("{{child.author}}")
     {% endfor %}
     {% endfor %}
-    author.addEventListener('click', async e => {
-      const flag = author.querySelector('div').innerText=="anon" ? 'anon' : "norm"
-      const result = confirm(`wanna send message to ${author.querySelector('div').innerText}?`)
-      if(result){
-        try{
-            await openAChat("{{ post.author.username }}", flag)
-            window.location.href = `${window.location. origin}/${window.location.pathname.split("/")[1]}/chat`          
-        }
-        catch (e) {
-          alert(e)
-        }
-      }
+
+    xBtn.addEventListener('click', e=>{
+      modal.style.display='none';
     })
-    msg_btn.addEventListener('click', e => {
+    author.addEventListener('click', e => {
+      String(type_v.value=('type', "{{post.is_anonymous}}" == "True" ? "anon" : "norm" ))
+      String(other_v.value=('other',  "{{post.author.username}}"))
+      modal.querySelector('p').innerText = `{{ post.name }}`
+      is_comment = 0;
+      modal.style.display = "flex";
+    })
+    yes_btn.addEventListener('click', async e=>{
+      try{
+        await openAChat(other_v.value,type_v.value)
+        mdl_f.submit()
+      }
+      catch (_e) {
+        if(_e.message==1) mdl_f.submit()
+        else alert(_e)
+        e.stopPropagation()
+      }
+      modal.style.display='none';
+    })
+    no_btn.addEventListener('click', e=>{
+      reportModal.style.display = 'flex';
+      modal.style.display='none';
+      e.stopPropagation()
+    })
+    msg_btn.addEventListener('click', () => {
+      is_comment = 0;
       author.click()
     })
-    
-    for (c in comment_profs) {
-      (async (btn ,id) => {
-        btn.addEventListener('click', async e=> {
-          let flag = 'anon'
-          if (btn.querySelector('.comment__author').innerText == id) flag = 'norm'
-          const result = confirm(`wanna send message to ${flag=="anon" ? 'anon' : id }`)
-          if(result){
-            try{
-                await openAChat(id, flag)
-                window.location.href = `${window.location. origin}/${window.location.pathname.split("/")[1]}/chat`          
-            }
-            catch (e) {
-              alert(e)
-            }
-          }
-        })
-      })(comment_profs[c],comment_authors[c])
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+            is_comment = 0;
+        }
+        if (event.target == modal_r) {
+          modal_r.style.display ="none";
+          is_comment = 0;
+        }
     }
-
-
-
+    for (c in comment_profs) {
+      ( (btn, id) => {modal.style.display
+        btn.addEventListener('click', e=>{
+          type_v.value=('type', btn.querySelector('.comment__author').innerText
+ == id ? "norm" : "anon" )
+          other_v.value=('other', id)
+          modal.querySelector('p').innerText = `${btn.querySelector('.comment__author').innerText
+ == id ? id : "anon"}`
+          modal.style.display = "flex";
+        })
+      })(comment_profs[c], comment_authors[c])
+    }
     // 북마크
     function bookmark(postPk) {
       let bookmark_img = document.getElementById(`saved_id_${postPk}`);
@@ -313,13 +480,16 @@
         },
         datatype: "json",
         success: function (response) {
+          if (response['univ_url']) {
+            location.href = "{% url 'core:accounts:login' 'univ_url' %}".replace('univ_url', response['univ_url']);
+            return;
+          }
         },
         error: function (request, status, error) {
           alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
         }
       })
     }
-
     // 게시글 좋아요
     function likePost(postPk) {
       let like_img = document.getElementById(`like_id_${postPk}`);
@@ -348,12 +518,9 @@
         }
       })
     }
-
-
     // 댓글 좋아요
     function likeComment(commentPk) {
       const url = '{% url 'api:comment_like' %}';
-
       $.ajax({
         type: 'POST',
         url: url,
@@ -363,6 +530,10 @@
         },
         datatype: "json",
         success: function (response) {
+          if (response['univ_url']) {
+            location.href = "{% url 'core:accounts:login' 'univ_url' %}".replace('univ_url', response['univ_url']);
+            return;
+          }
           $(`#comment_${response['pk']}`).text(response['likes_count']);
         },
         error: function (request, status, error) {
@@ -370,8 +541,6 @@
         }
       })
     }
-
-
     // 댓글 작성
     /*
     function writeComment() {
@@ -401,7 +570,6 @@
               <div class="nested_comment">
                 <div class="nested_comment_form" id="nested_comment_form_${el['pk']}"></div>
                 <div class="nested_comment_list" id="nested_comment_list_${el['pk']}" style="margin-left: 50px;">
-
                 </div>
               </div>
               <br>
@@ -416,10 +584,24 @@
       })
     }
     */
-
     // 대댓글 버튼 클릭
     function clickNestedComment(commentPk) {
       let nestedCommentBox = document.querySelector(`#nested_comment_form_${commentPk}`);
+      let anon = '{{ anon }}';
+      let anonCheck = '';
+      console.log(anonCheck);
+      if (anon !== 'False') {
+        anonCheck = `
+        <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
+                       id="comment__is_anonymous_${commentPk}" checked onclick="return false;">
+        `
+      }
+      else {
+        anonCheck = `
+        <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
+                       id="comment__is_anonymous_${commentPk}" checked>
+        `
+      }
       let commentForm;
       if (nestedCommentBox.innerHTML)
         commentForm = '';
@@ -435,15 +617,14 @@
             </div>
             <div class="comment__form__bottom">
               <div class="comment__checkbox__wrapper">
-                <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
-                       id="comment__is_anonymous_${commentPk}" checked>
+                ${anonCheck}
                 <label for="comment__is_anonymous_${commentPk}">
                 </label>
                 anon
               </div>
               <button type="submit" class="reset-button comment__write" id="comment_write_${commentPk}">
                 <img src="{% static "/svg/comment.svg" %}"/>
-                comment
+                reply
               </button>
             </div>
             <input type="hidden" name="parent_id" value="${commentPk}">
@@ -452,8 +633,6 @@
         `;
       nestedCommentBox.innerHTML = commentForm;
     }
-
-
     /*
     // 대댓글 작성
     function writeNestedComment(commentPk) {
@@ -490,21 +669,19 @@
       })
     }
     */
-
     // share
-    document.querySelector("#current_url").addEventListener("click", function () {
+    function shareUrl () {
       let tempElem = document.createElement('textarea');
       tempElem.value = window.location.href;
       document.body.appendChild(tempElem);
-
       tempElem.select();
       tempElem.setSelectionRange(0, 9999);
       document.execCommand("copy");
       document.body.removeChild(tempElem);
-    })
+      alert('URL successfully copied.')
+    }
 
       document.getElementById('h_click').onclick = () =>{
-        console.log("helllo");
         var drop = document.getElementById("h_h");
         if(drop.style.display == 'none'){
             drop.style.display = 'flex';
@@ -512,5 +689,75 @@
             drop.style.display = 'none';
         }
     };
+
+    function getComment (commentPK) {
+        comment_abuse = commentPK;
+        is_comment = 1;
+    }
+
+    function reportComment(commentPK){
+        comment_abuse = commentPK;
+        is_comment = 1;
+        reportModal.style.display = 'flex';
+    }
+
+    // 신고하기 버튼 (포스트)
+        const modal_r = document.getElementById('on-report-modal');
+        postReportBtn = document.querySelector("#post__report");
+        reportModal = document.querySelector('.report-modal');
+        postReportBtn.onclick = () => {
+            reportModal.style.display = 'flex';
+            is_comment = 0;
+        }
+        function reportPostContent(pk) {
+            {#pk: 댓글 or 게시글 pk#}
+            {#targetType: 'c' or 'p' (댓글 or 게시글)#}
+            {#abuseType: (sexual, bully, racist, illegal, others)#}
+            {#reporter: 신고 하는 사람 pk#}
+            const url = '{% url 'api:report_content' %}';
+            var abuseType2 = $('input[name="abuseType"]:checked').val();
+
+            let tT = 'p';
+            if(is_comment == 1){
+              pk = comment_abuse;
+              tT = 'c';
+            }
+
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'pk': pk,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'abuseType': abuseType2,
+                    'targetType': tT,
+                    'reporter':  '{{request.user.pk}}',
+                },
+                datatype: "json",
+                success: function (response) {
+                  if(response["err"]){
+                    alert(response["err"]);
+                    modal_r.style.display ="none";
+                    return;
+                  }
+                    modal_r.style.display ="none";
+                    alert('abuse reported')
+                },
+                error: function (request, status, error) {
+                    alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                }
+            });
+            {# return response: anonymous 유저의 경우 univ_url이 넘어옴 -> 리다이렉트 #}
+            {# 로그인 된 유저인 경우 200 ok ("message": "Reporting is success")가 넘어옴 #}
+        }
+
+    const closeReportModal = () => {
+          const modal = document.querySelector(".report-modal");
+            modal.style.display = "none";
+        }
+
+
+
   </script>
 {% endblock %}

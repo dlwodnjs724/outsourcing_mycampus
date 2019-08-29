@@ -3,10 +3,14 @@
 <html lang="en">
 
 <head>
+    <link rel="shortcut icon" type="image/png" href="{% static '/ico/box-logo.ico' %}"/>
+    <meta name="theme-color" content="#4fbcbd" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#4fbcbd">
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta property="og:image" content="{% static 'images/logo.png' %}"/>
     <link rel="stylesheet" href="{% static "base/css/base.css" %}" type="text/css">
     <title>{% firstof html_title "MY CAMPUS" %}</title>
     <script src="https://kit.fontawesome.com/6b942254ad.js"></script>
@@ -17,7 +21,19 @@
 <body>
     <div class="base__header pc__header">
         <div class="base__header__used-space container">
-            <div class="base__logo"><img src="{{ univ.logo.url }}"></div>
+        {% if univ.logo %}
+            <div class="base__logo">
+              <a href="{% url 'core:board:main_board' univ.url_name %}">
+                <img src="{{ univ.logo.url }}">
+              </a>
+            </div>
+        {% else %}
+            <div class="base__logo">
+                <a href="{% url 'main' %}">
+                    <img src="{% static 'svg/logo.svg' %}" alt="">
+                </a>
+            </div>
+        {% endif %}
             {% block header %}
             {% endblock %}
         </div>
@@ -26,7 +42,7 @@
 
     {% endblock %}
 
-    <script src="https://cdn.jsdelivr.net/npm/sendbird@3.0.105/SendBird.min.js"></script>
+    <script src="{% static 'lib/jquery-3.4.1.min.js' %}"></script>
     <script src="{% static 'chat/js/API.js' %}"></script>
     <script src="{% static 'chat/js/chatUtil.js' %}"></script>
     {% block javascript %}

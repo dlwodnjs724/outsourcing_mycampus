@@ -1,0 +1,145 @@
+@media(min-width : 768px ) {
+    .noti__container {
+        background-color: white;
+        border-radius: 12px;
+        padding: 0;
+    }
+
+    .noti__top {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 0;
+    }
+
+    hr {
+        margin-top: 0;
+        border-width: 3px;
+        border-top:none;
+        border-left: none;
+        border-right: none;
+    }
+
+    .noti__ul > li {
+        cursor: pointer;
+    }
+
+    .noti__each {
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        margin: 5px 2rem;
+        font-size: 0.8rem;
+        padding: 5px 0;
+    }
+
+    .noti__ul > hr {
+        margin-top: 0;
+        border-width: 1px!important;
+        border-top:none;
+        border-left: none;
+        border-right: none;
+
+    }
+
+    .noti__img {
+        height: 2.2rem;
+        margin-right: 10px;
+    }
+
+    .noti__content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 2.3rem;
+
+    }
+
+    .noti__content__top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: auto;
+    }
+
+    .noti__top__time {
+        color: #a6a7a7;
+    }
+
+    .noti__content__mid {
+        color: #a6a7a7;
+    }
+
+}
+
+@media(max-width : 767px ) {
+    .noti__container {
+        background-color: white;
+        padding: 0;
+    }
+
+    .noti__top {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 0;
+    }
+
+    hr {
+        margin-top: 0;
+        border-width: 3px;
+        border-top:none;
+        border-left: none;
+        border-right: none;
+    }
+
+    .noti__ul > li {
+        cursor: pointer;
+    }
+
+    .noti__each {
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        margin: 10px 2rem;
+        font-size: 0.8rem;
+        padding: 5px 0;
+    }
+
+    .noti__ul > hr {
+        margin-top: 0;
+        border-width: 1px!important;
+        border-top:none;
+        border-left: none;
+        border-right: none;
+
+    }
+
+    .noti__img {
+        height: 2.2rem;
+        margin-right: 10px;
+    }
+
+    .noti__content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 2.3rem;
+
+    }
+
+    .noti__content__top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: auto;
+    }
+
+    .noti__top__time {
+        color: #a6a7a7;
+    }
+
+    .noti__content__mid {
+        color: #a6a7a7;
+    }
+}

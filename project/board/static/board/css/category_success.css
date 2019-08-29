@@ -1,0 +1,114 @@
+.reset-button {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+
+  background: transparent;
+
+  /* inherit font & color from ancestor */
+  color: inherit;
+  font: inherit;
+
+  /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+  line-height: normal;
+
+  /* Corrects font smoothing for webkit */
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+
+  /* Corrects inability to style clickable `input` types in iOS */
+  -webkit-appearance: none;
+}
+
+.new__category__container {
+  background-color: white;
+  border-radius: 13px;
+  margin-top: 2rem;
+}
+
+.category__form__top {
+  display: flex;
+  align-items: center;
+  padding: 13px;
+  width: 100%;
+  justify-content: center;
+}
+
+.category__form__top > a {
+  width: 5%;
+}
+
+.category__form__top img {
+  width: 16px;
+}
+
+.category__form__bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 40px;
+  width: 100%;
+  border-top: 1px solid #cecece;
+  background-color: #f4f4f4;
+  border-bottom-left-radius: 13px;
+  border-bottom-right-radius: 13px;
+}
+
+.category__form__top > div {
+  width: 95%;
+  margin-right: 5%;
+  font-size: 23px;
+  font-weight: bolder;
+  text-align: center;
+}
+
+.category__form__bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px 40px;
+  width: 100%;
+  font-size: 20px;
+
+  border-top: 1px solid #cecece;
+  background-color: #f4f4f4;
+  border-bottom-left-radius: 13px;
+  border-bottom-right-radius: 13px;
+}
+
+.category__form__bottom > div {
+  margin: 10px 0;
+}
+
+
+@media (max-width: 767px) {
+  body {
+    background-color: white;
+  }
+
+  .container {
+    padding: 0;
+    margin-top: -12px;
+  }
+
+  .category__form__top {
+    border-top: 1px solid #cecece;
+  }
+
+  .category__form__top > div {
+    font-weight: normal;
+  }
+
+  .category__form__bottom {
+    border-bottom: 1px solid #cecece;
+    border-radius: unset;
+  }
+
+  #id_name, #id_dscrp {
+    border: 1px solid #cecece;
+  }
+
+}

@@ -1,17 +1,59 @@
-{% load static %}
-<!doctype html>
+{% extends 'base.html' %}
 
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" type="text/css" href="{% static 'core/css/main.css' %}">
-  <title>Document</title>
-</head>
-<body>
-Hello World!
-<h1>hello</h1>
-</body>
-</html>
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
+{% endblock %}
+
+
+{% block contents %}
+  <div class="container">
+  <div class="landing__wrapper">
+    <div class="landing__left">
+      <img src="{% static 'svg/phone_image.svg' %}" alt="">
+    </div>
+    <div class="landing__right">
+      <div class="landing__right_top">
+        <div class="top__intro">Your University's</div>
+        <div class="top__intro">Private Community</div>
+        <div class="top__logo">
+          <img src="{% static 'svg/box-logo.svg' %}" alt="">
+        </div>
+      </div>
+      <div class="landing__right_bottom">
+        <form action="{% url 'main' %}" method="post"
+              class="landing__right_form">
+          {% csrf_token %}
+          <div class="bottom__top">Choose your university</div>
+          <div class="bottom__univ_list">
+            {% for univ in univs %}
+              <div class="univ_list__univ">
+                <div class="univ__name">
+                  {{ univ.full_name }}
+                </div>
+                <input type="radio" name="univ" value="{{ univ.url_name }}"
+                       class="univ_list__check" id="univ_list_{{ univ.pk }}">
+                <label for="univ_list_{{ univ.pk }}"></label>
+              </div>
+            {% endfor %}
+            <div class="univ_list__univ">
+              <div class="univ__name">
+                My university is not here
+              </div>
+              <input type="radio" name="univ" value="none"
+                     class="univ_list__check" id="univ_list_none">
+              <label for="univ_list_none"></label>
+            </div>
+          </div>
+          <div class="landing__right_form_button">
+            <button type="submit" class="reset-button">
+              <img src="{% static 'core/images/next.png' %}" alt="">
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

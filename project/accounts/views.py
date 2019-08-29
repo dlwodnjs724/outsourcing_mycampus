@@ -31,15 +31,16 @@ def login(request, url_name):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            url = request.GET.get('next') or reverse("core:board:main_board")
-            return redirect(url, url_name=url_name)
+            board_url = reverse('core:board:main_board', args=[url_name])
+            url = request.GET.get('next') or board_url
+            return redirect(url)
         else:
             ctx["error"] = "Login failed"
 
     return render(request, 'registration/login.html', ctx)
 
 
-@login_required
+
 def logout(request, url_name):
     auth.logout(request)
     return redirect('main')
@@ -121,4 +122,19 @@ def mypage(request, url_name):
     else:
         return HttpResponseBadRequest(content="Not allowed method")
 
+
+def guideline(request, url_name):
+    univ = request.user.univ
+    return render(request, 'accounts/guideline.html', {
+        'univ': univ,
+        'url_name': url_name
+    })
+
+
+def policy(request, url_name):
+    univ = request.user.univ
+    return render(request, 'accounts/policy.html', {
+        'univ': univ,
+        'url_name': url_name
+    })
 
