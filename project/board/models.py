@@ -59,29 +59,27 @@ class Noti(models.Model):
     def get_category(self):
         q = ""
         content = self.content_type
-        str(content)
         if str(content) == "post":
-            q = Post.objects.get(pk = self.object_id).ctgy.name
+            q = Post.objects.select_related('ctgy').get(pk=self.object_id).ctgy.name
         elif str(content) == "comment":
-            q = Comment.objects.get(pk = self.object_id).post.ctgy.name
+            q = Comment.objects.select_related('post', 'post__ctgy').get(pk=self.object_id).post.ctgy.name
         return q
 
     def get_post(self):
         q = ""
         content = self.content_type
-        str(content)
         if str(content) == "post":
             q = self.object_id
         elif str(content) == "comment":
-            q = Comment.objects.get(pk = self.object_id).post.pk
+            q = Comment.objects.select_related('post').get(pk=self.object_id).post.pk
         return q
 
 
 class Report(models.Model):
     TYPE_CHOICES = (
-        ('sexual','Sexual insult'),
-        ('bully','Cyber bullying'),
-        ('racist','Racist remarks'),
+        ('sexual', 'Sexual insult'),
+        ('bully', 'Cyber bullying'),
+        ('racist', 'Racist remarks'),
         ('illegal', 'Illegal activity'),
         ('others', 'Others')
     )
