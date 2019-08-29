@@ -237,7 +237,7 @@ def post_detail(request, url_name, category_name, post_pk):
     anon = True if selected_category.is_anonymous else False
     post = get_object_or_404(
         Post.objects.select_related('author')
-            .prefetch_related('likes', 'saved', 'comments'),
+            .prefetch_related('likes', 'saved', 'comments', 'images'),
         ctgy=selected_category, pk=post_pk
     )
     comments = Comment.objects.prefetch_related('comment_likes', 'parent', 'parent__author')\
@@ -443,6 +443,27 @@ def comment_nest_create(request, url_name, category_name, post_pk):
     #     }
     #     return JsonResponse(context)
     # return redirect('core:board:post_detail', url_name, category_name, post_pk)
+
+
+def comment_delete(request, url_name, category_name, post_pk, comment_pk):
+    if request.user.is_anonymous:
+        return redirect_with_next(
+            'core:accounts:login',
+            'core:board:post_detail',
+            params={
+                'to': [url_name],
+                'next': [url_name, category_name, post_pk]
+            }
+        )
+
+    if request.method == 'POST':
+        comment = Comment.objects.get(pk=comment_pk)
+        if request.user != comment.author:
+            return redirect('core:board:post_detail', url_name, category_name, post_pk)
+        comment.content = '(deleted reply)'
+        comment.save()
+        return redirect('core:board:post_detail', url_name, category_name, post_pk)
+    return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
 
 def category_create(request, url_name):
