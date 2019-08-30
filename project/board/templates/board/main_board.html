@@ -132,12 +132,12 @@
                                             {{ post.name }}
                                         </div>
                                     </div>
-                                    <div class="post__mid">
+                                    <div class="post__mid" style="cursor: pointer;"
+                                         onclick="location.href='{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}'">
                                         <div class="post__mid__title">
                                             <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
                                         </div>
-                                        <div class="post__mid__content"
-                                        onclick="location.href='{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}'">
+                                        <div class="post__mid__content">
                                             {{ post.content|truncatechars:60 }}
                                         </div>
                                     </div>

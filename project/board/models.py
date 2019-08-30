@@ -141,7 +141,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', blank=False, null=True)
     title = models.CharField(max_length=100, blank=False)
     content = models.TextField(blank=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=datetime.datetime.now)
     updated_at = models.DateTimeField(auto_now=True)
     likes = models.ManyToManyField(User, default=0, related_name='liked', blank=True)
     views = models.PositiveIntegerField(default=0)
@@ -198,7 +198,7 @@ class Image(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=False, related_name="comments")
     author = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True)
-    content = models.CharField(max_length=200, blank=False)
+    content = models.CharField(max_length=300, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_anonymous = models.BooleanField(default=True)
