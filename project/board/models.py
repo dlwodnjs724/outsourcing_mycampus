@@ -147,6 +147,8 @@ class Post(models.Model):
     views = models.PositiveIntegerField(default=0)
     viewed_by = models.ManyToManyField(User, related_name='viewed', blank=True)
     is_anonymous = models.BooleanField(default=False)
+    is_notice = models.BooleanField(default=False)
+    is_ctgy_notice = models.BooleanField(default=False)
 
     saved = models.ManyToManyField(User, related_name='saved', blank=True)
 
@@ -227,11 +229,11 @@ class Comment(models.Model):
             t = f'{math.floor(ti / (24 * 60))}d'
         return t
 
-    def total_likes(self):
-        return self.comment_likes.count()
-
-    def __str__(self):
-        return f'{self.content} by {self.author}'
+    @property
+    def is_parent(self):
+        if self.parent is not None:
+            return False
+        return True
 
     @property
     def name(self):
@@ -240,7 +242,14 @@ class Comment(models.Model):
                 return 'anon(OP)'
             return 'anon'
         return self.author.username
-        # if self.is_anonymous else self.author.username
 
-    # def __str__(self):
-    #     return f'Comment (PK: {self.pk}, Author: {self.author.username} Parent: {self.parent})'
+    def children(self):
+        return Comment.objects.prefetch_related('comment_likes')\
+            .select_related('author', 'parent', 'post', 'post__author')\
+            .filter(parent=self)
+
+    def total_likes(self):
+        return self.comment_likes.count()
+
+    def __str__(self):
+        return f'{self.content} by {self.author}'

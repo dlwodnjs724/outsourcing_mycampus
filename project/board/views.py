@@ -25,13 +25,13 @@ def make_posts_set(category, univ, state, term=""):
     if category:
         ret = Post.objects.select_related('ctgy', 'author') \
             .prefetch_related('comments__author','ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
-            .filter(ctgy__univ=univ, ctgy=category) \
+            .filter(ctgy__univ=univ, ctgy=category, is_notice=False, is_ctgy_notice=False) \
             .annotate(num_likes=Count('likes'))
 
     else:
         ret = Post.objects.select_related('ctgy', 'author') \
             .prefetch_related('comments__author', 'ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
-            .filter(ctgy__univ=univ) \
+            .filter(ctgy__univ=univ, is_notice=False, is_ctgy_notice=False) \
             .annotate(num_likes=Count('likes')) \
 
 
@@ -82,7 +82,9 @@ def main(request, url_name):
 
         post_sets = make_posts_set(None, univ, state, term)
         is_post = False if post_sets else True
-
+        notice_sets = Post.objects.select_related('ctgy', 'author') \
+            .prefetch_related('comments__author', 'ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images')\
+            .filter(ctgy__univ=univ, is_notice=True)
         post_paginator = Paginator(post_sets, 15).page
         posts = post_paginator(1)
 
@@ -105,6 +107,7 @@ def main(request, url_name):
                 'categories': univ.category.all(),
                 'use_category': False,
                 'posts': posts.object_list,
+                'notices': notice_sets,
                 'state': state,
                 'url': url,
                 'has_next': posts.has_next(),
@@ -178,6 +181,9 @@ def category_board(request, url_name, category_name):
 
         post_sets = make_posts_set(selected_category, univ, state, term)
         is_post = False if post_sets else True
+        notice_sets = Post.objects.select_related('ctgy', 'author') \
+            .prefetch_related('comments__author', 'ctgy__univ', 'likes', 'saved', 'viewed_by', 'comments', 'images') \
+            .filter(ctgy__univ=univ, is_ctgy_notice=True)
         current_page = 1
 
         post_paginator = Paginator(post_sets, 15).page
@@ -206,6 +212,7 @@ def category_board(request, url_name, category_name):
                 'use_category': False,
                 'state': state,
                 'posts': posts.object_list,
+                'notices': notice_sets,
                 'url': url,
                 'has_next': posts.has_next(),
                 'is_post': is_post,
