@@ -61,7 +61,7 @@
   <div class="container">
     <div class="detail__wrapper">
       <div class="detail__post__header">
-        <a href="{{ request.META.HTTP_REFERER }}">
+        <a href="{{ request.session.back_url }}">
           <span style="color: #55b8bd;">&lt;</span> My Campus
         </a>
       </div>
