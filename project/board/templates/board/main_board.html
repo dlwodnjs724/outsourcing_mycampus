@@ -105,6 +105,88 @@
     <div class="container board__main pc__board">
         <div class="board__pannel__left">
             <ul>
+                {% for post in notices %}
+                    <div>
+                        <li class="board__post__container">
+                            <div class="board__post__like">
+                                <span id="post_{{ post.pk }}">{{ post.total_likes }}</span>
+                                <button type="button" class="like" name="{{ post.pk }}" value="Like"
+                                        onclick="likePost({{ post.pk }})">
+                                    {% if user in post.likes.all %}
+                                        <img id="like_id_{{ post.pk }}" class='clicked'
+                                             src="{% static "/svg/like-clicked.svg" %}"/>
+                                    {% else %}
+                                        <img id="like_id_{{ post.pk }}" src="{% static "/svg/like.svg" %}"/>
+                                    {% endif %}
+                                </button>
+                            </div>
+                            <div class="board__post__content">
+                                <div class="post__text">
+                                    <div class="post__top">
+                                        <a href="{% url 'core:board:category_board' univ.url_name post.ctgy.name %}" style="text-decoration:none;">
+                                        <div class="post__top__category">
+                                            {{ post.ctgy.name }}
+                                        </div>
+                                        </a>
+                                        <div class="post__top__author">
+                                            {{ post.name }}
+                                        </div>
+                                    </div>
+                                    <div class="post__mid" style="cursor: pointer;"
+                                         onclick="location.href='{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}'">
+                                        <div class="post__mid__title">
+                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
+                                        </div>
+                                        <div class="post__mid__content">
+                                            {{ post.content|truncatechars:60 }}
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="post__bottom">
+                                        <div class="post__bottom__icon">
+                                            <div class="s_con post__bottom__view">
+                                                {% if user in post.viewed_by.all %}
+                                                    <img src="{% static "/svg/view-clicked.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/view.svg" %}"/>
+                                                {% endif %}
+                                                <span>{{ post.views }}</span>
+                                            </div>
+                                            <div class="s_con post__bottom__comment">
+                                                {% if user.pk in post.comments_author %}
+                                                    <img src="{% static "/svg/comment-clicked.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/comment.svg" %}"/>
+                                                {% endif %}
+                                                <span>{{ post.comments.all.count }}</span>
+                                            </div>
+                                            <div class="s_con post__bottom__bookmark">
+                                                {% if user in post.saved.all %}
+                                                    <img src="{% static "/svg/bookmark.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/scrap.svg" %}"/>
+                                                {% endif %}
+                                                <span>{{ post.saved.all.count }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="post__bottom__time">
+                                            {{ post.time_interval }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="post__image">
+                                    <img src="{{ post.images.all.0.image_thumbnail.url }}" alt="">
+{#                                    {% for img in post.images.all %}#}
+{#                                    {% endfor %}#}
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+
+                {% endfor %}
+
+
                 {% for post in posts %}
                     <div>
                         <li class="board__post__container">
@@ -300,6 +382,85 @@
     <div class="container board__main mobile__board">
         <div class="board__pannel__left">
             <ul>
+                {% for post in notices %}
+                    <div>
+                        <li class="board__post__container">
+                            <div class="board__post__content">
+                                <div class="post__text">
+                                    <div class="post__top">
+                                        <a href="{% url 'core:board:category_board' univ.url_name post.ctgy.name %}" style="text-decoration:none;">
+                                        <div class="post__top__category">
+                                            {{ post.ctgy.name }}
+                                        </div>
+                                        </a>
+                                        <div class="post__top__author">
+                                            {{ post.name }}
+                                        </div>
+                                    </div>
+                                    <div class="post__mid"
+                                    onclick="location.href='{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}'">
+                                        <div class="post__mid__title">
+                                            <a href="{% url 'core:board:post_detail' univ.url_name post.ctgy.name post.pk %}">{{ post.title }}</a>
+                                        </div>
+                                        <div class="post__mid__content">
+                                            {{ post.content|truncatechars:140 }}
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="post__bottom">
+                                        <div class="post__bottom__icon">
+                                            <div class="s_con post__bottom__view">
+                                                {% if user in post.viewed_by.all %}
+                                                    <img src="{% static "/svg/view-clicked.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/view.svg" %}"/>
+                                                {% endif %}
+                                                <span>{{ post.views }}</span>
+                                            </div>
+
+                                            <div class="s_con post__bottom__like">
+                                                <button type="button" class="like" name="{{ post.pk }}" value="Like"
+                                                        onclick="likePost({{ post.pk }})">
+                                                    {% if user in post.likes.all %}
+                                                        <img id="m_like_id_{{ post.pk }}" class='clicked'
+                                                             src="{% static "/svg/like-clicked.svg" %}"/>
+                                                    {% else %}
+                                                        <img id="m_like_id_{{ post.pk }}"
+                                                             src="{% static "/svg/like.svg" %}"/>
+                                                    {% endif %}
+                                                </button>
+                                                <span id="m_post_{{ post.pk }}">{{ post.total_likes }}</span>
+                                            </div>
+
+                                            <div class="s_con post__bottom__comment">
+                                                {% if user.pk in post.comments_author %}
+                                                    <img src="{% static "/svg/comment-clicked.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/comment.svg" %}"/>
+                                                {% endif %}
+                                                <span>{{ post.comments.all.count }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="post__bottom__right">
+                                            <div class="post__bottom__time">
+                                                {{ post.time_interval }}
+                                            </div>
+                                            <div class="post__bottom__bookmark">
+                                                {% if user in post.saved.all %}
+                                                    <img src="{% static "/svg/bookmark.svg" %}"/>
+                                                {% else %}
+                                                    <img src="{% static "/svg/scrap.svg" %}"/>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+
+                {% endfor %}
+
                 {% for post in posts %}
                     <div>
                         <li class="board__post__container">
