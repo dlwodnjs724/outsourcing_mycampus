@@ -77,6 +77,8 @@ def can_use(request, url_name, ck_category=False, ck_anon=False, ck_univ_url=Fal
 @renderer_classes((JSONRenderer, TemplateHTMLRenderer))
 def main(request, url_name):
     try:
+
+        request.session['back_url'] = request.path
         # term, state 변경 했을 때 유저를 체크 해야 함
         [univ, state, term, selected_category] = can_use(request, url_name, True, True, True)
 
@@ -165,6 +167,8 @@ def post_create(request, url_name):
         return HttpResponseBadRequest(content="Bad request: " + str(e))
 
 
+@api_view(('POST', 'GET'))
+@renderer_classes((JSONRenderer, TemplateHTMLRenderer))
 def category_board(request, url_name, category_name):
     if request.user.is_anonymous:
         return redirect_with_next(
@@ -179,6 +183,7 @@ def category_board(request, url_name, category_name):
         [univ, state, term, selected_category] = can_use(request, url_name, ck_univ_url=True, ck_anon=True,
                                                          use_category=category_name)
 
+        request.session['back_url'] = request.path
         post_sets = make_posts_set(selected_category, univ, state, term)
         is_post = False if post_sets else True
         notice_sets = Post.objects.select_related('ctgy', 'author') \

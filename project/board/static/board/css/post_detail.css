@@ -440,6 +440,7 @@
   font-family: YDIYGO320;
   margin-top: 10px;
   word-break: break-word;
+  white-space: pre-line;
 }
 
 .nest_comment__top__right {
