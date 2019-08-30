@@ -201,7 +201,7 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=False, related_name="comments")
     author = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True)
     content = models.CharField(max_length=300, blank=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=datetime.datetime.now)
     updated_at = models.DateTimeField(auto_now=True)
     is_anonymous = models.BooleanField(default=True)
     comment_likes = models.ManyToManyField(User, related_name='comment_liked', blank=True)

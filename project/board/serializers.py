@@ -25,10 +25,11 @@ class NestedCategorySerializer(serializers.ModelSerializer):
 
 
 class NestedImageSerializer(serializers.ModelSerializer):
+    image_thumbnail = serializers.ImageField(read_only=True)
 
     class Meta:
         model = Image
-        fields = ('image',)
+        fields = ('image', 'image_thumbnail')
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -37,6 +38,7 @@ class PostSerializer(serializers.ModelSerializer):
     author = NestedUserSerializer()
     time_interval = serializers.ReadOnlyField()
     images = NestedImageSerializer(many=True)
+    name = serializers.ReadOnlyField()
 
     class Meta:
         model = Post
