@@ -3,12 +3,16 @@
 }
 
 .mail__logo .logo-img {
-    height: 3rem;
+    width: 100%;
 }
 
 .logo-img img {
-    height: 3rem;
+    width: 100%;
     margin: 0 0.8rem;
+}
+
+.mail__message {
+
 }
 
 .mail__validate-button a {
