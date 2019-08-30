@@ -690,10 +690,11 @@
                     //ajax
 
                     const req = new XMLHttpRequest();
+
                     req.open("POST", "{{ url }}");
                     req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                     req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                    req.send(`requestPage=${++currentPage}&csrfmiddlewaretoken={{ csrf_token }}`)
+                    req.send(`requestPage=${++currentPage}&csrfmiddlewaretoken={{ csrf_token }}`);
 
                     req.onreadystatechange = function (e) {
                         if (req.readyState !== XMLHttpRequest.DONE) return;
