@@ -69,7 +69,7 @@ var componentTemplate = `
             </div>
 
             <div class="post__image">
-                {19}
+                <img src="{19}" alt="">
             </div>
         </div>
     </li>

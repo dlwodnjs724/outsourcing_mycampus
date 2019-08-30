@@ -610,7 +610,6 @@
                     return Promise.all(next_posts.map(post => new Promise((resolve, reject) => {
                         postFields = post;
                         postPk = post.id;
-                        console.log(postFields)
                         var user_liked_this = userPk in postFields.likes;
                         var user_saw_this = userPk in postFields.viewed_by;
                         var user_saved_this = userPk in postFields.saved;
@@ -624,8 +623,7 @@
                         postTitle = (postFields.title.length > 30 ? postFields.title.substring(0, 30) + "…" : postFields.title);
                         postContent = (postFields.content.length > 60 ? postFields.content.substring(0, 60) + "…" : postFields.content);
 
-                        var imgs = postFields.images.map(image => document.createElement("img").src = image.image).join();
-
+                        var imgs = postFields.images.map(image => document.createElement("img").src = image.image_thumbnail)[0];
                         var ctx = {
                             "post.pk": postPk,
                             "post.total_likes": postFields.likes.length,
