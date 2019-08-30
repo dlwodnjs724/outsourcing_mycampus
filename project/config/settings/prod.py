@@ -2,7 +2,7 @@ from .common import *
 
 
 DEBUG = False
-ALLOWED_HOSTS = ['15.164.118.64', 'mycampus.site']
+ALLOWED_HOSTS = ['54.180.98.242', 'mycampus.site']
 
 DATABASES = {
     'default': {
