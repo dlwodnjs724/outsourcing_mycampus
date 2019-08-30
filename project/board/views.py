@@ -165,6 +165,8 @@ def post_create(request, url_name):
         return HttpResponseBadRequest(content="Bad request: " + str(e))
 
 
+@api_view(('POST', 'GET'))
+@renderer_classes((JSONRenderer, TemplateHTMLRenderer))
 def category_board(request, url_name, category_name):
     if request.user.is_anonymous:
         return redirect_with_next(
