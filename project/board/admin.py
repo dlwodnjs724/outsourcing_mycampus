@@ -1,12 +1,14 @@
 from django.contrib import admin
 from django.contrib import messages
-from .models import Category, Post, Image, Comment, Suggested, Report, Noti,ReportedContent
+from .models import Category, Post, Image, Comment, Suggested, Report, Noti, ReportedContent
 from core.models import Univ
+
 # from django.urls import path
 # from django.shortcuts import render, redirect,get_object_or_404
 
 admin.site.register(Noti)
 admin.site.register(ReportedContent)
+
 
 class PostAdmin(admin.ModelAdmin):
     list_per_page = 20
@@ -45,19 +47,20 @@ class SuggestedAdmin(admin.ModelAdmin):
         c = 0
         for q in queryset:
             instance = Category(
-                univ = q.univ,
-                name = q.name,
-                dscrp = q.dscrp,
+                univ=q.univ,
+                name=q.name,
+                dscrp=q.dscrp,
             )
             exist = Category.objects.filter(univ=q.univ).values_list('name', flat=True)
             if q.name in exist:
-                messages.error(request, f'『{ q.name }』 already exist at 『{ q.univ.full_name }』')
+                messages.error(request, f'『{q.name}』 already exist at 『{q.univ.full_name}』')
             else:
                 instance.save()
                 q.delete()
                 c += 1
-        if c > 0:        
-            messages.success(request, f'{ c } suggestion(s) successfully approved!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        if c > 0:
+            messages.success(request, f'{c} suggestion(s) successfully approved!!!!!!!!!!!!!!!!!!!!!!!!!!')
+
     suggestion_approve_view.short_description = "approve suggestions"
 
     # def get_urls(self):
@@ -91,26 +94,26 @@ class SuggestedAdmin(admin.ModelAdmin):
     #         self.admin_site.each_context(request),
     #         s_ctgy=Suggested.objects.all(),
     #     )
-        # print("hello ><")
-        # print(request.content_type)
-        # exist = Category.objects.filter(univ=univ).values_list('name', flat=True)
+    # print("hello ><")
+    # print(request.content_type)
+    # exist = Category.objects.filter(univ=univ).values_list('name', flat=True)
 
-        # if request.method =='POST':
-        #     instance = Category(
-        #     univ = suggested.univ,
-        #     name = suggested.name,
-        #     dscrp = suggested.dscrp,
-        #     )
-        #     print(request.body)
-        #     if suggested.name in exist:
-        #         ctx['message'] = 'already exist in this Univ'
-        #         return render(request, "admin/suggestions_detail.html", ctx)
-        #     instance.save()
-        #     suggested.delete()
-        #     ctx['message'] = 'Create New Category, Delete Suggestion'
-        #     return render(request, "admin/suggestions.html", ctx2)
-        
-        # return render(request, "admin/suggestions_detail.html", ctx)
+    # if request.method =='POST':
+    #     instance = Category(
+    #     univ = suggested.univ,
+    #     name = suggested.name,
+    #     dscrp = suggested.dscrp,
+    #     )
+    #     print(request.body)
+    #     if suggested.name in exist:
+    #         ctx['message'] = 'already exist in this Univ'
+    #         return render(request, "admin/suggestions_detail.html", ctx)
+    #     instance.save()
+    #     suggested.delete()
+    #     ctx['message'] = 'Create New Category, Delete Suggestion'
+    #     return render(request, "admin/suggestions.html", ctx2)
+
+    # return render(request, "admin/suggestions_detail.html", ctx)
 
     # def suggestion_edit_view(self, request, pk):
     #     suggested = get_object_or_404(Suggested, pk=pk)

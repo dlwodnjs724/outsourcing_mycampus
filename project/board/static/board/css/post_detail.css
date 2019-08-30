@@ -138,6 +138,7 @@
   color: #101010;
   word-break: break-word;
   margin-bottom: 20px;
+  white-space: pre-line;
 }
 
 .post__image_list {
