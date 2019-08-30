@@ -624,6 +624,8 @@
                         postContent = (postFields.content.length > 60 ? postFields.content.substring(0, 60) + "…" : postFields.content);
 
                         var imgs = postFields.images.map(image => document.createElement("img").src = image.image_thumbnail)[0];
+                        if (!imgs)
+                          imgs = '';
                         var ctx = {
                             "post.pk": postPk,
                             "post.total_likes": postFields.likes.length,
