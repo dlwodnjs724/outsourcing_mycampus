@@ -147,7 +147,9 @@
 
     function logOut() {
       if (confirm('Do you want to log out?'))
-        location.href = '{% url 'core:accounts:logout' url_name %}'
+        sb.disconnect(function(){
+            location.href = '{% url 'core:accounts:logout' url_name %}'
+        })
     }
 
 </script>
