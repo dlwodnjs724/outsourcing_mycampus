@@ -27,7 +27,7 @@
           <div class="board__header__right">
             <ul class="board__buttons">
               <a href="{% url 'core:chat:index' univ.url_name %}">
-                <li><img src="{% static "/svg/messege box.svg" %}"></li>
+                <li><img src="{% static "/svg/messege_box.svg" %}"></li>
               </a>
               <a href="{% url 'core:board:post_create' univ.url_name %}">
                 <li><img id="h__post" src="{% static "/svg/post.svg" %}"></li>
@@ -589,7 +589,6 @@
       let nestedCommentBox = document.querySelector(`#nested_comment_form_${commentPk}`);
       let anon = '{{ anon }}';
       let anonCheck = '';
-      console.log(anonCheck);
       if (anon !== 'False') {
         anonCheck = `
         <input type="checkbox" name="nested_is_anonymous" class="comment__checkbox"
