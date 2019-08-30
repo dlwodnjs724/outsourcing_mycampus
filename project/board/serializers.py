@@ -37,6 +37,7 @@ class PostSerializer(serializers.ModelSerializer):
     author = NestedUserSerializer()
     time_interval = serializers.ReadOnlyField()
     images = NestedImageSerializer(many=True)
+    name = serializers.ReadOnlyField()
 
     class Meta:
         model = Post

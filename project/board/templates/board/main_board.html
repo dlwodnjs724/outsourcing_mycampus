@@ -610,7 +610,7 @@
                     return Promise.all(next_posts.map(post => new Promise((resolve, reject) => {
                         postFields = post;
                         postPk = post.id;
-
+                        console.log(postFields)
                         var user_liked_this = userPk in postFields.likes;
                         var user_saw_this = userPk in postFields.viewed_by;
                         var user_saved_this = userPk in postFields.saved;
@@ -631,7 +631,7 @@
                             "post.total_likes": postFields.likes.length,
                             isClicked,
                             "post.ctgy.name": postFields.ctgy.name,
-                            "post.name": postFields.author.username,
+                            "post.name": postFields.name,
                             detailUrl: url.baseUrl + postFields.ctgy.name + '/' + postPk + '/',
                             "post.title": postTitle,
                             "post.content": postContent,
@@ -653,7 +653,7 @@
                             isClicked,
                             like_icon_will_use,
                             postFields.ctgy.name,
-                            postFields.author.username,
+                            postFields.name,
                             url.baseUrl + postFields.ctgy.name + '/' + postPk + '/',
                             postTitle,
                             postContent, //
