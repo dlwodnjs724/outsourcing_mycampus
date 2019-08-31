@@ -1,5 +1,8 @@
 from django.contrib import admin
 from django.contrib import messages
+from import_export.admin import ImportExportModelAdmin
+
+from board.resource import PostResource
 from .models import Category, Post, Image, Comment, Suggested, Report, Noti, ReportedContent
 from core.models import Univ
 
@@ -10,17 +13,32 @@ admin.site.register(Noti)
 admin.site.register(ReportedContent)
 
 
-class PostAdmin(admin.ModelAdmin):
+# class PostAdmin(admin.ModelAdmin):
+#     list_per_page = 20
+#     list_display = (
+#         'id', 'title', 'ctgy', 'author', 'created_at',
+#         'likes_count', 'views', 'is_anonymous'
+#     )
+#     search_fields = ('title',)
+#     ordering = ('-created_at', 'ctgy')
+#
+#     def likes_count(self, obj):
+#         return obj.likes.count()
+
+
+class PostAdmin(ImportExportModelAdmin):
     list_per_page = 20
     list_display = (
         'id', 'title', 'ctgy', 'author', 'created_at',
         'likes_count', 'views', 'is_anonymous'
     )
+    resource_class = PostResource
     search_fields = ('title',)
     ordering = ('-created_at', 'ctgy')
 
     def likes_count(self, obj):
         return obj.likes.count()
+
 
 
 class CategoryAdmin(admin.ModelAdmin):
