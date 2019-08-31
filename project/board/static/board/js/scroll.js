@@ -38,38 +38,39 @@ var componentTemplate = `
                         {8}
                     </div>
                 </div>
-                <div class="post__mid">
+                <div class="post__mid" style="cursor: pointer;"
+                     onclick="location.href='{9}'">
                     <div class="post__mid__title">
-                        <a href="{9}">{10}</a>
+                        <a href="{10}">{11}</a>
                     </div>
                     <div class="post__mid__content">
-                        {11}
+                        {12}
                     </div>
                 </div>
                 <hr/>
                 <div class="post__bottom">
                     <div class="post__bottom__icon">
                         <div class="s_con post__bottom__view">
-                            <img src="{12}"/>
-                            <span>{13}</span>
+                            <img src="{13}"/>
+                            <span>{14}</span>
                         </div>
                         <div class="s_con post__bottom__comment">
-                            <img src="{14}"/>
-                            <span>{15}</span>
+                            <img src="{15}"/>
+                            <span>{16}</span>
                         </div>
                         <div class="s_con post__bottom__bookmark">
-                            <img src="{16}"/>
-                            <span>{17}</span>
+                            <img src="{17}"/>
+                            <span>{18}</span>
                         </div>
                     </div>
                     <div class="post__bottom__time">
-                        {18}
+                        {19}
                     </div>
                 </div>
             </div>
 
             <div class="post__image">
-                <img src="{19}" alt="">
+                <img src="{20}" alt="">
             </div>
         </div>
     </li>

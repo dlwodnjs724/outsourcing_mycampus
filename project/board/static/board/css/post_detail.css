@@ -631,6 +631,10 @@
   justify-content: flex-start;
 }
 
+#xBtn > img {
+  cursor: pointer;
+}
+
 .modal_anon {
   width: 80px;
 }
