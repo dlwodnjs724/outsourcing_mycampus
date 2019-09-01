@@ -133,6 +133,7 @@
 
 .post__mid {
     display: flex;
+    height: 100%;
     flex-direction: column;
     margin-top: 5px;
 }
@@ -186,13 +187,14 @@
 .post__bottom__icon {
     display: flex;
     align-items: center;
-    width: 40%;
-    justify-content: space-between;
+    width: 50%;
+    justify-content: flex-start;
 }
 
 .s_con {
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 33%;
 }
 
@@ -202,9 +204,8 @@
     text-align: left;
     margin-right: 10%;
 }
-
 .s_con span {
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 .post__top__author {

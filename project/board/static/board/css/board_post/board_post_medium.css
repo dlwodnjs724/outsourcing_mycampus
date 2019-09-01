@@ -130,6 +130,7 @@
 
 .post__mid {
     display: flex;
+    height: 100%;
     flex-direction: column;
     margin-top: 5px;
 }
@@ -184,22 +185,24 @@
 .post__bottom__icon {
     display: flex;
     align-items: center;
-    width: 50%;
+    width: 60%;
     justify-content: space-between;
 }
 
 .s_con {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     width: 33%;
 }
 
 .s_con img {
     height: 13px;
-    width: 30px;
+    width: 25px;
     text-align: left;
     margin-right: 10%;
 }
+
 
 .board__pannel__right a {
     text-decoration: none;
