@@ -1,8 +1,10 @@
 from django.contrib import auth
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMessage
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 
 from api.models import Token
 from accounts.forms import SignupForm, LoginForm
@@ -40,7 +42,6 @@ def login(request, url_name):
     return render(request, 'registration/login.html', ctx)
 
 
-
 def logout(request, url_name):
     auth.logout(request)
     return redirect('main')
@@ -51,7 +52,6 @@ def check_mail(request, url_name):
 
 
 # activate 에서 넘겨줌
-
 def signup(request, url_name):
     try:
         email = request.GET.get('email')
@@ -84,6 +84,21 @@ def signup(request, url_name):
                 token.is_used = True
                 token.save()
 
+                url = request.build_absolute_uri(
+                    reverse('core:board:main_board', args=[url_name])
+                    + '?utm_source=Thankyou_email&utm_medium='
+                    + url_name + '_revisit&utm_campaign=v1'
+                )
+
+                mail_subject = '[MY CAMPUS] Welcome to My Campus!'
+                message = render_to_string('accounts/signup_finish_mail.html', {
+                    'url': url,
+                })
+                email = EmailMessage(
+                    mail_subject, message, to=[user.email]
+                )
+                email.content_subtype = "html"
+                email.send()
 
                 # 가입 후 바로 로그인 되게 하려면 씀
                 username = form.cleaned_data.get('username')

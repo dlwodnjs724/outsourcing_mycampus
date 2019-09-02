@@ -31,12 +31,11 @@ def get_token(email):
         exist_token.token = random_token(10)
         exist_token.save()
 
-        return exist_token;
+        return exist_token
 
     except Token.DoesNotExist:
         new_token = Token.objects.create(target_email=email, created_at=arrow.now().timestamp, token=random_token(10))
         return new_token
-
 
 
 @csrf_exempt
@@ -87,7 +86,7 @@ def activate(request):
         if token.is_expired:
             return HttpResponseBadRequest(content="Token is expired")
 
-        #인증 성공
+        # 인증 성공
         token.is_accepted = True
         token.save()
 
@@ -236,14 +235,13 @@ def report_content(request):
         else:
             target = Post.objects.select_related('author', 'author__univ').get(pk=pk)
             url_name = target.author.univ.url_name
-        
 
     abuse_type = request.POST.get('abuseType')
     reporter_pk = request.POST.get('reporter')
     reporter = User.objects.get(pk=reporter_pk)
     abuser = target.author
     if request.user == abuser:
-            return JsonResponse({
+        return JsonResponse({
             "err": "You can't report yourself"
         })
 
