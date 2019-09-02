@@ -81,6 +81,7 @@
               if(req.status === 200) {
                 btn.innerHTML = "Next";
                 alert("Please check your Email. Verification mail was sent to your school mail successfully! Click \"Verify my email\"")
+                modal.style.display = "none";
               } else {
                 btn.innerHTML = "Next";
                 alert(req.responseText);
