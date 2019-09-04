@@ -8,7 +8,7 @@ from core.models import Univ
 
 
 class ReportAdmin(admin.ModelAdmin):
-    actions = ['report_handled_view']
+    actions = ['report_handled_view', 'report_accept_view']
 
     list_per_page = 30
     list_display = (
@@ -20,10 +20,21 @@ class ReportAdmin(admin.ModelAdmin):
         for q in queryset:
             if q.is_handled != True:
                 q.is_handled = True
+                q.save()
                 c += 1
         if c > 0:
             messages.success(request, f'{c} report(s) successfully handled!!')
-    report_handled_view.short_description = "handle reports"
+    def report_accept_view(self, request, queryset):
+        c = 0
+        for q in queryset:
+            if q.accepted != True:
+                q.accepted = True
+                q.save()
+                c += 1
+        if c > 0:
+            messages.success(request, f'{c} report(s) successfully accepted!!')
+    report_accept_view.short_description = "Accept Report(s)"
+    report_handled_view.short_description = "Handle Report(s)"
 
             
 class NotiAdmin(admin.ModelAdmin):
