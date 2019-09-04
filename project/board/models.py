@@ -177,7 +177,7 @@ class Post(models.Model):
         return self.likes.count()
 
     def __str__(self):
-        return f'Post (PK: {self.pk}, Title: {" ".join(self.title.split()[0:2])}...)'
+        return f'Post (PK: {self.pk}, Title: {" ".join(self.title.split()[0:2])[:20]}...)'
 
     @property
     def name(self):
