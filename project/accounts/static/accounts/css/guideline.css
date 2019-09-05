@@ -4,21 +4,43 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  /*align-items: center;*/
+
   margin-top: 20px;
   margin-bottom: 50px;
-
   border-radius: 13px;
+  padding: 30px;
 }
 
-.guideline > div:first-child {
+
+#guideline__name {
   font-size: 30px;
-  margin-top: 20px;
+  margin-bottom: 30px;
 }
 
-.guideline > div {
-  width: 100%;
-  text-align: left;
-  padding: 0 30px;
-  margin: 5px 0;
+.guideline__list:not(:last-child){
+  margin-bottom: 30px;
+}
+
+.guideline__title {
+  font-size: 25px;
+  color: #464749;
+  margin-bottom: 15px;
+}
+
+.guideline__contents {
+  font-family: YDIYGO330;
+}
+
+.guideline__contents > div {
+  margin-bottom: 5px;
+  line-height: 1.1rem;
+  word-break: break-word;
+}
+
+.guideline__link {
+  color: #3DA6E0;
+  display: inline-block;
+  /*margin: 5px 0;*/
+  text-decoration: none;
 }

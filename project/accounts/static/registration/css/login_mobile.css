@@ -1,90 +1,103 @@
-.pc__header{
-    display: none;
+.pc__header {
+  display: none;
 }
 
 body {
-    background-color: white;
+  background-color: white;
 }
 
 .container__whitebox {
-    border-radius: var(--border-radius);
-    background-color: #fff;
-    width:100%;
-  }
-  
-  .accounts__wrapper {
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
-    margin-top: 4rem;
-  }
-  
-  .accounts__logo-box {
-    display: flex;
-    height: fit-content;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .accounts__logo-box img {
-    margin: 2rem;
-    width: 6rem;
-  }
-  
-  .accounts__logo-box h1 {
-    font-size: 2rem;
-    font-weight: 900;
-  }
-  
-  .accounts__login-box {
-    --login-info-bg-color: #F1F1F1;
-    flex-grow:1;
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 2rem 0;
-    height: 80%;
-  }
-  
-  .accounts__mycampus {
-    font-family: LOTTEMART_BOLD;
-    text-transform: uppercase;
-  }
+  border-radius: var(--border-radius);
+  background-color: #fff;
+  width: 100%;
+}
 
-  .accounts__user-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .user-info__button {
-    height: 2.5rem;
-    width: 20rem;
-    border-radius: 12px;
-    border-width: 0;
-    margin: 0.25rem 0;
-  }
-  
-  .login-info {
-    text-indent: 1rem;
-    background-color: var(--login-info-bg-color);
-  }
-  
-  .login-button {
-    background-color: #55b8bd;
-    color: #fff;
-  }
-  
-  .newbie-button {
-    background-color: #5F8DA2;
-    color: white;
-  }
-  
-  .forgot-button {
-      background-color: transparent;
-      font-size: 0.8rem;
-      color:#818386;
-      margin-bottom: 3rem;
-  }
+.accounts__wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  margin-top: 4rem;
+}
+
+.accounts__logo-box {
+  display: flex;
+  height: fit-content;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.accounts__logo-box img {
+  margin: 2rem;
+  width: 6rem;
+}
+
+.accounts__logo-box h1 {
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.accounts__login-box {
+  --login-info-bg-color: #F1F1F1;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+  height: 80%;
+}
+
+.accounts__mycampus {
+  font-family: LOTTEMART_BOLD;
+  text-transform: uppercase;
+}
+
+.accounts__user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-info__button {
+  height: 2.5rem;
+  width: 20rem;
+  border-radius: 12px;
+  border-width: 0;
+  margin: 0.25rem 0;
+}
+
+.login-info {
+  text-indent: 1rem;
+  background-color: var(--login-info-bg-color);
+}
+
+.login-button {
+  background-color: #55b8bd;
+  color: #fff;
+}
+
+.newbie-button {
+  background-color: #5F8DA2;
+  color: white;
+}
+
+.forgot-button {
+  background-color: transparent;
+  font-size: 0.8rem;
+  color: #818386;
+  margin-bottom: 3rem;
+}
+
+.policy__button {
+  height: 100%;
+  width: 20rem;
+  margin: 0.25rem 0;
+  font-family: Arial;
+}
+
+.user-info__a {
+  text-decoration: none;
+  display: inline-block;
+  color: #3DA6E0;
+}

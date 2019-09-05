@@ -1,6 +1,5 @@
 from django.contrib import auth
 from django.contrib.auth import get_user_model, authenticate
-from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
@@ -64,7 +63,7 @@ def signup(request, url_name):
             if not email:
                 raise Exception("The wrong approach.")
 
-            # email이 Token 인증 받은 이메일인지 체크
+            # email 이 Token 인증 받은 이메일인지 체크
             if not token.is_accepted:
                 raise Exception("Not a valid token")
 
@@ -109,7 +108,10 @@ def signup(request, url_name):
 
                 return redirect("core:board:main_board", url_name=url_name)
 
-        return render(request, "accounts/signup.html", {"form": form})
+        return render(request, "accounts/signup.html", {
+            'form': form,
+            'univ': univ,
+        })
 
     except Exception as e:
         print(e)
@@ -139,7 +141,7 @@ def mypage(request, url_name):
 
 
 def guideline(request, url_name):
-    univ = request.user.univ
+    univ = Univ.objects.get(url_name=url_name)
     return render(request, 'accounts/guideline.html', {
         'univ': univ,
         'url_name': url_name
@@ -147,7 +149,7 @@ def guideline(request, url_name):
 
 
 def policy(request, url_name):
-    univ = request.user.univ
+    univ = Univ.objects.get(url_name=url_name)
     return render(request, 'accounts/policy.html', {
         'univ': univ,
         'url_name': url_name
