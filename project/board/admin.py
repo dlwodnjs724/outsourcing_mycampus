@@ -6,9 +6,44 @@ from core.models import Univ
 # from django.urls import path
 # from django.shortcuts import render, redirect,get_object_or_404
 
-admin.site.register(Noti)
-admin.site.register(ReportedContent)
 
+class ReportAdmin(admin.ModelAdmin):
+    actions = ['report_handled_view', 'report_accept_view']
+
+    list_per_page = 30
+    list_display = (
+        'target_type', 'report_type', 'reporter', 'abuser',
+        'accepted', 'is_handled', 'created_at'
+    )
+    def report_handled_view(self, request, queryset):
+        c = 0
+        for q in queryset:
+            if q.is_handled != True:
+                q.is_handled = True
+                q.save()
+                c += 1
+        if c > 0:
+            messages.success(request, f'{c} report(s) successfully handled!!')
+    def report_accept_view(self, request, queryset):
+        c = 0
+        for q in queryset:
+            if q.accepted != True:
+                q.accepted = True
+                q.save()
+                c += 1
+        if c > 0:
+            messages.success(request, f'{c} report(s) successfully accepted!!')
+    report_accept_view.short_description = "Accept Report(s)"
+    report_handled_view.short_description = "Handle Report(s)"
+
+            
+class NotiAdmin(admin.ModelAdmin):
+    list_per_page = 100
+    list_display = (
+        'id','content_object', 'from_n', 'to_n', 'noti_type', 'is_read',
+        'created_at'
+    )
+    ordering = ('-created_at',)
 
 class PostAdmin(admin.ModelAdmin):
     list_per_page = 20
@@ -162,4 +197,6 @@ admin.site.register(Suggested, SuggestedAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Image)
 admin.site.register(Comment, CommentAdmin)
-admin.site.register(Report)
+admin.site.register(Report, ReportAdmin)
+admin.site.register(Noti,NotiAdmin)
+admin.site.register(ReportedContent)

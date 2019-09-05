@@ -67,3 +67,16 @@
   background-color: #5F8DA2;
   color: white;
 }
+
+.policy__button {
+  height: 100%;
+  width: 20rem;
+  margin: 0.25rem 0;
+  font-family: Arial;
+}
+
+.user-info__a {
+  text-decoration: none;
+  display: inline-block;
+  color: #3DA6E0;
+}

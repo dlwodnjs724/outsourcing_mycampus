@@ -375,7 +375,7 @@ def comment_create(request, url_name, category_name, post_pk):
                 'next': [url_name, category_name, post_pk]
             }
         )
-
+    noti_target = Post.objects.get(pk=post_pk).author
     if request.method == 'POST':
         is_anonymous = True if request.POST.get('is_anonymous') else False
         comment = Comment.objects.create(
@@ -384,7 +384,8 @@ def comment_create(request, url_name, category_name, post_pk):
             content=request.POST.get('content', ''),
             is_anonymous=is_anonymous
         )
-        Noti.objects.create(from_n=request.user,noti_type='c', to_n=Post.objects.get(pk=post_pk).author, object_id=post_pk, content_type=ContentType.objects.get(app_label='board', model='post'))
+        if  noti_target != request.user:
+            Noti.objects.create(from_n=request.user,noti_type='c', to_n=noti_target, object_id=post_pk, content_type=ContentType.objects.get(app_label='board', model='post'))
         return redirect('core:board:post_detail', url_name, category_name, post_pk)
     # if request.method == 'POST':
     #     is_anonymous = True if request.POST.get('comment_is_anonymous', '') == 'true' else False
@@ -419,7 +420,8 @@ def comment_nest_create(request, url_name, category_name, post_pk):
                 'next': [url_name, category_name, post_pk]
             }
         )
-
+    noti_target_comment =Comment.objects.get(pk=request.POST.get('parent_id')).author
+    noti_target_post = Post.objects.get(pk=post_pk).author
     if request.method == 'POST':
         is_anonymous = True if request.POST.get('nested_is_anonymous') else False
         comment = Comment.objects.create(
@@ -429,7 +431,8 @@ def comment_nest_create(request, url_name, category_name, post_pk):
             is_anonymous=is_anonymous,
             parent_id=request.POST.get('parent_id')
         )
-        Noti.objects.create(from_n=request.user,noti_type='c_c', to_n=Comment.objects.get(pk=request.POST.get('parent_id')).author, object_id=request.POST.get('parent_id'), content_type=ContentType.objects.get(app_label='board', model='comment'))
+        if (noti_target_comment or noti_target_post) != request.user :
+            Noti.objects.create(from_n=request.user,noti_type='c_c', to_n=noti_target_comment, object_id=request.POST.get('parent_id'), content_type=ContentType.objects.get(app_label='board', model='comment'))
 
         return redirect('core:board:post_detail', url_name, category_name, post_pk)
 

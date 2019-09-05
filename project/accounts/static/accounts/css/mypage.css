@@ -1,5 +1,7 @@
 .flex-container {
     align-items: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 .mypage-header {
@@ -8,7 +10,7 @@
 
 .mypage-wrapper {
     height: 100%;
-    padding: 2rem 1rem;
+    padding: 0 1rem;
 }
 
 .mypage__my-profile {
@@ -98,4 +100,13 @@
     font-size: 1.25rem;
     border:none;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.body-component__a {
+    text-decoration: none;
+    font-family: Arial;
+
 }

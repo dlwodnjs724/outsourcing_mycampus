@@ -75,6 +75,17 @@ class Noti(models.Model):
         return q
 
 
+    @property
+    def name(self):
+        content = self.content_type
+        if str(content) == "post":
+            q = Post.objects.get(pk=self.object_id)
+        elif str(content) == "comment":
+            q = Comment.objects.get(pk=self.object_id)
+        return 'anon' if q.is_anonymous else self.from_n.username
+
+
+
 class Report(models.Model):
     TYPE_CHOICES = (
         ('sexual', 'Sexual insult'),
@@ -177,7 +188,7 @@ class Post(models.Model):
         return self.likes.count()
 
     def __str__(self):
-        return f'Post (PK: {self.pk}, Title: {" ".join(self.title.split()[0:2])}...)'
+        return f'Post (PK: {self.pk}, Title: {" ".join(self.title.split()[0:2])[:20]}...)'
 
     @property
     def name(self):

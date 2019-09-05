@@ -154,7 +154,8 @@ def post_like(request):
             post.likes.remove(user)
         else:
             post.likes.add(user)
-            Noti.objects.create(from_n=request.user,noti_type = 'p_l', to_n=post.author, object_id=post.pk, content_type=ContentType.objects.get(app_label='board', model='post'))
+            if post.author != request.user:
+                Noti.objects.create(from_n=request.user,noti_type = 'p_l', to_n=post.author, object_id=post.pk, content_type=ContentType.objects.get(app_label='board', model='post'))
             
         context = {
             'pk': post.pk,
@@ -190,7 +191,8 @@ def comment_like(request):
             comment.comment_likes.remove(user)
         else:
             comment.comment_likes.add(user)
-            Noti.objects.create(from_n=request.user, noti_type='c_l', to_n=comment.author, object_id=comment.pk, content_type=ContentType.objects.get(app_label='board', model='comment'))
+            if comment.author != user:
+                Noti.objects.create(from_n=request.user, noti_type='c_l', to_n=comment.author, object_id=comment.pk, content_type=ContentType.objects.get(app_label='board', model='comment'))
 
         context = {
             'pk': comment.pk,
