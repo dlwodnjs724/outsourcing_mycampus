@@ -75,6 +75,17 @@ class Noti(models.Model):
         return q
 
 
+    @property
+    def name(self):
+        content = self.content_type
+        if str(content) == "post":
+            q = Post.objects.get(pk=self.object_id)
+        elif str(content) == "comment":
+            q = Comment.objects.get(pk=self.object_id)
+        return 'anon' if q.is_anonymous else self.from_n.username
+
+
+
 class Report(models.Model):
     TYPE_CHOICES = (
         ('sexual', 'Sexual insult'),

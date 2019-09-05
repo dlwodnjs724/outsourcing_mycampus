@@ -432,7 +432,7 @@ def comment_nest_create(request, url_name, category_name, post_pk):
             parent_id=request.POST.get('parent_id')
         )
         if (noti_target_comment or noti_target_post) != request.user :
-            Noti.objects.create(from_n=request.user,noti_type='c_c', to_n=noti_target, object_id=request.POST.get('parent_id'), content_type=ContentType.objects.get(app_label='board', model='comment'))
+            Noti.objects.create(from_n=request.user,noti_type='c_c', to_n=noti_target_comment, object_id=request.POST.get('parent_id'), content_type=ContentType.objects.get(app_label='board', model='comment'))
 
         return redirect('core:board:post_detail', url_name, category_name, post_pk)
 
