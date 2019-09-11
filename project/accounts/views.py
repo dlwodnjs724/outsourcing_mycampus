@@ -1,12 +1,12 @@
 from django.contrib import auth
 from django.contrib.auth import get_user_model, authenticate
+from django.core.exceptions import SuspiciousOperation
 from django.core.mail import EmailMessage
-from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 
 from api.models import Token
-from accounts.forms import SignupForm, LoginForm
+from accounts.forms import SignupForm
 from django.urls import reverse
 
 from core.models import Univ
@@ -114,8 +114,9 @@ def signup(request, url_name):
         })
 
     except Exception as e:
-        print(e)
-        return HttpResponseBadRequest("Bad Request: " + str(e))
+        # print(e)
+        # return HttpResponseBadRequest("Bad Request: " + str(e))
+        raise SuspiciousOperation
 
 
 def mypage(request, url_name):
@@ -137,7 +138,8 @@ def mypage(request, url_name):
         return render(request, "accounts/mypage.html", ctx)
 
     else:
-        return HttpResponseBadRequest(content="Not allowed method")
+        # return HttpResponseBadRequest(content="Not allowed method")
+        raise SuspiciousOperation
 
 
 def guideline(request, url_name):
