@@ -1,8 +1,9 @@
 # Create your views here.
 
-# reqeust, User 모델 인스턴스, 보낼 이메일 주소
+# request, User 모델 인스턴스, 보낼 이메일 주소
+from django.core.exceptions import SuspiciousOperation
 from django.core.mail import EmailMessage
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 import arrow
@@ -10,8 +11,6 @@ import random
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.contenttypes.models import ContentType
-from rest_framework.decorators import api_view, renderer_classes
-from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from accounts.models import User
 from board.models import Post, Comment, Noti, ReportedContent, Report
@@ -70,8 +69,9 @@ def send_mail(request):
         return HttpResponse(status=200)
 
     except Exception as e:
-        print(e)
-        return HttpResponseBadRequest(content="Failed: " + str(e))
+        # print(e)
+        # return HttpResponseBadRequest(content="Failed: " + str(e))
+        raise SuspiciousOperation
 
 
 def activate(request):
@@ -84,7 +84,8 @@ def activate(request):
         univ = Univ.objects.get(url_name=url_name)
 
         if token.is_expired:
-            return HttpResponseBadRequest(content="Token is expired")
+            # return HttpResponseBadRequest(content="Token is expired")
+            raise SuspiciousOperation
 
         # 인증 성공
         token.is_accepted = True
@@ -92,7 +93,8 @@ def activate(request):
 
         return redirect(reverse("core:accounts:signup", args=[url_name]) + "?email=" + user_email)
     except Token.DoesNotExist:
-        return HttpResponseBadRequest(content="Unauthorized token")
+        # return HttpResponseBadRequest(content="Unauthorized token")
+        raise SuspiciousOperation
 
 
 def post_bookmark(request):
@@ -126,7 +128,8 @@ def post_bookmark(request):
         return JsonResponse(context)
 
     except Exception as e:
-        return HttpResponseBadRequest(content="Bad request: " + str(e))
+        # return HttpResponseBadRequest(content="Bad request: " + str(e))
+        raise SuspiciousOperation
 
 
 def post_like(request):
@@ -163,7 +166,8 @@ def post_like(request):
         }
         return JsonResponse(context)
     except Exception as e:
-        return HttpResponseBadRequest(content="Bad request:" + str(e))
+        # return HttpResponseBadRequest(content="Bad request:" + str(e))
+        raise SuspiciousOperation
 
 
 def comment_like(request):
@@ -201,7 +205,8 @@ def comment_like(request):
         return JsonResponse(context)
 
     except Exception as e:
-        return HttpResponseBadRequest(content="Bad request: " + str(e))
+        # return HttpResponseBadRequest(content="Bad request: " + str(e))
+        raise SuspiciousOperation
 
 
 def report_content(request):

@@ -1,19 +1,52 @@
-html {
-    height: 100%;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.error-logo {
+  width: 350px;
+  margin-top: 120px;
+}
+
+.error-number {
+  color: #4fbcbd;
+  font-size: 200px;
+  font-weight: bold;
+}
+
+.error-message {
+  color: #4fbcbd;
+  font-size: 30px;
+}
+
+
+@media (max-width: 769px) {
+  .error-logo {
+    width: 200px;
+    margin-top: 50px;
   }
-  body{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #4fbcbd;
-    flex-direction: column;
-  }
+
   .error-number {
-    font-size: 200px;
+    color: #4fbcbd;
+    font-size: 100px;
     font-weight: bold;
-    margin-bottom: 0;
   }
+
   .error-message {
-    margin-top:0;
-    font-size: 30px;
+    color: #4fbcbd;
+    font-size: 20px;
   }
+}

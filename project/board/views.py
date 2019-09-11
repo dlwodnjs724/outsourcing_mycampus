@@ -1,9 +1,9 @@
 from itertools import chain
 
-from django.contrib.auth.decorators import login_required
+from django.core.exceptions import SuspiciousOperation
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
-from django.http import JsonResponse, HttpResponseBadRequest, Http404
+from django.http import JsonResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 import datetime
 
@@ -116,7 +116,7 @@ def main(request, url_name):
                 'is_post': is_post,
             })
     except Univ.DoesNotExist as e:
-        raise Http404(e)
+        raise Http404
 
     except Exception as e:
         if str(e) == 'anon':
@@ -125,7 +125,8 @@ def main(request, url_name):
 
         if str(e) == 'others':
             return redirect("core:board:main_board", url_name=request.user.univ.url_name)
-        return HttpResponseBadRequest(content="Bad Request: " + str(e))
+        # return HttpResponseBadRequest(content="Bad Request: " + str(e))
+        raise SuspiciousOperation
 
 
 def post_create(request, url_name):
@@ -164,7 +165,8 @@ def post_create(request, url_name):
         if str(e) == 'others':
             return redirect("core:board:main_board", url_name=request.user.univ.url_name)
 
-        return HttpResponseBadRequest(content="Bad request: " + str(e))
+        # return HttpResponseBadRequest(content="Bad request: " + str(e))
+        raise SuspiciousOperation
 
 
 @api_view(('POST', 'GET'))
@@ -230,7 +232,8 @@ def category_board(request, url_name, category_name):
         if str(e) == 'others':
             return redirect("core:board:main_board", url_name=request.user.univ.url_name)
 
-        return HttpResponseBadRequest(content="Bad request: " + str(e))
+        # return HttpResponseBadRequest(content="Bad request: " + str(e))
+        raise SuspiciousOperation
 
 
 def post_detail(request, url_name, category_name, post_pk):
@@ -384,7 +387,7 @@ def comment_create(request, url_name, category_name, post_pk):
             content=request.POST.get('content', ''),
             is_anonymous=is_anonymous
         )
-        if  noti_target != request.user:
+        if noti_target != request.user:
             Noti.objects.create(from_n=request.user,noti_type='c', to_n=noti_target, object_id=post_pk, content_type=ContentType.objects.get(app_label='board', model='post'))
         return redirect('core:board:post_detail', url_name, category_name, post_pk)
     # if request.method == 'POST':
@@ -420,7 +423,7 @@ def comment_nest_create(request, url_name, category_name, post_pk):
                 'next': [url_name, category_name, post_pk]
             }
         )
-    noti_target_comment =Comment.objects.get(pk=request.POST.get('parent_id')).author
+    noti_target_comment = Comment.objects.get(pk=request.POST.get('parent_id')).author
     noti_target_post = Post.objects.get(pk=post_pk).author
     if request.method == 'POST':
         is_anonymous = True if request.POST.get('nested_is_anonymous') else False
@@ -431,7 +434,7 @@ def comment_nest_create(request, url_name, category_name, post_pk):
             is_anonymous=is_anonymous,
             parent_id=request.POST.get('parent_id')
         )
-        if (noti_target_comment or noti_target_post) != request.user :
+        if (noti_target_comment or noti_target_post) != request.user:
             Noti.objects.create(from_n=request.user,noti_type='c_c', to_n=noti_target_comment, object_id=request.POST.get('parent_id'), content_type=ContentType.objects.get(app_label='board', model='comment'))
 
         return redirect('core:board:post_detail', url_name, category_name, post_pk)
